@@ -6,7 +6,7 @@ const Api = {
   CardList: '/get-card-list',
 };
 
-export function getList() {
+export function getQuestionnaireApi() {
   return request.get<ListResult>({
     url: Api.BaseList,
   });

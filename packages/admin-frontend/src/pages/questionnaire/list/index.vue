@@ -46,7 +46,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { MessagePlugin, PrimaryTableCol, TableRowData, PageInfo } from 'tdesign-vue-next';
-import { getList } from '@/api/list';
+import { getQuestionnaireApi } from '@/api/list';
 import { useSettingStore } from '@/store';
 import { prefix } from '@/config/global';
 
@@ -109,7 +109,7 @@ const dataLoading = ref(false);
 const fetchData = async () => {
   dataLoading.value = true;
   try {
-    const {list} = await getList();
+    const {list} = await getQuestionnaireApi();
     data.value = list;
     pagination.value = {
       ...pagination.value,
