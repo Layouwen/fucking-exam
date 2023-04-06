@@ -19,7 +19,7 @@ model QuestionnaireTag {
   textColor       String         @db.VarChar(255)
   user            User           @relation(fields: [userId], references: [id])
   userId          Int
-  Questionnaire   Questionnaire? @relation(fields: [questionnaireId], references: [id])
+  questionnaire   Questionnaire? @relation(fields: [questionnaireId], references: [id])
   questionnaireId Int?
 }
 
@@ -35,13 +35,24 @@ model Questionnaire {
   userId    Int
 }
 
+model GithubInfo {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  githubId  String   @unique @db.VarChar(255)
+  jsonData  Json
+  userId    Int      @unique
+  user      User     @relation(fields: [userId], references: [id])
+}
+
 model User {
   id                Int                @id @default(autoincrement())
   email             String             @unique
   username          String?            @unique @db.VarChar(255)
   nickname          String?            @default("user") @db.VarChar(255)
-  password          String             @db.VarChar(255)
+  password          String?            @db.VarChar(255)
   sex               Int                @default(0)
   questionnaires    Questionnaire[]
   questionnaireTags QuestionnaireTag[]
+  githubInfo        GithubInfo[]
 }
