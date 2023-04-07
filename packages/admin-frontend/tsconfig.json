@@ -24,7 +24,8 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
-    "node_modules/tdesign-vue-next/global.d.ts"
+    "node_modules/tdesign-vue-next/global.d.ts",
+    "../client-frontend/.nuxt/types/imports.d.ts"
   ],
   "compileOnSave": false
 }
