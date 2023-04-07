@@ -19,6 +19,7 @@ export default defineNuxtConfig({
       ["defineStore", "definePiniaStore"], // import { defineStore as definePiniaStore } from 'pinia'
     ],
   },
+  // @ts-ignore
   build: {
     transpile:
       process.env.NODE_ENV === "production"
@@ -36,6 +37,15 @@ export default defineNuxtConfig({
         process.env.NODE_ENV === "development"
           ? ["naive-ui", "vueuc", "date-fns-tz/esm/formatInTimeZone"]
           : [],
+    },
+    server: {
+      proxy: {
+        "/api": {
+          target: "http://localhost:3000",
+          changeOrigin: true,
+          // rewrite: (path: string) => path.replace(/^\/api/, ""),
+        },
+      },
     },
   },
 });

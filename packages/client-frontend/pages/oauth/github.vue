@@ -3,24 +3,25 @@
 </template>
 
 <script lang="ts" setup>
-import axios from "axios";
 import { NButton } from "naive-ui";
 
 const route = useRoute();
+const router = useRouter();
 
-onMounted(() => {
+onMounted(async () => {
   const { code } = route.query;
   if (code) {
-    console.log(code);
-    axios
-      .get("http://localhost:3000/oauth/github", {
-        params: {
-          code,
-        },
-      })
-      .then((res) => {
-        console.log(res);
-      });
+    router.replace({ path: "/oauth/github" });
+    // TODO: any
+    const res: any = await $fetch("/api/oauth/github", {
+      baseURL: "",
+      method: "POST",
+      body: {
+        code,
+      },
+    });
+
+    localStorage.setItem("token", res.token);
   }
 });
 
