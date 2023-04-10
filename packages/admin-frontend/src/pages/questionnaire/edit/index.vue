@@ -10,15 +10,15 @@
           <NInput v-model:value="inputText" type="textarea" rows="40" placeholder="请输入你的问题" />
         </div>
         <div class="w-[50%] flex-shrink">
-          <div>{{ questionnaireData.paperName }}</div>
-          <div v-for="i in questionnaireData.questions">
+          <div>{{ questionnaireData?.paperName }}</div>
+          <div v-for="i in questionnaireData?.questions">
             <div>{{ showSubjectAndAnswer(i) }}</div>
             <div v-for="(option, index) in i.options">{{ OPTIONS_LETTER[index] }} {{ option.label }}</div>
           </div>
         </div>
       </div>
     </n-tab-pane>
-    <n-tab-pane :name="EditMode.VISUALIZATION" tab="操作模式"> 1</n-tab-pane>
+    <n-tab-pane :name="EditMode.VISUALIZATION" tab="操作模式">1</n-tab-pane>
   </n-tabs>
 </template>
 
@@ -42,15 +42,15 @@ type Question = {
   type: QuestionType;
 };
 
+type QuestionnaireData = { paperName: string; questions: Question[] };
+
 import { ref } from 'vue';
+import { MessagePlugin } from 'tdesign-vue-next';
 import { NInput, NButton, NTabPane, NTabs } from 'naive-ui';
 import { questionnaire } from '@fucking-exam/template-data';
 import { OPTIONS_LETTER } from '@fucking-exam/constants';
 
-const questionnaireData = ref({
-  paperName: '',
-  questions: [] as Question[],
-});
+const questionnaireData = ref<QuestionnaireData>();
 const mode = ref<EditMode>(EditMode.TEXT);
 const inputText = ref(`
 22年10月设计基础历年真题（选择题）
@@ -260,6 +260,10 @@ const onClearInputText = () => {
   inputText.value = '';
 };
 const onParseText = () => {
+  const _questionnaireData = {
+    paperName: '',
+    questions: [],
+  } as QuestionnaireData;
   const str = inputText.value;
 
   function splitByEmptyLine(str) {
@@ -268,55 +272,61 @@ const onParseText = () => {
 
   const questionsStrArr = splitByEmptyLine(str);
 
-  questionsStrArr.forEach((q) => {
-    const question = {
-      type: QuestionType.SINGLE_CHOICE,
-      subject: '',
-      options: [],
-      analyze: '',
-    } as Question;
+  try {
+    questionsStrArr.forEach((q) => {
+      const question = {
+        type: QuestionType.SINGLE_CHOICE,
+        subject: '',
+        options: [],
+        analyze: '',
+      } as Question;
 
-    const lines = q
-      .split(/\n/)
-      .map((i) => i.trim())
-      .filter((i) => i);
+      const lines = q
+        .split(/\n/)
+        .map((i) => i.trim())
+        .filter((i) => i);
 
-    if (lines.map((i) => i.trim()).filter((i) => i).length === 1) {
-      questionnaireData.value.paperName = lines[0];
-    } else {
-      const firstLine = lines.shift();
-      const firstLineMatch = firstLine.match(/[(（]([A-Z]+)[)）]/g);
-      const answerStr = firstLineMatch[firstLineMatch.length - 1];
-      question.subject = firstLine.replace(answerStr, '($ANSWER)').trim();
-      const answerStrNoParentheses = answerStr.replace(/[(（]|[)）]/g, '');
-
-      if (answerStrNoParentheses.length > 1) {
-        question.type = QuestionType.MULTIPLE_CHOICE;
-        question.answers = answerStrNoParentheses.split('');
+      if (lines.map((i) => i.trim()).filter((i) => i).length === 1) {
+        _questionnaireData.paperName = lines[0];
       } else {
-        question.type = QuestionType.SINGLE_CHOICE;
-        question.answer = answerStrNoParentheses;
+        const firstLine = lines.shift();
+        const firstLineMatch = firstLine.match(/[(（]([A-Z]+)[)）]/g);
+        const answerStr = firstLineMatch[firstLineMatch.length - 1];
+        question.subject = firstLine.replace(answerStr, '($ANSWER)').trim();
+        const answerStrNoParentheses = answerStr.replace(/[(（]|[)）]/g, '');
+
+        if (answerStrNoParentheses.length > 1) {
+          question.type = QuestionType.MULTIPLE_CHOICE;
+          question.answers = answerStrNoParentheses.split('');
+        } else {
+          question.type = QuestionType.SINGLE_CHOICE;
+          question.answer = answerStrNoParentheses;
+        }
+
+        const lastLine = lines.pop();
+        let analyzeMatch = lastLine.match(/^解析：(.*)/);
+        if (analyzeMatch) {
+          question.analyze = analyzeMatch[1];
+        } else {
+          lines.push(lastLine);
+        }
+
+        question.options = lines.map((line) => {
+          const [value, ...textArr] = line.split(' ');
+          return {
+            value,
+            label: textArr.join(''),
+          };
+        });
+
+        _questionnaireData.questions.push(question);
       }
+    });
 
-      const lastLine = lines.pop();
-      let analyzeMatch = lastLine.match(/^解析：(.*)/);
-      if (analyzeMatch) {
-        question.analyze = analyzeMatch[1];
-      } else {
-        lines.push(lastLine);
-      }
-
-      question.options = lines.map((line) => {
-        const [value, ...textArr] = line.split(' ');
-        return {
-          value,
-          label: textArr.join(''),
-        };
-      });
-
-      questionnaireData.value.questions.push(question);
-    }
-  });
+    questionnaireData.value = _questionnaireData;
+  } catch (e) {
+    MessagePlugin.warning('解析失败，请先输入内容');
+  }
 };
 
 const onChangeTab = (value: EditMode) => {

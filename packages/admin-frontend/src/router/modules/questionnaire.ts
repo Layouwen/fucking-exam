@@ -17,7 +17,7 @@ export default [
         path: 'edit',
         name: 'questionnaireEdit',
         component: () => import('@/pages/questionnaire/edit/index.vue'),
-        meta: { title: '编辑问卷' },
+        meta: { title: '编辑问卷', hidden: true },
       },
     ],
   },
