@@ -40,6 +40,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.0.3",
     "@commitlint/config-conventional": "^17.0.3",
+    "@fucking-exam/constants": "workspace:^0.0.1",
     "@types/echarts": "^4.9.10",
     "@types/lodash": "^4.14.182",
     "@types/qs": "^6.9.7",

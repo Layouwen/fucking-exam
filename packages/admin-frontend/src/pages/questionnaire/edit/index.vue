@@ -12,7 +12,8 @@
         <div class="w-[50%] flex-shrink">
           <div>{{ questionnaireData.paperName }}</div>
           <div v-for="i in questionnaireData.questions">
-            {{ i.subject }}
+            <div>{{ showSubjectAndAnswer(i) }}</div>
+            <div v-for="(option, index) in i.options">{{ OPTIONS_LETTER[index] }} {{ option.label }}</div>
           </div>
         </div>
       </div>
@@ -27,13 +28,28 @@ enum EditMode {
   VISUALIZATION,
 }
 
+enum QuestionType {
+  SINGLE_CHOICE = 'singleChoice',
+  MULTIPLE_CHOICE = 'multipleChoice',
+}
+
+type Question = {
+  answers?: string[];
+  answer?: string;
+  subject: string;
+  options: { label: string; value: string }[];
+  analyze: string;
+  type: QuestionType;
+};
+
 import { ref } from 'vue';
 import { NInput, NButton, NTabPane, NTabs } from 'naive-ui';
 import { questionnaire } from '@fucking-exam/template-data';
+import { OPTIONS_LETTER } from '@fucking-exam/constants';
 
 const questionnaireData = ref({
   paperName: '',
-  questions: [],
+  questions: [] as Question[],
 });
 const mode = ref<EditMode>(EditMode.TEXT);
 const inputText = ref(`
@@ -230,6 +246,16 @@ E “以人为本”
 解析：我国传统与民间艺术具有“材美工巧”的艺术追求，“雕琢归朴”审美理想。P143-146
 `);
 
+const showSubjectAndAnswer = (question: Question) => {
+  const answerTemplate = '$ANSWER';
+  switch (question.type) {
+    case QuestionType.SINGLE_CHOICE:
+      return question.subject.replace(answerTemplate, question.answer);
+    case QuestionType.MULTIPLE_CHOICE:
+      return question.subject.replace(answerTemplate, question.answers.join(''));
+  }
+};
+
 const onClearInputText = () => {
   inputText.value = '';
 };
@@ -243,6 +269,13 @@ const onParseText = () => {
   const questionsStrArr = splitByEmptyLine(str);
 
   questionsStrArr.forEach((q) => {
+    const question = {
+      type: QuestionType.SINGLE_CHOICE,
+      subject: '',
+      options: [],
+      analyze: '',
+    } as Question;
+
     const lines = q
       .split(/\n/)
       .map((i) => i.trim())
@@ -252,18 +285,28 @@ const onParseText = () => {
       questionnaireData.value.paperName = lines[0];
     } else {
       const firstLine = lines.shift();
-      const subject = firstLine.replace(/^(A-E)\s+/, '');
-      let analyze = '';
+      const firstLineMatch = firstLine.match(/[(（]([A-Z]+)[)）]/g);
+      const answerStr = firstLineMatch[firstLineMatch.length - 1];
+      question.subject = firstLine.replace(answerStr, '($ANSWER)').trim();
+      const answerStrNoParentheses = answerStr.replace(/[(（]|[)）]/g, '');
+
+      if (answerStrNoParentheses.length > 1) {
+        question.type = QuestionType.MULTIPLE_CHOICE;
+        question.answers = answerStrNoParentheses.split('');
+      } else {
+        question.type = QuestionType.SINGLE_CHOICE;
+        question.answer = answerStrNoParentheses;
+      }
 
       const lastLine = lines.pop();
       let analyzeMatch = lastLine.match(/^解析：(.*)/);
       if (analyzeMatch) {
-        analyze = analyzeMatch[1];
+        question.analyze = analyzeMatch[1];
       } else {
         lines.push(lastLine);
       }
 
-      const options = lines.map((line) => {
+      question.options = lines.map((line) => {
         const [value, ...textArr] = line.split(' ');
         return {
           value,
@@ -271,11 +314,7 @@ const onParseText = () => {
         };
       });
 
-      questionnaireData.value.questions.push({
-        subject,
-        options,
-        analyze,
-      });
+      questionnaireData.value.questions.push(question);
     }
   });
 };
