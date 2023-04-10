@@ -18,7 +18,7 @@
     "test:coverage": "echo \"no test:coverage specified,work in process\""
   },
   "dependencies": {
-    "@fucking-exam/template-data": "workspace:^1.0.0",
+    "@fucking-exam/template-data": "workspace:^0.0.1",
     "@fucking-exam/types": "workspace:^0.0.1",
     "@fucking-exam/utils": "workspace:^0.0.1",
     "axios": "^1.1.3",

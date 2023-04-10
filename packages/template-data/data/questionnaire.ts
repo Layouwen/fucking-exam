@@ -6,7 +6,6 @@ export const questionnaire = {
   },
   questions: [
     {
-      id: "111",
       type: "multipleChoice",
       subject: "vue的作者是谁？",
       options: [
@@ -30,7 +29,6 @@ export const questionnaire = {
       answers: ["A", "B"],
     },
     {
-      id: "222",
       type: "singleChoice",
       subject: "谁是世界上最美的人？",
       options: [
