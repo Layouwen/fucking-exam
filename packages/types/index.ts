@@ -12,6 +12,21 @@ export interface Tag {
   textColor: string;
 }
 
+export type Question = {
+  id?: string;
+  answers?: string[];
+  answer?: string;
+  subject: string;
+  options: { label: string; value: string }[];
+  analyze: string;
+  type: QuestionType;
+};
+
+export enum QuestionType {
+  SINGLE_CHOICE = "singleChoice",
+  MULTIPLE_CHOICE = "multipleChoice",
+}
+
 export interface Questionnaire {
   id: number;
   name: string;
@@ -26,3 +41,5 @@ export interface ListResult<D> {
   result: D;
   total: number;
 }
+
+export * from "./business";

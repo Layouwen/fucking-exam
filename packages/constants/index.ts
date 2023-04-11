@@ -1,1 +1,0 @@
-export const OPTIONS_LETTER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");

@@ -1,6 +1,12 @@
 <template>
-  <div class="list-common-table">
+  <t-card>
     <div class="table-container">
+      <t-row justify="space-between">
+        <div class="left-operation-container">
+          <t-button @click="onCreateQuestionnaire">创建问卷</t-button>
+        </div>
+        <div class="search-input"></div>
+      </t-row>
       <t-table
         :data="data"
         :columns="COLUMNS"
@@ -29,7 +35,7 @@
           <div v-else>-</div>
         </template>
         <template #op="slotProps">
-          <a class="t-button-link" @click="rehandleClickOp(slotProps)">管理</a>
+          <a class="t-button-link" @click="onEditQuestionnaire(slotProps)">编辑问卷</a>
           <a class="t-button-link" @click="handleClickDelete(slotProps)">删除</a>
         </template>
       </t-table>
@@ -41,17 +47,21 @@
         @confirm="onConfirmDelete"
       />
     </div>
-  </div>
+  </t-card>
 </template>
+
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { MessagePlugin, PrimaryTableCol, TableRowData, PageInfo } from 'tdesign-vue-next';
+import { MessagePlugin, PrimaryTableCol, TableRowData, Row, Button, Card } from 'tdesign-vue-next';
 import { getQuestionnaireApi } from '@/api/list';
 import { useSettingStore } from '@/store';
 import { prefix } from '@/config/global';
+import { useRouter } from 'vue-router';
+import { PageOptionType } from '@fucking-exam/types';
 
 import { CONTRACT_STATUS, CONTRACT_TYPES } from '@/constants';
 
+const router = useRouter();
 const store = useSettingStore();
 
 const COLUMNS: PrimaryTableCol<TableRowData>[] = [
@@ -67,7 +77,7 @@ const COLUMNS: PrimaryTableCol<TableRowData>[] = [
     colKey: 'name',
     minWidth: 200,
   },
-  {title: '问卷状态', colKey: 'status', width: 200},
+  { title: '问卷状态', colKey: 'status', width: 200 },
   {
     title: '问卷类型',
     width: 200,
@@ -106,10 +116,18 @@ const confirmVisible = ref(false);
 const data = ref([]);
 
 const dataLoading = ref(false);
+
+const onCreateQuestionnaire = () => {
+  router.push({ name: 'questionnaireEdit', state: { type: PageOptionType.CREATE } });
+};
+const onEditQuestionnaire = () => {
+  router.push({ name: 'questionnaireEdit', state: { type: PageOptionType.EDIT } });
+};
+
 const fetchData = async () => {
   dataLoading.value = true;
   try {
-    const {list} = await getQuestionnaireApi();
+    const { list } = await getQuestionnaireApi();
     data.value = list;
     pagination.value = {
       ...pagination.value,
@@ -125,7 +143,7 @@ const fetchData = async () => {
 const deleteIdx = ref(-1);
 const confirmBody = computed(() => {
   if (deleteIdx.value > -1) {
-    const {name} = data.value[deleteIdx.value];
+    const { name } = data.value[deleteIdx.value];
     return `删除后，${name}的所有合同信息将被清空，且无法恢复`;
   }
   return '';
@@ -152,7 +170,7 @@ onMounted(() => {
   fetchData();
 });
 
-const handleClickDelete = ({row}) => {
+const handleClickDelete = ({ row }) => {
   deleteIdx.value = row.rowIndex;
   confirmVisible.value = true;
 };
@@ -166,14 +184,4 @@ const headerAffixedTop = computed(
 );
 </script>
 
-<style lang="less" scoped>
-.list-common-table {
-  background-color: var(--td-bg-color-container);
-  padding: 30px 32px;
-  border-radius: var(--td-radius-default);
-
-  .table-container {
-    margin-top: 30px;
-  }
-}
-</style>
+<style lang="less" scoped></style>
