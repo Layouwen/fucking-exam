@@ -5,8 +5,15 @@
     class="relative bg-[#fff] hover:bg-[#fafafa] border-b-[1px] border-t-0 border-x-0 border-[#e0e0e0] border-solid pt-8 px-8 pb-10 space-y-3"
   >
     <div class="font-bold">{{ showSubjectAndAnswer(questionData) }}</div>
-    <div class="text-[15px]" v-for="(option, index) in questionData.options">
-      {{ OPTIONS_LETTER[index] }} {{ option.label }}
+    <div
+      :class="{ 'right-highlight': isChecked(option) }"
+      class="text-[15px] flex items-center"
+      v-for="option in questionData.options"
+      :key="option.value"
+    >
+      <t-checkbox :checked="isChecked(option)" />
+      <span>{{ option.label }}</span>
+      <span v-show="isChecked(option)">(正确答案)</span>
     </div>
     <div
       v-show="isDisplayController && !isDisplayEdit"
@@ -25,7 +32,71 @@
       </div>
     </div>
   </div>
-  <div v-show="isDisplayEdit" class="bg-[#fafafa]">1233333333333123 213 123123</div>
+  <div v-show="isDisplayEdit" class="bg-[#fafafa] px-8 py-4">
+    <t-textarea v-model:value="questionData.subject" placeholder="请输入题目" />
+    <div class="space-y-2 mt-4">
+      <div class="flex bg-[#f0f0ee] p-2">
+        <span class="flex-grow">选项内容</span>
+        <span class="w-[200px]">正确答案</span>
+        <span class="w-[300px]">操作</span>
+      </div>
+      <div class="flex" v-for="(option, optionIndex) in questionData.options" :key="option.value">
+        <div class="flex-grow flex items-center space-x-2 pr-8">
+          <t-input v-model:value="option.label" placeholder="请输入内容" />
+          <div class="flex items-center space-x-2 text-[24px]">
+            <t-icon
+              class="cursor-pointer hover:text-[#5997fc]"
+              name="add-circle"
+              @click="onAddNextOption(optionIndex)"
+            />
+            <t-icon class="cursor-pointer hover:text-[#5997fc]" name="minus-circle" @click="onDeleteOption(option)" />
+          </div>
+        </div>
+        <div class="w-[200px] flex items-center">
+          <t-checkbox :checked="isChecked(option)" @change="onSelectOption(option)" />
+        </div>
+        <div class="w-[300px] flex items-center text-[24px] space-x-2">
+          <t-icon
+            name="chevron-up-circle"
+            class="hover:text-[#5997fc]"
+            :class="{
+              'cursor-pointer': !isFirstByArr(questionData.options, optionIndex),
+              'cursor-not-allowed': isFirstByArr(questionData.options, optionIndex),
+            }"
+            @click="onMoveUp(optionIndex)"
+          />
+          <t-icon
+            name="chevron-down-circle"
+            class="hover:text-[#5997fc]"
+            :class="{
+              'cursor-pointer': !isLastByArr(questionData.options, optionIndex),
+              'cursor-not-allowed': isLastByArr(questionData.options, optionIndex),
+            }"
+            @click="onMoveDown(optionIndex)"
+          />
+        </div>
+      </div>
+      <div class="flex items-center space-x-2">
+        <t-link underline hover="color" @click="onAddOption">添加选项</t-link>
+        <div>
+          <t-select
+            v-model:value="questionData.settings.randomType"
+            :options="[
+              {
+                label: '选项不随机',
+                value: '0',
+              },
+              {
+                label: '选项随机',
+                value: '1',
+              },
+            ]"
+          />
+        </div>
+      </div>
+    </div>
+    <t-button class="mt-4" block size="large" @click="$emit('finish')">完成编辑</t-button>
+  </div>
 </template>
 
 <script lang="ts">
@@ -37,16 +108,15 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import {
-  OPTIONS_LETTER,
-  QUESTION_OPTION_ITEM_BUTTONS,
-  QUESTION_OPTION_ITEM_BUTTONS_EMIT_NAMES,
-} from '@fucking-exam/shared';
+import { MessagePlugin } from 'tdesign-vue-next';
+import { QUESTION_OPTION_ITEM_BUTTONS, QUESTION_OPTION_ITEM_BUTTONS_EMIT_NAMES } from '@fucking-exam/shared';
 import { Question } from '@fucking-exam/types';
+import { moveDownByArr, moveUpByArr, isFirstByArr, isLastByArr } from '@fucking-exam/shared';
 import { defineProps, PropType, ref } from 'vue';
 import { showSubjectAndAnswer } from '@/utils';
+import { v4 as uuidV4 } from 'uuid';
 
-const emits = defineEmits(QUESTION_OPTION_ITEM_BUTTONS_EMIT_NAMES);
+const emits = defineEmits([...QUESTION_OPTION_ITEM_BUTTONS_EMIT_NAMES, 'finish']);
 
 const props = defineProps({
   questionData: {
@@ -69,17 +139,66 @@ const props = defineProps({
 
 const isDisplayController = ref(false);
 
+const isChecked = (option) => {
+  return props.questionData.answers.includes(option.value);
+};
+
 const isDisabled = (emitName: (typeof QUESTION_OPTION_ITEM_BUTTONS_EMIT_NAMES)[number]) => {
   const topUnSHowNames = QUESTION_OPTION_ITEM_BUTTONS.filter((b) => b.topUnShow).map((b) => b.emitName);
   const bottomUnShowNames = QUESTION_OPTION_ITEM_BUTTONS.filter((b) => b.bottomUnShow).map((b) => b.emitName);
 
   if (topUnSHowNames.includes(emitName)) {
-    return props.index === 0;
+    return isFirstByArr(props.questions, props.index);
   } else if (bottomUnShowNames.includes(emitName)) {
-    return props.index === props.questions.length - 1;
+    return isLastByArr(props.questions, props.index);
   } else {
     return false;
   }
+};
+
+const onAddNextOption = (optionIndex: number) => {
+  props.questionData.options.splice(optionIndex + 1, 0, {
+    label: '新增选项',
+    value: uuidV4(),
+  });
+};
+
+const onDeleteOption = (option) => {
+  if (props.questionData.options.length === 1) {
+    return MessagePlugin.warning('至少保留一个选项');
+  }
+
+  props.questionData.answers = props.questionData.answers.filter((i) => i !== option.value);
+  props.questionData.options = props.questionData.options.filter((i) => i.value !== option.value);
+};
+
+const onSelectOption = (option) => {
+  if (isChecked(option)) {
+    props.questionData.answers = props.questionData.answers.filter((v) => v !== option.value);
+  } else {
+    props.questionData.answers.push(option.value);
+  }
+};
+
+const onMoveUp = (optionIndex: number) => {
+  if (optionIndex === 0) {
+    return;
+  }
+  props.questionData.options = moveUpByArr(props.questionData.options, optionIndex);
+};
+
+const onMoveDown = (optionIndex: number) => {
+  if (optionIndex === props.questionData.options.length - 1) {
+    return;
+  }
+  props.questionData.options = moveDownByArr(props.questionData.options, optionIndex);
+};
+
+const onAddOption = () => {
+  props.questionData.options.push({
+    label: '新增选项',
+    value: uuidV4(),
+  });
 };
 
 const onButton = (
@@ -89,3 +208,9 @@ const onButton = (
   emits(button.emitName, ...args);
 };
 </script>
+
+<style lang="less" scoped>
+.right-highlight {
+  color: #efa030;
+}
+</style>

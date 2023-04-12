@@ -1,5 +1,6 @@
 import { Question, QuestionType } from '@fucking-exam/types';
 
+// @deprecated No longer in use
 export const showSubjectAndAnswer = (question: Question) => {
   const answerTemplate = '$ANSWER';
   switch (question.type) {

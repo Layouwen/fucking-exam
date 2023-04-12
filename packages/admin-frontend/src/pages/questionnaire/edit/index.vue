@@ -20,9 +20,11 @@
         </div>
         <div class="w-[50%] flex-shrink">
           <div>{{ questionnaireData?.paperName }}</div>
-          <div v-for="i in questionnaireData?.questions">
+          <div v-for="i in questionnaireData?.questions" :key="i.id">
             <div>{{ showSubjectAndAnswer(i) }}</div>
-            <div v-for="(option, index) in i.options">{{ OPTIONS_LETTER[index] }} {{ option.label }}</div>
+            <div v-for="(option, index) in i.options" :key="option.value">
+              {{ OPTIONS_LETTER[index] }} {{ option.label }}
+            </div>
           </div>
         </div>
       </div>
@@ -31,11 +33,19 @@
       <div class="text-[17px]">
         <div
           class="bg-[#fff] hover:bg-[#fafafa] border-b-[1px] border-t-0 border-x-0 border-[#e0e0e0] border-solid p-8"
+          @click="paperNameDialogVisible = true"
         >
           {{ questionnaireData?.paperName }}
         </div>
+        <paper-name-edit
+          :input-value-default="questionnaireData?.paperName"
+          :visible="paperNameDialogVisible"
+          @confirm="(val: string)=>{questionnaireData.paperName = val}"
+          @close="paperNameDialogVisible = false"
+        />
         <question-option-item
           v-for="(question, index) in questionnaireData?.questions"
+          :key="question.id"
           :questions="questionnaireData?.questions"
           :questionData="question"
           :index="index"
@@ -47,6 +57,7 @@
           @move-down="onQuestionOptionItemMoveDown"
           @move-top="onQuestionOptionItemMoveTop"
           @move-bottom="onQuestionOptionItemMoveButton"
+          @finish="curEditIdOrUUID = ''"
         ></question-option-item>
       </div>
     </template>
@@ -55,25 +66,30 @@
 
 <script lang="ts" setup>
 import { QuestionOptionItem } from '@/components';
+import PaperNameEdit from '@/pages/questionnaire/components/PaperNameEdit.vue';
 import { showSubjectAndAnswer } from '@/utils';
-import { OPTIONS_LETTER, QuestionTextInputValueTemplate } from '@fucking-exam/shared';
+import {
+  OPTIONS_LETTER,
+  QuestionTextInputValueTemplate,
+  moveUpByArr,
+  moveDownByArr,
+  moveBottomByArr,
+  moveTopByArr,
+} from '@fucking-exam/shared';
 import { PageOptionType, Question, QuestionnaireEditMode, QuestionType } from '@fucking-exam/types';
 import { NButton, NInput } from 'naive-ui';
-import { Button, Card, MessagePlugin, Row, DialogPlugin } from 'tdesign-vue-next';
-import { onMounted, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { Button, Card, DialogPlugin, MessagePlugin, Row } from 'tdesign-vue-next';
 import { v4 as uuidV4 } from 'uuid';
+import { onMounted, ref } from 'vue';
 
 type QuestionnaireData = { paperName: string; questions: Question[] };
-
-const route = useRoute();
-const router = useRouter();
 
 const pageOptionType = ref<PageOptionType>();
 const questionnaireData = ref<QuestionnaireData>();
 const mode = ref<QuestionnaireEditMode>();
 const inputText = ref(QuestionTextInputValueTemplate);
 const curEditIdOrUUID = ref('');
+const paperNameDialogVisible = ref(false);
 
 onMounted(() => {
   const state = history.state as { type?: PageOptionType };
@@ -110,6 +126,9 @@ const onParseText = () => {
         subject: '',
         options: [],
         analyze: '',
+        settings: {
+          randomType: '0',
+        },
       } as Question;
 
       const lines = q
@@ -123,16 +142,9 @@ const onParseText = () => {
         const firstLine = lines.shift();
         const firstLineMatch = firstLine.match(/[(（]([A-Z]+)[)）]/g);
         const answerStr = firstLineMatch[firstLineMatch.length - 1];
-        question.subject = firstLine.replace(answerStr, '($ANSWER)').trim();
+        question.subject = firstLine.replace(answerStr, '（）').trim();
         const answerStrNoParentheses = answerStr.replace(/[(（]|[)）]/g, '');
-
-        if (answerStrNoParentheses.length > 1) {
-          question.type = QuestionType.MULTIPLE_CHOICE;
-          question.answers = answerStrNoParentheses.split('');
-        } else {
-          question.type = QuestionType.SINGLE_CHOICE;
-          question.answer = answerStrNoParentheses;
-        }
+        const answerUUIDMap = new Map();
 
         const lastLine = lines.pop();
         let analyzeMatch = lastLine.match(/^解析：(.*)/);
@@ -144,11 +156,21 @@ const onParseText = () => {
 
         question.options = lines.map((line) => {
           const [value, ...textArr] = line.split(' ');
+          const uuid = uuidV4();
+          answerUUIDMap.set(value, uuid);
           return {
-            value,
+            value: uuid,
             label: textArr.join(''),
           };
         });
+
+        if (answerStrNoParentheses.length > 1) {
+          question.type = QuestionType.MULTIPLE_CHOICE;
+          question.answers = answerStrNoParentheses.split('').map((i) => answerUUIDMap.get(i));
+        } else {
+          question.type = QuestionType.SINGLE_CHOICE;
+          question.answers = [answerUUIDMap.get(answerStrNoParentheses)];
+        }
 
         question.id = uuidV4();
 
@@ -178,20 +200,16 @@ const onQuestionOptionItemDelete = (index: number) => {
     },
   });
 };
-const onQuestionOptionItemMoveUp = (index: number, questionData: Question) => {
-  questionnaireData.value.questions.splice(index - 1, 0, questionData);
-  questionnaireData.value.questions.splice(index + 1, 1);
+const onQuestionOptionItemMoveUp = (index: number) => {
+  questionnaireData.value.questions = moveUpByArr(questionnaireData.value.questions, index);
 };
-const onQuestionOptionItemMoveDown = (index: number, questionData: Question) => {
-  questionnaireData.value.questions.splice(index + 2, 0, questionData);
-  questionnaireData.value.questions.splice(index, 1);
+const onQuestionOptionItemMoveDown = (index: number) => {
+  questionnaireData.value.questions = moveDownByArr(questionnaireData.value.questions, index);
 };
 const onQuestionOptionItemMoveTop = (index: number) => {
-  const delQuestion = questionnaireData.value.questions.splice(index, 1);
-  questionnaireData.value.questions.unshift(delQuestion[0]);
+  questionnaireData.value.questions = moveTopByArr(questionnaireData.value.questions, index);
 };
 const onQuestionOptionItemMoveButton = (index: number) => {
-  const delQuestion = questionnaireData.value.questions.splice(index, 1);
-  questionnaireData.value.questions.push(delQuestion[0]);
+  questionnaireData.value.questions = moveBottomByArr(questionnaireData.value.questions, index);
 };
 </script>

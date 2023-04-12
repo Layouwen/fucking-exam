@@ -35,7 +35,7 @@
           <div v-else>-</div>
         </template>
         <template #op="slotProps">
-          <a class="t-button-link" @click="onEditQuestionnaire(slotProps)">编辑问卷</a>
+          <a class="t-button-link" @click="onEditQuestionnaire()">编辑问卷</a>
           <a class="t-button-link" @click="handleClickDelete(slotProps)">删除</a>
         </template>
       </t-table>
@@ -55,7 +55,6 @@ import { ref, computed, onMounted } from 'vue';
 import { MessagePlugin, PrimaryTableCol, TableRowData, Row, Button, Card } from 'tdesign-vue-next';
 import { getQuestionnaireApi } from '@/api/list';
 import { useSettingStore } from '@/store';
-import { prefix } from '@/config/global';
 import { useRouter } from 'vue-router';
 import { PageOptionType } from '@fucking-exam/types';
 
@@ -174,14 +173,6 @@ const handleClickDelete = ({ row }) => {
   deleteIdx.value = row.rowIndex;
   confirmVisible.value = true;
 };
-
-const headerAffixedTop = computed(
-  () =>
-    ({
-      offsetTop: store.isUseTabsRouter ? 48 : 0,
-      container: `.${prefix}-layout`,
-    } as any), // TO BE FIXED
-);
 </script>
 
 <style lang="less" scoped></style>
