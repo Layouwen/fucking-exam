@@ -4,4 +4,5 @@ import questionnaireController from "../../../controllers/questionnaireControlle
 const router = Router();
 
 router.get("/", questionnaireController.findAll);
+router.post("/", questionnaireController.create);
 export default router;

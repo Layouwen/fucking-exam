@@ -71,6 +71,7 @@ github.post("/", async (req, res) => {
       token,
     });
   } catch (e) {
+    console.log(e);
     res.json({
       message: "fail",
     });

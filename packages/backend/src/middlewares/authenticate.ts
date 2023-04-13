@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
 import { JsonWebTokenError } from "jsonwebtoken";
 import { jwtUtil } from "../utils";
 
@@ -37,8 +37,8 @@ export default (req: Request, res: Response, next: NextFunction) => {
   const { token } = getBearerAndToken(authorization);
   try {
     jwtUtil.verifyToken(token);
-    const payload = jwtUtil.decodeToken(token);
-    console.log(payload, "payload");
+    // @ts-ignore TODO
+    req.user = jwtUtil.decodeToken(token);
     next();
     // @ts-ignore
   } catch (err: JsonWebTokenError) {

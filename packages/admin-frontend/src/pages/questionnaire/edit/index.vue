@@ -10,13 +10,20 @@
   <template v-if="mode">
     <template v-if="mode === QuestionnaireEditMode.TEXT">
       <div>
-        <NButton @click="inputText = ''">清空文本</NButton>
-        <NButton @click="onParseText">解析</NButton>
+        <t-button theme="default" @click="inputText = ''">清空文本</t-button>
+        <t-button theme="default" @click="onParseText">解析</t-button>
         <t-button @click="onFinishTextEdit">完成创建</t-button>
       </div>
       <div class="flex">
         <div class="w-[50%]">
-          <NInput v-model:value="inputText" type="textarea" rows="40" placeholder="请输入你的问题" />
+          <t-textarea
+            v-model:value="inputText"
+            :autosize="{
+              minRows: 40,
+              maxRows: 40,
+            }"
+            placeholder="请输入你的问卷内容"
+          />
         </div>
         <div class="w-[50%] flex-shrink">
           <div>{{ questionnaireData?.paperName }}</div>
@@ -30,18 +37,43 @@
       </div>
     </template>
     <template v-if="mode === QuestionnaireEditMode.VISUALIZATION">
-      <div class="text-[17px]">
+      <div class="text-[17px] bg-[#fff]">
+        <div v-if="questionnaireData" class="px-8 pt-8 flex items-center justify-between">
+          <t-space>
+            <t-space align="center">
+              <span>显示序号：</span>
+              <t-switch v-model:value="questionnaireData.settings.isDisplayOrder" size="large" />
+            </t-space>
+            <t-space align="center">
+              <span>随机题目顺序：</span>
+              <t-switch :custom-value="['1', '0']" v-model:value="questionnaireData.settings.randomType" size="large" />
+            </t-space>
+          </t-space>
+          <t-space>
+            <t-button @click="onSave">保存</t-button>
+            <t-button @click="onPost">发布问卷</t-button>
+          </t-space>
+        </div>
         <div
-          class="bg-[#fff] hover:bg-[#fafafa] border-b-[1px] border-t-0 border-x-0 border-[#e0e0e0] border-solid p-8"
+          class="cursor-pointer bg-[#fff] hover:bg-[#fafafa] border-b-[1px] border-t-0 border-x-0 border-[#e0e0e0] border-solid p-8"
           @click="paperNameDialogVisible = true"
         >
           {{ questionnaireData?.paperName }}
         </div>
-        <paper-name-edit
+        <input-edit-modal
+          header="问卷名称"
           :input-value-default="questionnaireData?.paperName"
           :visible="paperNameDialogVisible"
           @confirm="(val: string)=>{questionnaireData.paperName = val}"
           @close="paperNameDialogVisible = false"
+        />
+        <input-edit-modal
+          type="textarea"
+          header="题目解析"
+          :input-value-default="questionnaireData.questions?.[analyzeIndex]?.analyze || ''"
+          :visible="analyzeDialogVisible"
+          @confirm="(val: string)=>{questionnaireData.questions[analyzeIndex].analyze = val}"
+          @close="analyzeDialogVisible = false"
         />
         <question-option-item
           v-for="(question, index) in questionnaireData?.questions"
@@ -50,6 +82,10 @@
           :questionData="question"
           :index="index"
           :is-display-edit="curEditIdOrUUID === question.id"
+          :settings="questionnaireData.settings"
+          @item="onQuestionOptionItemEdit"
+          @edit-analyze="onEditAnalyze"
+          @add-next-question="onAddNextQuestion"
           @edit="onQuestionOptionItemEdit"
           @copy="onQuestionOptionItemCopy"
           @delete="onQuestionOptionItemDelete"
@@ -58,7 +94,7 @@
           @move-top="onQuestionOptionItemMoveTop"
           @move-bottom="onQuestionOptionItemMoveButton"
           @finish="curEditIdOrUUID = ''"
-        ></question-option-item>
+        />
       </div>
     </template>
   </template>
@@ -66,7 +102,7 @@
 
 <script lang="ts" setup>
 import { QuestionOptionItem } from '@/components';
-import PaperNameEdit from '@/pages/questionnaire/components/PaperNameEdit.vue';
+import InputEditModal from '@/pages/questionnaire/components/InputEditModal.vue';
 import { showSubjectAndAnswer } from '@/utils';
 import {
   OPTIONS_LETTER,
@@ -75,14 +111,18 @@ import {
   moveDownByArr,
   moveBottomByArr,
   moveTopByArr,
+  QuestionnaireSettings,
 } from '@fucking-exam/shared';
 import { PageOptionType, Question, QuestionnaireEditMode, QuestionType } from '@fucking-exam/types';
-import { NButton, NInput } from 'naive-ui';
 import { Button, Card, DialogPlugin, MessagePlugin, Row } from 'tdesign-vue-next';
 import { v4 as uuidV4 } from 'uuid';
 import { onMounted, ref } from 'vue';
 
-type QuestionnaireData = { paperName: string; questions: Question[] };
+type QuestionnaireData = {
+  paperName: string;
+  questions: Question[];
+  settings: QuestionnaireSettings;
+};
 
 const pageOptionType = ref<PageOptionType>();
 const questionnaireData = ref<QuestionnaireData>();
@@ -90,6 +130,8 @@ const mode = ref<QuestionnaireEditMode>();
 const inputText = ref(QuestionTextInputValueTemplate);
 const curEditIdOrUUID = ref('');
 const paperNameDialogVisible = ref(false);
+const analyzeDialogVisible = ref(false);
+const analyzeIndex = ref<number>();
 
 onMounted(() => {
   const state = history.state as { type?: PageOptionType };
@@ -97,6 +139,13 @@ onMounted(() => {
     pageOptionType.value = state.type;
   }
 });
+
+const onSave = () => {
+  console.log(questionnaireData.value, 'save value');
+  console.log(JSON.stringify(questionnaireData.value), 'save value');
+};
+
+const onPost = () => {};
 
 const onFinishTextEdit = () => {
   if (questionnaireData.value) {
@@ -110,6 +159,10 @@ const onParseText = () => {
   const _questionnaireData = {
     paperName: '',
     questions: [],
+    settings: {
+      isDisplayOrder: false,
+      randomType: '0',
+    },
   } as QuestionnaireData;
   const str = inputText.value;
 
@@ -184,9 +237,37 @@ const onParseText = () => {
   }
 };
 
-const onQuestionOptionItemEdit = (_, questionData: Question) => {
-  curEditIdOrUUID.value = questionData.id;
+const onEditAnalyze = (index: number) => {
+  console.log(index, 'layouwen');
+  analyzeIndex.value = index;
+  analyzeDialogVisible.value = true;
 };
+
+const onQuestionOptionItemEdit = (_, questionData: Question) => {
+  if (curEditIdOrUUID.value === questionData.id) curEditIdOrUUID.value = '';
+  else curEditIdOrUUID.value = questionData.id;
+};
+
+const onAddNextQuestion = (index: number) => {
+  const value = uuidV4();
+  questionnaireData.value.questions.splice(index + 1, 0, {
+    id: uuidV4(),
+    type: QuestionType.SINGLE_CHOICE,
+    subject: '新增题目（）',
+    options: [
+      {
+        label: '新增选项',
+        value,
+      },
+    ],
+    answers: [value],
+    analyze: '',
+    settings: {
+      randomType: '0',
+    },
+  });
+};
+
 const onQuestionOptionItemCopy = (index: number, questionData: Question) => {
   questionnaireData.value.questions.splice(index, 0, questionData);
 };

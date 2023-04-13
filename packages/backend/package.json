@@ -5,7 +5,9 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "ts-node-dev src/index.ts"
+    "dev": "ts-node-dev src/index.ts",
+    "prisma:gen": "prisma generate",
+    "prisma:migrate": "prisma migrate dev --name"
   },
   "keywords": [],
   "author": "",

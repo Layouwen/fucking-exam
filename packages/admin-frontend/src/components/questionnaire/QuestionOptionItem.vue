@@ -2,9 +2,10 @@
   <div
     @mouseenter="isDisplayController = true"
     @mouseleave="isDisplayController = false"
-    class="relative bg-[#fff] hover:bg-[#fafafa] border-b-[1px] border-t-0 border-x-0 border-[#e0e0e0] border-solid pt-8 px-8 pb-10 space-y-3"
+    @click="$emit('item', index, questionData, questions)"
+    class="cursor-pointer relative bg-[#fff] hover:bg-[#fafafa] border-b-[1px] border-t-0 border-x-0 border-[#e0e0e0] border-solid pt-8 px-8 pb-10 space-y-3"
   >
-    <div class="font-bold">{{ showSubjectAndAnswer(questionData) }}</div>
+    <div class="font-bold">{{ displayOrder(index) }}{{ questionData.subject }}</div>
     <div
       :class="{ 'right-highlight': isChecked(option) }"
       class="text-[15px] flex items-center"
@@ -15,26 +16,35 @@
       <span>{{ option.label }}</span>
       <span v-show="isChecked(option)">(正确答案)</span>
     </div>
+    <div v-show="questionData.analyze" class="text-[#666]">答案解析：{{ questionData.analyze }}</div>
     <div
       v-show="isDisplayController && !isDisplayEdit"
       class="flex items-center justify-between absolute bottom-2 left-0 right-0 px-8"
     >
-      <a class="text-[14px] text-[#423fd5]">往后插入新题</a>
+      <t-space>
+        <t-link underline hover="color" @click.stop="$emit('addNextQuestion', index)">往后插入新题</t-link>
+      </t-space>
       <div class="text-[12px]">
         <t-button
           :disabled="isDisabled(button.emitName)"
           v-for="button in QUESTION_OPTION_ITEM_BUTTONS"
           :key="button.emitName"
           size="small"
-          @click="onButton(button, index, questionData, questions)"
+          @click.stop="onButton(button, index, questionData, questions)"
           >{{ button.text }}
         </t-button>
       </div>
     </div>
   </div>
-  <div v-show="isDisplayEdit" class="bg-[#fafafa] px-8 py-4">
+  <div
+    v-show="isDisplayEdit"
+    class="bg-[#fafafa] px-8 py-4 border-b-[1px] border-t-0 border-x-0 border-[#e0e0e0] border-solid space-y-4"
+  >
     <t-textarea v-model:value="questionData.subject" placeholder="请输入题目" />
-    <div class="space-y-2 mt-4">
+    <t-space>
+      <t-link underline @click.stop="$emit('editAnalyze', index)">编辑答案解析</t-link>
+    </t-space>
+    <div class="space-y-2">
       <div class="flex bg-[#f0f0ee] p-2">
         <span class="flex-grow">选项内容</span>
         <span class="w-[200px]">正确答案</span>
@@ -77,7 +87,7 @@
         </div>
       </div>
       <div class="flex items-center space-x-2">
-        <t-link underline hover="color" @click="onAddOption">添加选项</t-link>
+        <t-link underline @click="onAddOption">添加选项</t-link>
         <div>
           <t-select
             v-model:value="questionData.settings.randomType"
@@ -109,14 +119,23 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import { MessagePlugin } from 'tdesign-vue-next';
-import { QUESTION_OPTION_ITEM_BUTTONS, QUESTION_OPTION_ITEM_BUTTONS_EMIT_NAMES } from '@fucking-exam/shared';
+import {
+  QUESTION_OPTION_ITEM_BUTTONS,
+  QUESTION_OPTION_ITEM_BUTTONS_EMIT_NAMES,
+  QuestionnaireSettings,
+} from '@fucking-exam/shared';
 import { Question } from '@fucking-exam/types';
 import { moveDownByArr, moveUpByArr, isFirstByArr, isLastByArr } from '@fucking-exam/shared';
 import { defineProps, PropType, ref } from 'vue';
-import { showSubjectAndAnswer } from '@/utils';
 import { v4 as uuidV4 } from 'uuid';
 
-const emits = defineEmits([...QUESTION_OPTION_ITEM_BUTTONS_EMIT_NAMES, 'finish']);
+const emits = defineEmits([
+  ...QUESTION_OPTION_ITEM_BUTTONS_EMIT_NAMES,
+  'item',
+  'finish',
+  'editAnalyze',
+  'addNextQuestion',
+]);
 
 const props = defineProps({
   questionData: {
@@ -135,7 +154,15 @@ const props = defineProps({
     type: Boolean,
     required: false,
   },
+  settings: {
+    type: Object as PropType<QuestionnaireSettings>,
+    required: true,
+  },
 });
+
+const displayOrder = (index: number) => {
+  return props.settings.isDisplayOrder ? `${index + 1}、 ` : '';
+};
 
 const isDisplayController = ref(false);
 

@@ -1,12 +1,27 @@
 import { Request, Response } from "express";
+import { CreateQuestionnaireDto } from "../dto";
 import questionnaireService from "../services/admin/questionnaireService";
 
 class QuestionnaireController {
   async findAll(req: Request, res: Response) {
     const data = await questionnaireService.findAll();
-    console.log(data, 'layouwen');
     res.json({
-      data: 1
+      data,
+    });
+  }
+
+  async create(req: Request<any, any, CreateQuestionnaireDto>, res: Response) {
+    // @ts-ignore TODO
+    const user = req.user;
+    const { jsonData } = req.body;
+    if (!jsonData)
+      return res.json({
+        msg: "json data is required",
+      });
+
+    await questionnaireService.create(user.id, req.body);
+    res.json({
+      msg: "success",
     });
   }
 }

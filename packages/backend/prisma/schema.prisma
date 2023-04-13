@@ -10,6 +10,32 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum QuestionType {
+  singleChoice
+  multipleChoice
+  fillBlank
+  judgement
+  shortAnswer
+  essay
+  fileUpload
+}
+
+model Question {
+  id              Int            @id @default(autoincrement())
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  subject         String         @db.VarChar(255)
+  type            QuestionType
+  settings        Json
+  options         Json
+  answers         Json
+  analyze         String?        @default("") @db.Text()
+  questionnaire   Questionnaire? @relation(fields: [questionnaireId], references: [id])
+  questionnaireId Int
+  user            User           @relation(fields: [userId], references: [id])
+  userId          Int
+}
+
 model QuestionnaireTag {
   id              Int            @id @default(autoincrement())
   createdAt       DateTime       @default(now())
@@ -27,12 +53,14 @@ model Questionnaire {
   id        Int                @id @default(autoincrement())
   createdAt DateTime           @default(now())
   updatedAt DateTime           @updatedAt
-  name      String             @db.VarChar(255)
-  status    Int                @default(0)
-  type      Int                @default(0)
+  paperName String             @db.VarChar(255)
+  settings  Json
+  status    Int?               @default(0)
+  type      Int?               @default(0)
   tags      QuestionnaireTag[]
   user      User               @relation(fields: [userId], references: [id])
   userId    Int
+  Question  Question[]
 }
 
 model GithubInfo {
@@ -55,4 +83,5 @@ model User {
   questionnaires    Questionnaire[]
   questionnaireTags QuestionnaireTag[]
   githubInfo        GithubInfo[]
+  Question          Question[]
 }
