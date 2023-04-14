@@ -1,4 +1,4 @@
 export { default as authController } from "./authController";
-export { default as questionnaireController } from "./questionnaireController";
+export { default as questionnaireAdminController } from "./questionnaireAdminController";
+export { default as questionnaireClientController } from "./questionnaireClientController";
 export { default as userController } from "./userController";
-

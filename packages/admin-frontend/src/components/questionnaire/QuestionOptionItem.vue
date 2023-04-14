@@ -124,7 +124,7 @@ import {
   QUESTION_OPTION_ITEM_BUTTONS_EMIT_NAMES,
   QuestionnaireSettings,
 } from '@fucking-exam/shared';
-import { Question } from '@fucking-exam/types';
+import { Question } from '@fucking-exam/shared';
 import { moveDownByArr, moveUpByArr, isFirstByArr, isLastByArr } from '@fucking-exam/shared';
 import { defineProps, PropType, ref } from 'vue';
 import { v4 as uuidV4 } from 'uuid';

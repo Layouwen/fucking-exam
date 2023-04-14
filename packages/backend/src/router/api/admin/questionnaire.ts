@@ -1,8 +1,8 @@
 import { Router } from "express";
-import questionnaireController from "../../../controllers/questionnaireController";
+import { questionnaireAdminController } from "../../../controllers";
 
 const router = Router();
 
-router.get("/", questionnaireController.findAll);
-router.post("/", questionnaireController.create);
+router.get("/", questionnaireAdminController.findAll);
+router.post("/", questionnaireAdminController.create);
 export default router;

@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { CreateQuestionnaireDto } from "../dto";
-import questionnaireService from "../services/admin/questionnaireService";
+import { CreateQuestionnaireDto } from "@fucking-exam/shared";
+import { questionnaireService } from "../services";
 
-class QuestionnaireController {
+class QuestionnaireAdminController {
   async findAll(req: Request, res: Response) {
     const data = await questionnaireService.findAll();
     res.json({
@@ -26,4 +26,4 @@ class QuestionnaireController {
   }
 }
 
-export default new QuestionnaireController();
+export default new QuestionnaireAdminController();

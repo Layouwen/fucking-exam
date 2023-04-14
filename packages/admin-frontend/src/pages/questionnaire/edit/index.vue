@@ -113,7 +113,7 @@ import {
   moveTopByArr,
   QuestionnaireSettings,
 } from '@fucking-exam/shared';
-import { PageOptionType, Question, QuestionnaireEditMode, QuestionType } from '@fucking-exam/types';
+import { PageOptionType, Question, QuestionnaireEditMode, QuestionType } from '@fucking-exam/shared';
 import { Button, Card, DialogPlugin, MessagePlugin, Row } from 'tdesign-vue-next';
 import { v4 as uuidV4 } from 'uuid';
 import { onMounted, ref } from 'vue';
@@ -175,7 +175,7 @@ const onParseText = () => {
   try {
     questionsStrArr.forEach((q) => {
       const question = {
-        type: QuestionType.SINGLE_CHOICE,
+        type: QuestionType.singleChoice,
         subject: '',
         options: [],
         analyze: '',
@@ -218,10 +218,10 @@ const onParseText = () => {
         });
 
         if (answerStrNoParentheses.length > 1) {
-          question.type = QuestionType.MULTIPLE_CHOICE;
+          question.type = QuestionType.multipleChoice;
           question.answers = answerStrNoParentheses.split('').map((i) => answerUUIDMap.get(i));
         } else {
-          question.type = QuestionType.SINGLE_CHOICE;
+          question.type = QuestionType.singleChoice;
           question.answers = [answerUUIDMap.get(answerStrNoParentheses)];
         }
 
@@ -252,7 +252,7 @@ const onAddNextQuestion = (index: number) => {
   const value = uuidV4();
   questionnaireData.value.questions.splice(index + 1, 0, {
     id: uuidV4(),
-    type: QuestionType.SINGLE_CHOICE,
+    type: QuestionType.singleChoice,
     subject: '新增题目（）',
     options: [
       {

@@ -6,6 +6,11 @@
   "scripts": {
     "dev": "echo 'dev'"
   },
+  "author": {
+    "name": "Avan",
+    "email": "layouwen@gmail.com",
+    "url": "https://github.com/Layouwen"
+  },
   "engines": {
     "node": ">=16.11.0"
   },

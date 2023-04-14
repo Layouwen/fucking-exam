@@ -1,19 +1,41 @@
-import { PrismaClient } from "@prisma/client";
-import { User } from "../../module";
+import { User } from "@fucking-exam/shared";
+import { omit, omitByArray } from "@fucking-exam/shared";
+import { prisma } from "../../utils";
 
-const prisma = new PrismaClient();
+const DEFAULT_EXCLUDE = ["password"];
 
 class UserService {
-  findAll() {
-    return prisma.user.findMany();
+  async findAll(excludeFields: string[] = DEFAULT_EXCLUDE) {
+    let users = await prisma.user.findMany();
+
+    if (excludeFields?.length && users?.length) {
+      users = omitByArray(users, excludeFields);
+    }
+
+    return users;
   }
 
-  findOneById(id: number) {
-    return prisma.user.findUnique({ where: { id } });
+  async findOneById(id: number, excludeField: string[] = DEFAULT_EXCLUDE) {
+    let user = await prisma.user.findUnique({ where: { id } });
+
+    if (excludeField?.length && user) {
+      user = omit(user, excludeField);
+    }
+
+    return user;
   }
 
-  findOneByEmail(email: string) {
-    return prisma.user.findUnique({ where: { email } });
+  async findOneByEmail(
+    email: string,
+    excludeFields: string[] = DEFAULT_EXCLUDE
+  ) {
+    let user = await prisma.user.findUnique({ where: { email } });
+
+    if (excludeFields?.length && user) {
+      user = omit(user, excludeFields);
+    }
+
+    return user;
   }
 
   create(data: User) {

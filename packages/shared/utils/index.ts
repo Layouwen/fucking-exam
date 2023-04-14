@@ -33,3 +33,5 @@ export function isFirstByArr(arr: any[], index: number) {
 export function isLastByArr(arr: any[], index: number) {
   return index === arr.length - 1;
 }
+
+export * from "./db";

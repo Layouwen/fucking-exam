@@ -3,7 +3,23 @@
   "version": "0.0.1",
   "description": "",
   "main": "index.ts",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watchAll"
+  },
   "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "author": {
+    "name": "Avan",
+    "email": "layouwen@gmail.com",
+    "url": "https://github.com/Layouwen"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.21.4",
+    "@babel/preset-env": "^7.21.4",
+    "@babel/preset-typescript": "^7.21.4",
+    "@types/jest": "^29.5.0",
+    "babel-jest": "^29.5.0",
+    "jest": "^29.5.0"
+  }
 }

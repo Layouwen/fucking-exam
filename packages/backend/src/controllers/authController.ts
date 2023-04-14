@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { RegisterDto } from "../dto";
+import { RegisterDto } from "@fucking-exam/shared";
 import { userService } from "../services";
 import { jwtUtil } from "../utils";
 
@@ -19,7 +19,10 @@ class AuthController {
       });
       return;
     }
-    const token = jwtUtil.createToken({ email, id: user.id });
+    const token = jwtUtil.createToken({
+      email,
+      id: user.id,
+    });
     res.json({
       token,
     });
@@ -45,8 +48,11 @@ class AuthController {
       username,
       sex,
     });
-    console.log(user, "create user");
-    const token = jwtUtil.createToken({ email, id: user.id });
+
+    const token = jwtUtil.createToken({
+      email,
+      id: user.id,
+    });
     res.json({
       token,
     });

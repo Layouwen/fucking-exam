@@ -1,4 +1,4 @@
-import type { QuestionType } from "@prisma/client";
+import { QuestionType } from "../business";
 import { User } from "../module";
 
 export interface CreateUserDto extends User {}

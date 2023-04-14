@@ -60,7 +60,7 @@ model Questionnaire {
   tags      QuestionnaireTag[]
   user      User               @relation(fields: [userId], references: [id])
   userId    Int
-  Question  Question[]
+  questions Question[]
 }
 
 model GithubInfo {
@@ -82,6 +82,6 @@ model User {
   sex               Int                @default(0)
   questionnaires    Questionnaire[]
   questionnaireTags QuestionnaireTag[]
-  githubInfo        GithubInfo[]
-  Question          Question[]
+  githubInfo        GithubInfo?
+  questions         Question[]
 }

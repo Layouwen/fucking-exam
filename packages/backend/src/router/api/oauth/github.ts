@@ -1,8 +1,7 @@
 import { Router } from "express";
 import axios from "axios";
 import config from "../../../config";
-import { userService } from "../../../services";
-import githubInfoService from "../../../services/oauth/githubInfoService";
+import { userService, githubInfoService } from "../../../services";
 import { jwtUtil } from "../../../utils";
 
 const github = Router();
@@ -65,7 +64,10 @@ github.post("/", async (req, res) => {
       await githubInfoService.create({ jsonData: result.data });
     }
 
-    const token = jwtUtil.createToken({ email, id: user.id });
+    const token = jwtUtil.createToken({
+      email,
+      id: user.id,
+    });
 
     res.json({
       token,

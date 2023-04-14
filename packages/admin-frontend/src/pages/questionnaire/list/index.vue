@@ -56,7 +56,7 @@ import { MessagePlugin, PrimaryTableCol, TableRowData, Row, Button, Card } from 
 import { getQuestionnaireApi } from '@/api/list';
 import { useSettingStore } from '@/store';
 import { useRouter } from 'vue-router';
-import { PageOptionType } from '@fucking-exam/types';
+import { PageOptionType } from '@fucking-exam/shared';
 
 import { CONTRACT_STATUS, CONTRACT_TYPES } from '@/constants';
 

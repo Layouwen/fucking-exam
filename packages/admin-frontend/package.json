@@ -19,8 +19,6 @@
   },
   "dependencies": {
     "@fucking-exam/shared": "workspace:^0.0.1",
-    "@fucking-exam/types": "workspace:^0.0.1",
-    "@fucking-exam/utils": "workspace:^0.0.1",
     "axios": "^1.1.3",
     "dayjs": "^1.10.6",
     "echarts": "~5.1.2",
