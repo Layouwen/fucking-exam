@@ -1,5 +1,5 @@
-import { QuestionType } from "../business";
-import { User } from "../module";
+import { QuestionType } from '../business';
+import { User } from '../module';
 
 export interface CreateUserDto extends User {}
 
@@ -20,3 +20,5 @@ export interface CreateQuestionDto {
 }
 
 export type JsonData = Record<string, any>;
+
+export * from './questionnaireResponses';

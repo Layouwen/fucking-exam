@@ -10,6 +10,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model QuestionnaireResponses {
+  id                   Int            @id @default(autoincrement())
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+  questionnaireVersion Int
+  questions            Json
+  questionnaire        Questionnaire? @relation(fields: [questionnaireId], references: [id])
+  questionnaireId      Int
+  user                 User           @relation(fields: [userId], references: [id])
+  userId               Int
+  order                Json
+  answers              Json
+}
+
 enum QuestionType {
   singleChoice
   multipleChoice
@@ -50,17 +64,19 @@ model QuestionnaireTag {
 }
 
 model Questionnaire {
-  id        Int                @id @default(autoincrement())
-  createdAt DateTime           @default(now())
-  updatedAt DateTime           @updatedAt
-  paperName String             @db.VarChar(255)
-  settings  Json
-  status    Int?               @default(0)
-  type      Int?               @default(0)
-  tags      QuestionnaireTag[]
-  user      User               @relation(fields: [userId], references: [id])
-  userId    Int
-  questions Question[]
+  id                     Int                      @id @default(autoincrement())
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @updatedAt
+  paperName              String                   @db.VarChar(255)
+  settings               Json
+  status                 Int?                     @default(0)
+  type                   Int?                     @default(0)
+  version                Int                      @default(0)
+  tags                   QuestionnaireTag[]
+  user                   User                     @relation(fields: [userId], references: [id])
+  userId                 Int
+  questions              Question[]
+  QuestionnaireResponses QuestionnaireResponses[]
 }
 
 model GithubInfo {
@@ -74,14 +90,15 @@ model GithubInfo {
 }
 
 model User {
-  id                Int                @id @default(autoincrement())
-  email             String             @unique
-  username          String?            @unique @db.VarChar(255)
-  nickname          String?            @default("user") @db.VarChar(255)
-  password          String?            @db.VarChar(255)
-  sex               Int                @default(0)
-  questionnaires    Questionnaire[]
-  questionnaireTags QuestionnaireTag[]
-  githubInfo        GithubInfo?
-  questions         Question[]
+  id                     Int                      @id @default(autoincrement())
+  email                  String                   @unique
+  username               String?                  @unique @db.VarChar(255)
+  nickname               String?                  @default("user") @db.VarChar(255)
+  password               String?                  @db.VarChar(255)
+  sex                    Int                      @default(0)
+  questionnaires         Questionnaire[]
+  questionnaireTags      QuestionnaireTag[]
+  githubInfo             GithubInfo?
+  questions              Question[]
+  QuestionnaireResponses QuestionnaireResponses[]
 }

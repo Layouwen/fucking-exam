@@ -8,7 +8,7 @@
           <NCheckboxGroup
             class="flex flex-col"
             v-if="question.type === 'multipleChoice'"
-            v-model:value="answer[question.id]"
+            v-model:value="answers[question.id]"
           >
             <NCheckbox
               class="border-[1px] border-solid p-3"
@@ -26,7 +26,7 @@
               class="border-[1px] border-solid p-3"
               v-for="option in question.options"
               :key="option.label"
-              :checked="answer[question.id]?.[0] === option.value"
+              :checked="answers[question.id]?.[0] === option.value"
               :value="option.value"
               :name="question.subject"
               @change="onSelectChoice(question.id, option.value)"
@@ -44,33 +44,59 @@
 </template>
 
 <script lang="ts" setup>
-import { Questionnaire } from "@fucking-exam/shared";
+import { Questionnaire, randomByArr } from "@fucking-exam/shared";
 import { NButton, NRadio, NCheckbox, NCheckboxGroup } from "naive-ui";
-import axios from "axios";
 import { onMounted } from "vue";
-import { useRoute } from "vue-router";
-import { getQuestionnaireApi } from "~/api";
+import { useRoute, useRouter } from "vue-router";
+import { getQuestionnaireApi, postQuestionnaireSubmitApi } from "~/api";
 
 const route = useRoute();
+const router = useRouter();
 
-const answer = ref({});
-
+const questionnaireId = ref<string>();
+const answers = ref<Record<string, string[]>>({});
+const order = ref<number[]>();
 const data = ref<Questionnaire>();
 
 onMounted(async () => {
   const { id } = route.params as { id: string };
-  const res = await getQuestionnaireApi(id);
-  data.value = res.data;
-  console.log(res, "layouwen res");
+  if (id) {
+    questionnaireId.value = id;
+
+    const { data: questionnaireData } = await getQuestionnaireApi(id);
+
+    if (questionnaireData.settings.randomType === "1") {
+      questionnaireData.questions = randomByArr(questionnaireData.questions);
+      questionnaireData.questions.forEach((question) => {
+        if (questionnaireData.settings.randomType === "1") {
+          question.options = randomByArr(question.options);
+        }
+      });
+    }
+
+    order.value = questionnaireData.questions.map((question) => question.id);
+
+    data.value = questionnaireData;
+  }
 });
 
 const onSelectChoice = (id: string, value: string) => {
-  answer.value[id] = [value];
+  answers.value[id] = [value];
 };
 
 const onSubmit = async () => {
-  console.log(answer.value);
-  const res = await axios.get("https://github.com/login/oauth/authorize");
-  console.log(res);
+  if (!questionnaireId.value || !order.value || !data.value) return;
+
+  try {
+    const res = await postQuestionnaireSubmitApi(+questionnaireId.value, {
+      order: order.value,
+      answers: answers.value,
+      questions: data.value.questions,
+      questionnaireVersion: data.value.version,
+    });
+    await router.push(`/questionnaire/response/${res.data.id}`);
+  } catch (e) {
+    console.log(e);
+  }
 };
 </script>
