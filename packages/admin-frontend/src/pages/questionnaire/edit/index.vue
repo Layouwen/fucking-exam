@@ -2,8 +2,9 @@
   <template v-if="PageOptionType.CREATE === pageOptionType && !mode">
     <t-row>
       <t-card class="cursor-pointer hover:opacity-70" @click="mode = QuestionnaireEditMode.TEXT">文本方式创建</t-card>
-      <t-card class="cursor-pointer hover:opacity-70" @click="mode = QuestionnaireEditMode.VISUALIZATION"
-        >操作界面创建
+      <t-card
+        class="cursor-pointer hover:opacity-70" @click="mode = QuestionnaireEditMode.VISUALIZATION"
+      >操作界面创建
       </t-card>
     </t-row>
   </template>
@@ -166,19 +167,20 @@ const onParseText = () => {
   } as QuestionnaireData;
   const str = inputText.value;
 
-  function splitByEmptyLine(str) {
+  function splitByEmptyLine (str) {
     return str.split(/\n{2,}/);
   }
 
   const questionsStrArr = splitByEmptyLine(str);
 
   try {
-    questionsStrArr.forEach((q) => {
+    questionsStrArr.forEach((q, qIndex) => {
       const question = {
         type: QuestionType.singleChoice,
         subject: '',
         options: [],
         analyze: '',
+        order: qIndex,
         settings: {
           randomType: '0',
         },
@@ -231,6 +233,9 @@ const onParseText = () => {
       }
     });
 
+    // TODO add order
+    // _questionnaireData.forEach
+
     questionnaireData.value = _questionnaireData;
   } catch (e) {
     MessagePlugin.warning('解析失败，请先输入内容');
@@ -245,7 +250,7 @@ const onEditAnalyze = (index: number) => {
 
 const onQuestionOptionItemEdit = (_, questionData: Question) => {
   if (curEditIdOrUUID.value === questionData.id) curEditIdOrUUID.value = '';
-  else curEditIdOrUUID.value = questionData.id;
+  else curEditIdOrUUID.value = questionData.id as string;
 };
 
 const onAddNextQuestion = (index: number) => {
@@ -260,6 +265,7 @@ const onAddNextQuestion = (index: number) => {
         value,
       },
     ],
+    order: 99999,
     answers: [value],
     analyze: '',
     settings: {

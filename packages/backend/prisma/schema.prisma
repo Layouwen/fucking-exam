@@ -39,6 +39,7 @@ model Question {
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
   subject         String         @db.VarChar(255)
+  order           Int
   type            QuestionType
   settings        Json
   options         Json
