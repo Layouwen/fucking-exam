@@ -11,7 +11,7 @@ class QuestionnaireService {
       include: {
         questions: {
           orderBy: {
-            createdAt: "asc",
+            order: "asc",
           },
         },
         user: true,
@@ -31,7 +31,7 @@ class QuestionnaireService {
       include: {
         questions: {
           orderBy: {
-            createdAt: "asc",
+            order: "asc",
           },
         },
       },

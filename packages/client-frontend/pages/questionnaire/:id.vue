@@ -1,54 +1,22 @@
 <template>
   <div v-if="data">
-    <h1>{{ data.paperName }}</h1>
-    <div>
-      <div v-for="question in data.questions" :key="question.subject">
-        <div class="text-[17px]">{{ question.subject }}</div>
-        <div class="text-[16px]">
-          <NCheckboxGroup
-            class="flex flex-col"
-            v-if="question.type === 'multipleChoice'"
-            v-model:value="answers[question.id]"
-          >
-            <NCheckbox
-              class="border-[1px] border-solid p-3"
-              v-for="option in question.options"
-              :key="option.label"
-              :value="option.value"
-              :label="option.label"
-            />
-          </NCheckboxGroup>
-          <div
-            class="flex flex-col"
-            v-else-if="question.type === 'singleChoice'"
-          >
-            <NRadio
-              class="border-[1px] border-solid p-3"
-              v-for="option in question.options"
-              :key="option.label"
-              :checked="answers[question.id]?.[0] === option.value"
-              :value="option.value"
-              :name="question.subject"
-              @change="onSelectChoice(question.id, option.value)"
-            >
-              {{ option.label }}
-            </NRadio>
-          </div>
-          <div v-else>not support</div>
-        </div>
-      </div>
+    <questionnaire-render :data="data" :result="answers" />
+    <div class="px-6">
+      <NButton block size="large" type="info" @click="onSubmit"
+        >提交试卷
+      </NButton>
     </div>
-    <NButton @click="onSubmit">Submit</NButton>
   </div>
   <div v-else>loading...</div>
 </template>
 
 <script lang="ts" setup>
 import { Questionnaire, randomByArr } from "@fucking-exam/shared";
-import { NButton, NRadio, NCheckbox, NCheckboxGroup } from "naive-ui";
+import { NButton } from "naive-ui";
 import { onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getQuestionnaireApi, postQuestionnaireSubmitApi } from "~/api";
+import { QuestionnaireRender } from "~/components";
 
 const route = useRoute();
 const router = useRouter();
@@ -79,10 +47,6 @@ onMounted(async () => {
     data.value = questionnaireData;
   }
 });
-
-const onSelectChoice = (id: string, value: string) => {
-  answers.value[id] = [value];
-};
 
 const onSubmit = async () => {
   if (!questionnaireId.value || !order.value || !data.value) return;

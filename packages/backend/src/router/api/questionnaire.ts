@@ -1,11 +1,18 @@
-import { Router } from 'express';
-import { questionnaireClientController } from '../../controllers';
-import authenticate from '../../middlewares/authenticate';
+import { Router } from "express";
+import { questionnaireClientController } from "../../controllers";
+import { clientAuthenticate } from "../../middlewares";
 
 const questionnaire = Router();
 
-questionnaire.get('/response/:id', questionnaireClientController.getQuestionnaireResponseById);
-questionnaire.post('/submit/:id', authenticate, questionnaireClientController.submitQuestionnaireById);
-questionnaire.get('/:id', questionnaireClientController.getQuestionnaireById);
+questionnaire.get(
+  "/response/:id",
+  questionnaireClientController.getQuestionnaireResponseById
+);
+questionnaire.post(
+  "/submit/:id",
+  clientAuthenticate,
+  questionnaireClientController.submitQuestionnaireById
+);
+questionnaire.get("/:id", questionnaireClientController.getQuestionnaireById);
 
 export default questionnaire;
