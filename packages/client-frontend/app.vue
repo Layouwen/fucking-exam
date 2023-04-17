@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts" setup>
-// import "~/assets/styles/main.less";
+import "~/assets/styles/main.less";
 import { ref } from "#imports";
 import { useCounter } from "~/stores/user";
 import { Icon } from "#components";
