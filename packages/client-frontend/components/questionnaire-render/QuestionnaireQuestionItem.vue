@@ -1,6 +1,8 @@
 <template>
   <div class="text-[#262626] py-5">
-    <div class="text-[17px] font-bold mb-2">{{ question.subject }}</div>
+    <div class="text-[17px] font-bold mb-2">
+      {{ displayOrder }}{{ question.subject }}
+    </div>
     <div class="text-[16px]">
       <NCheckboxGroup
         class="flex flex-col border-solid border-[1px] border-[#e3e3e3]"
@@ -44,7 +46,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { defineProps, PropType } from "vue";
+import { defineProps, PropType, computed } from "vue";
 import { NRadio, NCheckbox, NCheckboxGroup, NRadioGroup } from "naive-ui";
 
 const props = defineProps({
@@ -62,6 +64,14 @@ const props = defineProps({
     type: Object as PropType<any>,
     require: true,
   },
+  index: {
+    type: Number as PropType<number>,
+    require: true,
+  },
+});
+
+const displayOrder = computed(() => {
+  return props.data.settings.isDisplayOrder ? `${props.index! + 1}、` : "";
 });
 
 const borderClass = (index: number, length: number) => {

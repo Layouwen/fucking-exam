@@ -1,7 +1,7 @@
 <template>
   <div v-if="data">
     <questionnaire-render :data="data" :result="answers" />
-    <div class="px-6">
+    <div class="px-6 pb-6">
       <NButton block size="large" type="info" @click="onSubmit"
         >提交试卷
       </NButton>

@@ -2,7 +2,8 @@
   <div class="px-6">
     <questionnaire-paper-name :paper-name="data.paperName" />
     <questionnaire-question-item
-      v-for="question in data.questions"
+      v-for="(question, index) in data.questions"
+      :index="+index"
       :key="question.subject"
       :data="data"
       :question="question"
