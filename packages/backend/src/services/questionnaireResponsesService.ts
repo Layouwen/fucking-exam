@@ -15,6 +15,7 @@ class QuestionnaireResponsesService {
       },
       include: {
         user: true,
+        questionnaire: true,
       },
     });
 

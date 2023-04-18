@@ -8,6 +8,8 @@
       :data="data"
       :question="question"
       :result="result"
+      :type="type"
+      :answers="answers"
     />
   </div>
 </template>
@@ -22,17 +24,21 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import { QuestionnairePaperName, QuestionnaireQuestionItem } from "./index";
-import { defineProps, PropType } from "vue";
+import { QuestionnaireRenderType } from "./type";
+import { defineProps, withDefaults } from "vue";
 
-const props = defineProps({
-  data: {
-    // @ts-ignore
-    type: Object as PropType<any>,
-    require: true,
-  },
-  result: {
-    type: Object as PropType<any>,
-    require: true,
-  },
-});
+const props = withDefaults(
+  defineProps<{
+    data: any;
+    result?: Record<string, string[]>;
+    type?: QuestionnaireRenderType;
+    answers?: Record<string, string[] | string>;
+  }>(),
+  {
+    data: '',
+    type: QuestionnaireRenderType.QUESTIONNAIRE,
+    result: {},
+    answers: {},
+  }
+);
 </script>

@@ -8,7 +8,7 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "QuestionnaireRender",
+  name: "QuestionnairePaperName",
 });
 </script>
 

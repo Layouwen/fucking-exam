@@ -1,7 +1,8 @@
 import {
   OAuthResponse,
   QuestionnaireResponseData,
-  QuestionnaireResponseSubmitData,
+  QuestionnaireResponseResponseData,
+  QuestionnaireSubmitResponseData,
   QuestionQuestion,
   ResponseBaseData,
 } from "@fucking-exam/shared";
@@ -30,11 +31,17 @@ export function postQuestionnaireSubmitApi(
     questions: QuestionQuestion[];
   }
 ) {
-  return request<ResponseBaseData<QuestionnaireResponseSubmitData>>(
+  return request<ResponseBaseData<QuestionnaireSubmitResponseData>>(
     `/api/questionnaire/submit/${questionnaireId}`,
     {
       method: "POST",
       body: data,
     }
+  );
+}
+
+export function getQuestionnaireResponseApi(id: string) {
+  return request<ResponseBaseData<QuestionnaireResponseResponseData>>(
+    `/api/questionnaire/response/${id}`
   );
 }

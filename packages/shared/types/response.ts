@@ -1,3 +1,4 @@
+import { QuestionnaireResponses } from "./module";
 import { Questionnaire } from "./data";
 
 export interface ResponseBase {
@@ -15,6 +16,11 @@ export interface OAuthResponse {}
 
 export interface QuestionnaireResponseData extends Questionnaire {}
 
-export interface QuestionnaireResponseSubmitData {
+export interface QuestionnaireSubmitResponseData {
   id: number;
+}
+
+export interface QuestionnaireResponseResponseData
+  extends QuestionnaireResponses {
+  questionnaire: Questionnaire;
 }

@@ -5,7 +5,6 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "@pinia/nuxt",
     "@pinia-plugin-persistedstate/nuxt",
-    "@nuxtjs/stylelint-module",
     "@nuxtjs/color-mode",
     "nuxt-icon",
     "nuxt-lodash",
