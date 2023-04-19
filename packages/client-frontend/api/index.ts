@@ -16,6 +16,10 @@ export function loginApi(code: string) {
   });
 }
 
+export function getQuestionnaireListApi() {
+  return request<ResponseBaseData<any>>(`/api/questionnaire`);
+}
+
 export function getQuestionnaireApi(id: string) {
   return request<ResponseBaseData<QuestionnaireResponseData>>(
     `/api/questionnaire/${id}`

@@ -89,10 +89,13 @@ const borderClass = (index: number, length: number) => {
 };
 
 const rightClass = (id: number, value: string, answer: string) => {
+  if(props.type === QuestionnaireRenderType.QUESTIONNAIRE) return false;
   return answer.includes(value);
 };
 
 const errorClass = (id: number, value: string, answer: string) => {
+  if(props.type === QuestionnaireRenderType.QUESTIONNAIRE) return false;
+
   const answers = props.answers![id];
   if (typeof answers === "string") {
     if (answers !== answer[0] && answers === value) {

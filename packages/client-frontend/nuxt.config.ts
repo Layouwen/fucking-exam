@@ -9,6 +9,7 @@ export default defineNuxtConfig({
     "nuxt-icon",
     "nuxt-lodash",
     "nuxt-vitest",
+    "@vant/nuxt",
   ],
   pinia: {
     autoImports: [

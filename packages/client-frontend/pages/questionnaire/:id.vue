@@ -1,5 +1,14 @@
 <template>
-  <div v-if="data">
+  <div v-if="data" class="pt-[16px]">
+    <n-progress
+      class="fixed top-0 left-0 w-full z-10"
+      :indicator-placement="'inside'"
+      type="line"
+      :percentage="percentage"
+      :height="16"
+      :border-radius="0"
+      :fill-border-radius="0"
+    />
     <questionnaire-render :data="data" :result="answers" />
     <div class="px-6 pb-6">
       <NButton block size="large" type="info" @click="onSubmit"
@@ -7,17 +16,29 @@
       </NButton>
     </div>
   </div>
-  <div v-else>loading...</div>
+  <div v-else class="flex flex-col min-h-[100vh] items-center">
+    <n-skeleton class="mt-[30px]" text height="32px" width="50%" />
+    <template v-for="i in 2" :key="i">
+      <div  class="mt-[30px] w-[80%]">
+        <n-skeleton text height="26px" width="70%" />
+      </div>
+      <n-skeleton class="mt-[10px]" height="46px" width="80%" />
+      <n-skeleton class="mt-[6px]" height="46px" width="80%" />
+      <n-skeleton class="mt-[6px]" height="46px" width="80%" />
+      <n-skeleton class="mt-[6px]" height="46px" width="80%" />
+    </template>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { Questionnaire, randomByArr } from "@fucking-exam/shared";
-import { NButton } from "naive-ui";
-import { onMounted } from "vue";
+import { NButton, NProgress, useMessage, NSkeleton } from "naive-ui";
+import { onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getQuestionnaireApi, postQuestionnaireSubmitApi } from "~/api";
 import { QuestionnaireRender } from "~/components";
 
+const message = useMessage();
 const route = useRoute();
 const router = useRouter();
 
@@ -25,6 +46,13 @@ const questionnaireId = ref<string>();
 const answers = ref<Record<string, string[]>>({});
 const order = ref<number[]>();
 const data = ref<Questionnaire>();
+
+const percentage = computed(() => {
+  if (!data.value) return 0;
+  return Math.floor(
+    (Object.keys(answers.value).length / data.value.questions.length) * 100
+  );
+});
 
 onMounted(async () => {
   const { id } = route.params as { id: string };
@@ -50,6 +78,10 @@ onMounted(async () => {
 
 const onSubmit = async () => {
   if (!questionnaireId.value || !order.value || !data.value) return;
+
+  if (Object.keys(answers.value).length !== data.value.questions.length) {
+    return message.warning("请完成所有题目");
+  }
 
   try {
     const res = await postQuestionnaireSubmitApi(+questionnaireId.value, {
