@@ -55,4 +55,8 @@ export function isMobile() {
   return /mobile/i.test(userAgent);
 }
 
+export function isLogin() {
+  return !!localStorage.getItem("token");
+}
+
 export * from "./db";

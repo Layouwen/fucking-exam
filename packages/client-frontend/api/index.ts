@@ -9,10 +9,34 @@ import {
 
 import { request } from "~/utils";
 
-export function loginApi(code: string) {
+export function loginApi(data: any) {
+  return request("/api/auth/login", {
+    method: "POST",
+    body: { type: "email", ...data },
+  });
+}
+
+export function githubLoginApi(code: string) {
   return request<ResponseBaseData<OAuthResponse>>("/api/oauth/github", {
     method: "POST",
     body: { code },
+  });
+}
+
+export function registerApi(data: any) {
+  return request("/api/auth/register", {
+    method: "POST",
+    body: {
+      type: "email",
+      ...data,
+    },
+  });
+}
+
+export function sendEmailCodeApi(email: string) {
+  return request("/api/auth/email/send", {
+    method: "POST",
+    body: { email },
   });
 }
 

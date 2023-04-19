@@ -1,9 +1,9 @@
-<template>
-  <NButton @click="onGithubOauthLogin">github登录</NButton>
-</template>
+<template></template>
 
 <script lang="ts" setup>
-import { NButton, useMessage } from "naive-ui";
+import { useMessage } from "naive-ui";
+import { showLoadingToast, closeToast } from "vant";
+import { githubLoginApi } from "~/api";
 
 const route = useRoute();
 const router = useRouter();
@@ -13,25 +13,26 @@ onMounted(async () => {
   const { code } = route.query;
   if (code) {
     router.replace({ path: "/oauth/github" });
-    // TODO: any
-    const res: any = await $fetch("/api/oauth/github", {
-      baseURL: "",
-      method: "POST",
-      body: {
-        code,
-      },
+    showLoadingToast({
+      message: "github授权中...",
+      duration: 0,
+      forbidClick: true,
     });
+    // TODO: any
+    const res: any = await githubLoginApi(code as string);
 
-    localStorage.setItem("token", res.token);
-    message.success("登录成功");
+    if (res?.token) {
+      localStorage.setItem("token", res.token);
+      message.success("登录成功");
+    } else {
+      message.error("登录失败");
+    }
+    closeToast();
     setTimeout(() => {
       router.push("/");
     }, 1000);
+  } else {
+    router.push("/");
   }
 });
-
-const onGithubOauthLogin = () => {
-  window.location.href =
-    "https://github.com/login/oauth/authorize?client_id=a644d75524601839ea7a&redirect_uri=http://192.168.10.14:3001/oauth/github&scope=user&response_type=token";
-};
 </script>

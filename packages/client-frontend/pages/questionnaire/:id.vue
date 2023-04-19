@@ -11,15 +11,14 @@
     />
     <questionnaire-render :data="data" :result="answers" />
     <div class="px-6 pb-6">
-      <NButton block size="large" type="info" @click="onSubmit"
-        >提交试卷
-      </NButton>
+      <NButton block type="info" @click="onSubmit">提交试卷 </NButton>
+      <NButton class="mt-2" block @click="router.push('/')">返回 </NButton>
     </div>
   </div>
   <div v-else class="flex flex-col min-h-[100vh] items-center">
     <n-skeleton class="mt-[30px]" text height="32px" width="50%" />
     <template v-for="i in 2" :key="i">
-      <div  class="mt-[30px] w-[80%]">
+      <div class="mt-[30px] w-[80%]">
         <n-skeleton text height="26px" width="70%" />
       </div>
       <n-skeleton class="mt-[10px]" height="46px" width="80%" />

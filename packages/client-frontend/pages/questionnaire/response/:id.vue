@@ -4,15 +4,18 @@
     :data="data"
     :answers="answers"
   />
+  <n-button block type="primary" @click="router.push('/')">返回</n-button>
 </template>
 
 <script lang="ts" setup>
 import { getQuestionnaireResponseApi } from "~/api";
 import { QuestionnaireRender, QuestionnaireRenderType } from "~/components";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { onMounted, ref } from "vue";
+import { NButton } from "naive-ui";
 
 const route = useRoute();
+const router = useRouter();
 
 const data = ref<Record<string, any>>();
 const answers = ref<Record<string, string[] | string>>();

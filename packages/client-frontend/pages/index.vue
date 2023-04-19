@@ -1,10 +1,18 @@
 <template>
+  <van-action-sheet
+    v-model:show="showModal"
+    :actions="actions"
+    @select="onSelect"
+    close-on-click-action
+  />
   <div class="min-h-[100vh] flex flex-col">
-    <div class="text-[26px] flex justify-center items-center py-4">问卷列表</div>
+    <div class="text-[26px] flex justify-center items-center py-4">
+      问卷列表
+    </div>
     <div class="px-4 pt-4 flex-grow">
       <n-card
         class="mb-4"
-        v-for="i in [...questionnaireList,...questionnaireList,...questionnaireList,...questionnaireList]"
+        v-for="i in questionnaireList"
         :key="i.id"
         :title="i.paperName"
         @click="onClickQuestionnaire(i.id)"
@@ -28,20 +36,45 @@ import { getQuestionnaireListApi } from "~/api";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import dayjs from "dayjs";
-import { isMobile } from "@fucking-exam/shared";
+import { isMobile, isLogin } from "@fucking-exam/shared";
 
 const message = useMessage();
 const router = useRouter();
 
-let questionnaireList = ref<any>([]);
+const actions = [
+  { name: "邮箱登录" },
+  { name: "Github登录" },
+  { name: "注册" },
+  { name: "取消" },
+];
+
+const showModal = ref(false);
+const questionnaireList = ref<any>([]);
 
 onMounted(async () => {
   const listRes = await getQuestionnaireListApi();
   questionnaireList.value = listRes.data;
 });
 
+const onSelect = (item: { name: string }) => {
+  switch (item.name) {
+    case "Github登录":
+      window.location.href =
+        "https://github.com/login/oauth/authorize?client_id=a644d75524601839ea7a&redirect_uri=http://localhost:3001/oauth/github&scope=user&response_type=token";
+      return;
+    case "邮箱登录":
+      return router.push("/login");
+    case "注册":
+      return router.push("/register");
+  }
+};
+
 const onClickQuestionnaire = (id: number) => {
-  router.push(`/questionnaire/${id}`);
+  if (isLogin()) {
+    router.push(`/questionnaire/${id}`);
+  } else {
+    showModal.value = true;
+  }
 };
 
 const onSupport = () => {
