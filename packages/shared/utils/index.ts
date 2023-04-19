@@ -50,4 +50,9 @@ export function randomByArr<T>(arr: T[]) {
   return shuffledArray;
 }
 
+export function isMobile() {
+  const userAgent = navigator.userAgent.toLowerCase();
+  return /mobile/i.test(userAgent);
+}
+
 export * from "./db";

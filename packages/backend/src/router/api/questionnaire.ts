@@ -14,5 +14,6 @@ questionnaire.post(
   questionnaireClientController.submitQuestionnaireById
 );
 questionnaire.get("/:id", questionnaireClientController.getQuestionnaireById);
+questionnaire.get("/", questionnaireClientController.getQuestionnaireList);
 
 export default questionnaire;

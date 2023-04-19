@@ -180,6 +180,7 @@ importers:
 
   packages/client-frontend:
     specifiers:
+      '@babel/runtime': ^7.21.0
       '@css-render/vue3-ssr': ^0.15.12
       '@fucking-exam/shared': workspace:^0.0.1
       '@nuxtjs/color-mode': ^3.2.0
@@ -190,7 +191,9 @@ importers:
       '@pinia/nuxt': ^0.4.7
       '@typescript-eslint/eslint-plugin': ^5.57.1
       '@typescript-eslint/parser': ^5.57.1
+      '@vant/nuxt': ^1.0.0
       axios: ^1.1.3
+      dayjs: ^1.10.6
       eslint: ^7.32.0
       eslint-plugin-vue: ^9.10.0
       naive-ui: ^2.34.3
@@ -201,11 +204,15 @@ importers:
       pinia: ^2.0.11
       stylelint: ~13.13.1
       stylelint-config-standard: ^32.0.0
+      vant: ^4.2.0
       vfonts: ^0.0.3
     dependencies:
+      '@babel/runtime': 7.21.0
       '@fucking-exam/shared': link:../shared
       '@pinia/nuxt': 0.4.7
+      dayjs: 1.11.7
       pinia: 2.0.33
+      vant: 4.2.0
     devDependencies:
       '@css-render/vue3-ssr': 0.15.12
       '@nuxtjs/color-mode': 3.2.0
@@ -215,6 +222,7 @@ importers:
       '@pinia-plugin-persistedstate/nuxt': 1.1.1_2fa6k6uov4i2t7fhwaa7f3r2li
       '@typescript-eslint/eslint-plugin': 5.57.1_j4mifxx7p5ud4mcmn6ts4bhsaa
       '@typescript-eslint/parser': 5.57.1_eslint@7.32.0
+      '@vant/nuxt': 1.0.0_vant@4.2.0
       axios: 1.3.4
       eslint: 7.32.0
       eslint-plugin-vue: 9.10.0_eslint@7.32.0
@@ -2531,7 +2539,7 @@ packages:
       postcss-nesting: 11.2.2_postcss@8.4.21
       radix3: 1.0.1
       tailwind-config-viewer: 1.7.2_tailwindcss@3.3.1
-      tailwindcss: 3.3.1_postcss@8.4.21
+      tailwindcss: 3.3.1
       ufo: 1.1.1
       uncrypto: 0.1.2
     transitivePeerDependencies:
@@ -3519,6 +3527,28 @@ packages:
       unhead: 1.1.25
       vue: 3.2.47
     dev: true
+
+  /@vant/nuxt/1.0.0_vant@4.2.0:
+    resolution: {integrity: sha512-PCoIMCgl4Srh1ELTlVBvUIvF43/yyhO83ZYeMYbFA9H5t52JU3tvkKU1iRYQUxhKygAQ4HQtm8MqCo/pPb8lhA==}
+    peerDependencies:
+      vant: '>=4'
+    dependencies:
+      '@nuxt/kit': 3.3.3
+      magic-string: 0.29.0
+      unplugin: 1.3.1
+      vant: 4.2.0
+    transitivePeerDependencies:
+      - rollup
+      - supports-color
+    dev: true
+
+  /@vant/popperjs/1.3.0:
+    resolution: {integrity: sha512-hB+czUG+aHtjhaEmCJDuXOep0YTZjdlRR+4MSmIFnkCQIxJaXLQdSsR90XWvAI2yvKUI7TCGqR8pQg2RtvkMHw==}
+
+  /@vant/use/1.5.1:
+    resolution: {integrity: sha512-Zxd7lDz/LliVYEQi3PR9a8CQa/kGCVzF0u9hqDMaTlgXlbG0wHMFPllrcG0ThR6bfs8xrYVuSFM9pJn6HSoUGQ==}
+    peerDependencies:
+      vue: ^3.0.0
 
   /@vercel/nft/0.22.6:
     resolution: {integrity: sha512-gTsFnnT4mGxodr4AUlW3/urY+8JKKB452LwF3m477RFUJTAaDmcz2JqFuInzvdybYIeyIv1sSONEJxsxnbQ5JQ==}
@@ -8845,6 +8875,13 @@ packages:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.4.14
 
+  /magic-string/0.29.0:
+    resolution: {integrity: sha512-WcfidHrDjMY+eLjlU+8OvwREqHwpgCeKVBUpQ3OhYYuvfaYCUgcbuBzappNzZvg/v8onU3oQj+BYpkOJe9Iw4Q==}
+    engines: {node: '>=12'}
+    dependencies:
+      '@jridgewell/sourcemap-codec': 1.4.14
+    dev: true
+
   /magic-string/0.30.0:
     resolution: {integrity: sha512-LA+31JYDJLs82r2ScLrlz1GjSgu66ZV518eyWT+S8VhyQn/JL0u9MeBOvQMGYiPk1DBiSN9DDMOcXvigJZaViQ==}
     engines: {node: '>=12'}
@@ -9984,7 +10021,7 @@ packages:
     peerDependencies:
       pinia: ^2.0.0
     dependencies:
-      pinia: 2.0.33_7h6e7cvei2rsgyre2mq4fyhehq
+      pinia: 2.0.33
 
   /pinia/2.0.33:
     resolution: {integrity: sha512-HOj1yVV2itw6rNIrR2f7+MirGNxhORjrULL8GWgRwXsGSvEqIQ+SE0MYt6cwtpegzCda3i+rVTZM+AM7CG+kRg==}
@@ -10017,6 +10054,7 @@ packages:
       typescript: 4.8.4
       vue: 3.2.47
       vue-demi: 0.13.11_vue@3.2.47
+    dev: false
 
   /pirates/4.0.5:
     resolution: {integrity: sha512-8V9+HQPupnaXMA23c5hvl69zXvTwTzyAYasnkb0Tts4XvO4CliqONMOnvlq26rkhLC3nWDFBJf73LU1e1VZLaQ==}
@@ -11905,9 +11943,42 @@ packages:
       open: 7.4.2
       portfinder: 1.0.32
       replace-in-file: 6.3.5
-      tailwindcss: 3.3.1_postcss@8.4.21
+      tailwindcss: 3.3.1
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /tailwindcss/3.3.1:
+    resolution: {integrity: sha512-Vkiouc41d4CEq0ujXl6oiGFQ7bA3WEhUZdTgXAhtKxSy49OmKs8rEfQmupsfF0IGW8fv2iQkp1EVUuapCFrZ9g==}
+    engines: {node: '>=12.13.0'}
+    hasBin: true
+    dependencies:
+      arg: 5.0.2
+      chokidar: 3.5.3
+      color-name: 1.1.4
+      didyoumean: 1.2.2
+      dlv: 1.1.3
+      fast-glob: 3.2.12
+      glob-parent: 6.0.2
+      is-glob: 4.0.3
+      jiti: 1.18.2
+      lilconfig: 2.1.0
+      micromatch: 4.0.5
+      normalize-path: 3.0.0
+      object-hash: 3.0.0
+      picocolors: 1.0.0
+      postcss: 8.4.21
+      postcss-import: 14.1.0_postcss@8.4.21
+      postcss-js: 4.0.1_postcss@8.4.21
+      postcss-load-config: 3.1.4_postcss@8.4.21
+      postcss-nested: 6.0.0_postcss@8.4.21
+      postcss-selector-parser: 6.0.11
+      postcss-value-parser: 4.2.0
+      quick-lru: 5.1.1
+      resolve: 1.22.1
+      sucrase: 3.31.0
+    transitivePeerDependencies:
+      - ts-node
     dev: true
 
   /tailwindcss/3.3.1_postcss@8.4.21:
@@ -12640,6 +12711,14 @@ packages:
     engines: {node: '>= 0.10'}
     dev: false
 
+  /vant/4.2.0:
+    resolution: {integrity: sha512-x8kYAxoXjlXZnilBx/0Np3XhcOLdPzqerZWwOl7DsqgLu17OCYFzkoLuFDbxXM8fciX15xFITqdmtBcgqaWQWg==}
+    peerDependencies:
+      vue: ^3.0.0
+    dependencies:
+      '@vant/popperjs': 1.3.0
+      '@vant/use': 1.5.1
+
   /vary/1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
@@ -13093,6 +13172,7 @@ packages:
         optional: true
     dependencies:
       vue: 3.2.47
+    dev: false
 
   /vue-devtools-stub/0.1.0:
     resolution: {integrity: sha512-RutnB7X8c5hjq39NceArgXg28WZtZpGc3+J16ljMiYnFhKvd8hITxSWQSQ5bvldxMDU6gG5mkxl1MTQLXckVSQ==}

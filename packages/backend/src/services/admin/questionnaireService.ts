@@ -6,8 +6,9 @@ import { omitByArray } from "@fucking-exam/shared";
 const DEFAULT_EXCLUDE = ["user.password"];
 
 class QuestionnaireService {
-  async findAll(excludeFields: string[] = DEFAULT_EXCLUDE) {
+  async findAll(where = {}, excludeFields: string[] = DEFAULT_EXCLUDE) {
     let data = await prisma.questionnaire.findMany({
+      where,
       include: {
         questions: {
           orderBy: {

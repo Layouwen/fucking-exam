@@ -7,6 +7,16 @@ import { IRequest } from "../types";
 import { CreateQuestionnaireResponseDto } from "@fucking-exam/shared";
 
 class QuestionnaireClientController {
+  async getQuestionnaireList(req: IRequest, res: Response) {
+    const data = await questionnaireService.findAll();
+
+    res.json({
+      data,
+      msg: "success",
+      code: 200,
+    });
+  }
+
   async getQuestionnaireById(req: IRequest<{ id: string }>, res: Response) {
     const { params } = req;
 
