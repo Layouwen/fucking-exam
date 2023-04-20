@@ -40,7 +40,8 @@ export default defineNuxtConfig({
     server: {
       proxy: {
         "/api": {
-          target: "http://localhost:3000",
+          // target: "http://localhost:3000",
+          target: "http://easyhappy.top:5000",
           changeOrigin: true,
           // rewrite: (path: string) => path.replace(/^\/api/, ""),
         },

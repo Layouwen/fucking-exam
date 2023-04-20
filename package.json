@@ -4,7 +4,7 @@
   "packageManager": "pnpm@7.26.0",
   "type": "module",
   "scripts": {
-    "dev": "echo 'dev'"
+    "ready": "node scripts/init.js"
   },
   "author": {
     "name": "Avan",

@@ -8,6 +8,7 @@
     "dev": "ts-node-dev src/index.ts",
     "test": "jest",
     "test:watch": "jest --watchAll",
+    "prisma:init": "prisma migrate dev",
     "prisma:studio": "prisma studio",
     "prisma:gen": "prisma generate",
     "prisma:migrate": "prisma migrate dev --name",
