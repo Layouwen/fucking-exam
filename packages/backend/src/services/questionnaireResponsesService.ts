@@ -1,4 +1,7 @@
-import { CreateQuestionnaireResponseDto, omit } from "@fucking-exam/shared";
+import {
+  CreateQuestionnaireResponseDto,
+  omit,
+} from "@fucking-exam/shared/dist/cjs";
 import { prisma } from "../utils";
 
 const DEFAULT_EXCLUDE = ["user.password"];

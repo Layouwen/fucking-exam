@@ -1,5 +1,4 @@
-import { User } from "@fucking-exam/shared";
-import { omit, omitByArray } from "@fucking-exam/shared";
+import { omit, omitByArray, User } from "@fucking-exam/shared/dist/cjs";
 import { prisma } from "../../utils";
 
 const DEFAULT_EXCLUDE = ["password"];

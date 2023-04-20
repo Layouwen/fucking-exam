@@ -1,8 +1,8 @@
-import { QuestionType } from './business';
-import { QuestionModel, QuestionnaireModel } from './module';
-import { OmitDBFiled } from './utils';
+import { questionType } from "./business";
+import { QuestionModel, QuestionnaireModel } from "./module";
+import { OmitDBFiled } from "./utils";
 
-export type QuestionRandomType = '0' | '1';
+export type QuestionRandomType = "0" | "1";
 
 export type QuestionOption = {
   label: string;
@@ -31,14 +31,15 @@ export type QuestionQuestion = {
 };
 
 export interface Questionnaire
-  extends OmitDBFiled<QuestionnaireModel, 'settings'> {
+  extends OmitDBFiled<QuestionnaireModel, "settings"> {
   settings: QuestionnaireSettings;
   questions: QuestionQuestion[];
 }
 
-export interface Question extends OmitDBFiled<QuestionModel, 'userId' | 'questionnaireId'> {
+export interface Question
+  extends OmitDBFiled<QuestionModel, "userId" | "questionnaireId"> {
   id: string | number;
-  type: QuestionType;
+  type: any;
   options: QuestionOption[];
   settings: QuestionSettings;
   answers: string[];

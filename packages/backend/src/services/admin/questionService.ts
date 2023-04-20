@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { CreateQuestionDto } from "@fucking-exam/shared";
+import { CreateQuestionDto } from "@fucking-exam/shared/dist/cjs";
 
 const prisma = new PrismaClient();
 

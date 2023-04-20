@@ -37,6 +37,7 @@ import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import dayjs from "dayjs";
 import { isMobile, isLogin } from "@fucking-exam/shared";
+import config from "~/config";
 
 const message = useMessage();
 const router = useRouter();
@@ -59,8 +60,7 @@ onMounted(async () => {
 const onSelect = (item: { name: string }) => {
   switch (item.name) {
     case "Github登录":
-      window.location.href =
-        "https://github.com/login/oauth/authorize?client_id=a644d75524601839ea7a&redirect_uri=http://localhost:3001/oauth/github&scope=user&response_type=token";
+      window.location.href = `https://github.com/login/oauth/authorize?client_id=a644d75524601839ea7a&redirect_uri=${config.github.callback}&scope=user&response_type=token`;
       return;
     case "邮箱登录":
       return router.push("/login");

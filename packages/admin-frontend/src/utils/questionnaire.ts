@@ -1,12 +1,12 @@
-import { Question, QuestionType } from '@fucking-exam/shared';
+import { Question, questionType } from '@fucking-exam/shared';
 
 // @deprecated No longer in use
 export const showSubjectAndAnswer = (question: Question) => {
   const answerTemplate = '$ANSWER';
   switch (question.type) {
-    case QuestionType.singleChoice:
+    case questionType.singleChoice:
       return question.subject.replace(answerTemplate, question.answer);
-    case QuestionType.multipleChoice:
+    case questionType.multipleChoice:
       return question.subject.replace(answerTemplate, question.answers.join(''));
   }
 };

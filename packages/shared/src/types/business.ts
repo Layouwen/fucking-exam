@@ -1,4 +1,4 @@
-export { QuestionType } from "@prisma/client";
+export { QuestionType as questionType } from "@prisma/client";
 
 export enum PageOptionType {
   CREATE = "CREATE",

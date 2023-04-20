@@ -4,7 +4,7 @@ import {
   questionnaireService,
 } from "../services";
 import { IRequest } from "../types";
-import { CreateQuestionnaireResponseDto } from "@fucking-exam/shared";
+import { CreateQuestionnaireResponseDto } from "@fucking-exam/shared/dist/cjs";
 
 class QuestionnaireClientController {
   async getQuestionnaireList(req: IRequest, res: Response) {

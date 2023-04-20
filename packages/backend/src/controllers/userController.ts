@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CreateUserDto } from "@fucking-exam/shared";
+import { CreateUserDto } from "@fucking-exam/shared/dist/cjs";
 import { userService } from "../services";
 import { jwtUtil } from "../utils";
 

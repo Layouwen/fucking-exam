@@ -1,7 +1,6 @@
-import { CreateQuestionnaireDto } from "@fucking-exam/shared";
+import { CreateQuestionnaireDto, omitByArray } from "@fucking-exam/shared/dist/cjs";
 import { prisma } from "../../utils";
 import questionService from "./questionService";
-import { omitByArray } from "@fucking-exam/shared";
 
 const DEFAULT_EXCLUDE = ["user.password"];
 

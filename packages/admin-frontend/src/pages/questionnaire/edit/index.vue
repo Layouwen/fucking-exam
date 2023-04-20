@@ -2,9 +2,8 @@
   <template v-if="PageOptionType.CREATE === pageOptionType && !mode">
     <t-row>
       <t-card class="cursor-pointer hover:opacity-70" @click="mode = QuestionnaireEditMode.TEXT">文本方式创建</t-card>
-      <t-card
-        class="cursor-pointer hover:opacity-70" @click="mode = QuestionnaireEditMode.VISUALIZATION"
-      >操作界面创建
+      <t-card class="cursor-pointer hover:opacity-70" @click="mode = QuestionnaireEditMode.VISUALIZATION"
+        >操作界面创建
       </t-card>
     </t-row>
   </template>
@@ -113,9 +112,12 @@ import {
   moveBottomByArr,
   moveTopByArr,
   QuestionnaireSettings,
+  PageOptionType,
+  Question,
+  QuestionnaireEditMode,
+  questionType,
 } from '@fucking-exam/shared';
-import { PageOptionType, Question, QuestionnaireEditMode, QuestionType } from '@fucking-exam/shared';
-import { Button, Card, DialogPlugin, MessagePlugin, Row } from 'tdesign-vue-next';
+import { DialogPlugin, MessagePlugin } from 'tdesign-vue-next';
 import { v4 as uuidV4 } from 'uuid';
 import { onMounted, ref } from 'vue';
 
@@ -135,7 +137,7 @@ const analyzeDialogVisible = ref(false);
 const analyzeIndex = ref<number>();
 
 onMounted(() => {
-  const state = history.state as { type?: PageOptionType };
+  const state = window.history.state as { type?: PageOptionType };
   if (state.type) {
     pageOptionType.value = state.type;
   }
@@ -167,7 +169,7 @@ const onParseText = () => {
   } as QuestionnaireData;
   const str = inputText.value;
 
-  function splitByEmptyLine (str) {
+  function splitByEmptyLine(str) {
     return str.split(/\n{2,}/);
   }
 
@@ -176,7 +178,7 @@ const onParseText = () => {
   try {
     questionsStrArr.forEach((q, qIndex) => {
       const question = {
-        type: QuestionType.singleChoice,
+        type: questionType.singleChoice,
         subject: '',
         options: [],
         analyze: '',
@@ -220,10 +222,10 @@ const onParseText = () => {
         });
 
         if (answerStrNoParentheses.length > 1) {
-          question.type = QuestionType.multipleChoice;
+          question.type = questionType.multipleChoice;
           question.answers = answerStrNoParentheses.split('').map((i) => answerUUIDMap.get(i));
         } else {
-          question.type = QuestionType.singleChoice;
+          question.type = questionType.singleChoice;
           question.answers = [answerUUIDMap.get(answerStrNoParentheses)];
         }
 
@@ -257,7 +259,7 @@ const onAddNextQuestion = (index: number) => {
   const value = uuidV4();
   questionnaireData.value.questions.splice(index + 1, 0, {
     id: uuidV4(),
-    type: QuestionType.singleChoice,
+    type: questionType.singleChoice,
     subject: '新增题目（）',
     options: [
       {

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CreateQuestionnaireDto } from "@fucking-exam/shared";
+import { CreateQuestionnaireDto } from "@fucking-exam/shared/dist/cjs";
 import { questionnaireService } from "../services";
 
 class QuestionnaireAdminController {

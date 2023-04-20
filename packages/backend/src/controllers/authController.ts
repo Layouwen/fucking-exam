@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { RegisterDto } from "@fucking-exam/shared";
+import { RegisterDto } from "@fucking-exam/shared/dist/cjs";
 import config from "../config";
 import { userService } from "../services";
 import { IRequest } from "../types";
