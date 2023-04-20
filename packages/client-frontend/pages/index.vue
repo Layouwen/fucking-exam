@@ -60,7 +60,7 @@ onMounted(async () => {
 const onSelect = (item: { name: string }) => {
   switch (item.name) {
     case "Github登录":
-      window.location.href = `https://github.com/login/oauth/authorize?client_id=a644d75524601839ea7a&redirect_uri=${window.location.origin}/oauth/github&scope=user&response_type=token`;
+      window.location.href = `https://github.com/login/oauth/authorize?client_id=${config.github.clientId}&redirect_uri=${window.location.origin}/oauth/github&scope=user&response_type=token`;
       return;
     case "邮箱登录":
       return router.push("/login");
