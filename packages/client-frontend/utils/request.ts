@@ -2,7 +2,7 @@ import { NitroFetchRequest, NitroFetchOptions } from "nitropack";
 import * as process from "process";
 
 const requestInstance = $fetch.create({
-  baseURL: process.env.NODE_ENV === "development" ? "/" : "",
+  baseURL: process.env.NODE_ENV === "development" ? "/" : "http://easyhappy.top:5000",
 });
 
 function request<R>(
