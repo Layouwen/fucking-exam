@@ -16,14 +16,7 @@
       </div>
       <div class="flex">
         <div class="w-[50%]">
-          <t-textarea
-            v-model:value="inputText"
-            :autosize="{
-              minRows: 40,
-              maxRows: 40,
-            }"
-            placeholder="请输入你的问卷内容"
-          />
+          <t-textarea v-model:value="inputText" :autosize="autosize" placeholder="请输入你的问卷内容" />
         </div>
         <div class="w-[50%] flex-shrink">
           <div>{{ questionnaireData?.paperName }}</div>
@@ -135,6 +128,10 @@ const curEditIdOrUUID = ref('');
 const paperNameDialogVisible = ref(false);
 const analyzeDialogVisible = ref(false);
 const analyzeIndex = ref<number>();
+const autosize = ref<any>({
+  minRows: 40,
+  maxRows: 40,
+});
 
 onMounted(() => {
   const state = window.history.state as { type?: PageOptionType };
@@ -186,7 +183,7 @@ const onParseText = () => {
         settings: {
           randomType: '0',
         },
-      } as Question;
+      } as unknown as Question;
 
       const lines = q
         .split(/\n/)

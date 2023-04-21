@@ -4,10 +4,7 @@
       <t-input v-if="type === 'input'" v-model:value="inputValue" :placeholder="computedPlaceholder" />
       <t-textarea
         v-if="type === 'textarea'"
-        :autosize="{
-          minRows: 5,
-          maxRows: 5,
-        }"
+        :autosize="autosize"
         v-model:value="inputValue"
         :placeholder="computedPlaceholder"
       />
@@ -51,6 +48,11 @@ const props = defineProps({
     require: false,
     default: 'input',
   },
+});
+
+const autosize = ref<any>({
+  minRows: 5,
+  maxRows: 5,
 });
 
 const computedPlaceholder = computed(() => {

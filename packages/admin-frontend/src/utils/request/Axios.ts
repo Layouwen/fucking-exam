@@ -63,7 +63,7 @@ export class VAxios {
     const axiosCanceler = new AxiosCanceler();
 
     // 请求配置处理
-    this.instance.interceptors.request.use((config: AxiosRequestConfig) => {
+    this.instance.interceptors.request.use((config: any) => {
       const {
         headers: { ignoreRepeatRequest },
       } = config;

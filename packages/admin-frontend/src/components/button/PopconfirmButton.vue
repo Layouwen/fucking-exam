@@ -5,7 +5,9 @@
     content="确认删除吗"
     @confirm="$emit('click')"
   >
-    <t-button @click="visible = true" :disabled="disabled" :size="size">{{ slots.default?.()[0].children || '' }}</t-button>
+    <t-button :size="size" :disabled="disabled" @click="visible = true">{{
+      slots.default?.()[0].children || 'default'
+    }}</t-button>
   </t-popconfirm>
   <t-button v-else :disabled="disabled" :size="size" @click="$emit('click')"
     >{{ slots.default?.()[0].children || '' }}
@@ -21,7 +23,8 @@ export default defineComponent({
 </script>
 
 <script setup lang="ts">
-import { defineProps, useSlots, ref } from 'vue';
+import { defineProps, useSlots, ref, PropType } from 'vue';
+import { SizeEnum } from 'tdesign-vue-next/es/common';
 
 const slots = useSlots();
 
@@ -39,7 +42,7 @@ defineProps({
     required: false,
   },
   size: {
-    type: String,
+    type: String as PropType<SizeEnum>,
     required: false,
     default: 'small',
   },
