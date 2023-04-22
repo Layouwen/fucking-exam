@@ -27,11 +27,11 @@ const toggleSettingPanel = () => {
 };
 
 const navToGitHub = () => {
-  window.open('https://github.com/tencent/tdesign-vue-next-starter');
+  window.open('https://github.com/Layouwen/fucking-exam');
 };
 
 const navToHelper = () => {
-  window.open('http://tdesign.tencent.com/starter/docs/get-started');
+  window.open('https://github.com/Layouwen/fucking-exam/issues');
 };
 </script>
 
@@ -51,6 +51,7 @@ const navToHelper = () => {
   .operations-container {
     display: flex;
     align-items: center;
+
     .t-button {
       margin-left: 16px;
     }

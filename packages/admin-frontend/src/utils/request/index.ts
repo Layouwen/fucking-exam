@@ -18,6 +18,8 @@ const transform: AxiosTransform = {
   transformRequestHook: (res, options) => {
     const { isTransformResponse, isReturnNativeResponse } = options;
 
+    return res
+
     // 如果204无内容直接返回
     const method = res.config.method?.toLowerCase();
     if (res.status === 204 || method === 'put' || method === 'patch') {
