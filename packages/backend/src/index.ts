@@ -9,7 +9,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:3001", "http://easyhappy.top:5001"],
+    origin: ["http://localhost:3000", "http://localhost:3001", "http://localhost", "http://easyhappy.top:5001"],
   })
 );
 app.use(json());
