@@ -54,7 +54,7 @@ const questionnaireList = ref<any>([]);
 
 onMounted(async () => {
   const listRes = await getQuestionnaireListApi();
-  questionnaireList.value = listRes.data;
+  questionnaireList.value = listRes.data.list;
 });
 
 const onSelect = (item: { name: string }) => {
