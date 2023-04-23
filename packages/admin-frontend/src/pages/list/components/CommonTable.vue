@@ -116,7 +116,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { MessagePlugin, PrimaryTableCol, TableRowData, PageInfo } from 'tdesign-vue-next';
 import Trend from '@/components/trend/index.vue';
-import { getQuestionnaireApi } from '@/api/list';
+import { getQuestionnaireListApi } from '@/api';
 import { useSettingStore } from '@/store';
 import { prefix } from '@/config/global';
 
@@ -198,7 +198,7 @@ const dataLoading = ref(false);
 const fetchData = async () => {
   dataLoading.value = true;
   try {
-    const { list } = await getQuestionnaireApi();
+    const { list } = await getQuestionnaireListApi();
     data.value = list;
     pagination.value = {
       ...pagination.value,

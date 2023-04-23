@@ -1,13 +1,19 @@
-import { CreateQuestionnaireDto, omitByArray } from "@fucking-exam/shared/dist/cjs";
+import {
+  CreateQuestionnaireDto,
+  omitByArray,
+} from "@fucking-exam/shared/dist/cjs";
 import { prisma } from "../../utils";
 import questionService from "./questionService";
 
-const DEFAULT_EXCLUDE = ["user.password"];
+const DEFAULT_EXCLUDE = ["user.password", "user.email"];
 
 class QuestionnaireService {
   async findAll(where = {}, excludeFields: string[] = DEFAULT_EXCLUDE) {
     let data = await prisma.questionnaire.findMany({
-      where,
+      where: {
+        deletedAt: null,
+        ...where,
+      },
       include: {
         questions: {
           orderBy: {
@@ -22,12 +28,15 @@ class QuestionnaireService {
       data = omitByArray(data, excludeFields);
     }
 
-    return data;
+    return {
+      list: data,
+      total: await prisma.questionnaire.count(),
+    };
   }
 
-  async findOne(id: number) {
-    return prisma.questionnaire.findUnique({
-      where: { id },
+  async findOne(where: { id?: number; userId?: number }) {
+    return prisma.questionnaire.findFirst({
+      where,
       include: {
         questions: {
           orderBy: {
@@ -54,6 +63,13 @@ class QuestionnaireService {
       await questionService.create(userId, question, res.id);
     }
     return res;
+  }
+
+  update(where: { id: number; userId: number }, data: any) {
+    return prisma.questionnaire.updateMany({
+      where,
+      data,
+    });
   }
 }
 

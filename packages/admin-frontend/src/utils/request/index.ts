@@ -1,11 +1,11 @@
 // axios配置  可自行根据项目进行更改，只需更改该文件即可，其他文件可以不动
 import isString from 'lodash/isString';
 import merge from 'lodash/merge';
+import { getUserStore } from '@/store';
 import type { AxiosTransform, CreateAxiosOptions } from './AxiosTransform';
 import { VAxios } from './Axios';
 import proxy from '@/config/proxy';
 import { joinTimestamp, formatRequestDate, setObjToUrlParams } from './utils';
-import { TOKEN_NAME } from '@/config/global';
 
 const env = import.meta.env.MODE || 'development';
 
@@ -18,7 +18,7 @@ const transform: AxiosTransform = {
   transformRequestHook: (res, options) => {
     const { isTransformResponse, isReturnNativeResponse } = options;
 
-    return res
+    return res;
 
     // 如果204无内容直接返回
     const method = res.config.method?.toLowerCase();
@@ -112,19 +112,19 @@ const transform: AxiosTransform = {
   // 请求拦截器处理
   requestInterceptors: (config, options) => {
     // 请求之前处理config
-    const token = localStorage.getItem(TOKEN_NAME);
-    if (token && (config as Recordable)?.requestOptions?.withToken !== false) {
+    const userStore = getUserStore();
+    if (userStore.token && (config as Recordable)?.requestOptions?.withToken !== false) {
       // jwt token
       (config as Recordable).headers.Authorization = options.authenticationScheme
-        ? `${options.authenticationScheme} ${token}`
-        : token;
+        ? `${options.authenticationScheme} ${userStore.token}`
+        : userStore.token;
     }
     return config;
   },
 
   // 响应拦截器处理
   responseInterceptors: (res) => {
-    return res;
+    return res.data;
   },
 
   // 响应错误处理
@@ -154,7 +154,7 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
       <CreateAxiosOptions>{
         // https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#authentication_schemes
         // 例如: authenticationScheme: 'Bearer'
-        authenticationScheme: '',
+        authenticationScheme: 'Bearer',
         // 超时
         timeout: 10 * 1000,
         // 携带Cookie
@@ -198,4 +198,5 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
     ),
   );
 }
+
 export const request = createAxios();

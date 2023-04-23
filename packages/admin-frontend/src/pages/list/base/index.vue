@@ -81,7 +81,7 @@ import { MessagePlugin } from 'tdesign-vue-next';
 
 import { CONTRACT_STATUS, CONTRACT_TYPES, CONTRACT_PAYMENT_TYPES } from '@/constants';
 import Trend from '@/components/trend/index.vue';
-import { getQuestionnaireApi } from '@/api/list';
+import { getQuestionnaireListApi } from '@/api';
 import { useSettingStore } from '@/store';
 import { prefix } from '@/config/global';
 
@@ -102,7 +102,7 @@ const dataLoading = ref(false);
 const fetchData = async () => {
   dataLoading.value = true;
   try {
-    const { list } = await getQuestionnaireApi();
+    const { list } = await getQuestionnaireListApi();
     data.value = list;
     pagination.value = {
       ...pagination.value,

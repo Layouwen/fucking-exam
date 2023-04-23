@@ -18,9 +18,11 @@ class QuestionnaireClientController {
   }
 
   async getQuestionnaireById(req: IRequest<{ id: string }>, res: Response) {
-    const { params } = req;
+    const {
+      params: { id },
+    } = req;
 
-    const data = await questionnaireService.findOne(+params.id);
+    const data = await questionnaireService.findOne({ id: +id });
 
     res.json({
       data,

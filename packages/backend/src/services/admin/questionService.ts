@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 class QuestionnaireService {
   async findAll() {
     const data = await prisma.questionnaire.findMany();
-    console.log(data, "layouwen");
+
     return data;
   }
 
@@ -16,7 +16,7 @@ class QuestionnaireService {
     questionnaireId: number
   ) {
     const { id, ...data } = createQuestionDto;
-    console.log(questionnaireId, data, "layouwen questionnaireId");
+
     const res = await prisma.question.create({
       data: {
         ...data,

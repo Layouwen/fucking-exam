@@ -17,88 +17,48 @@
         :loading="dataLoading"
       >
         <template #status="{ row }">
-          <t-tag v-if="row.status === CONTRACT_STATUS.FAIL" theme="danger" variant="light"> 审核失败</t-tag>
-          <t-tag v-if="row.status === CONTRACT_STATUS.AUDIT_PENDING" theme="warning" variant="light"> 待审核</t-tag>
-          <t-tag v-if="row.status === CONTRACT_STATUS.EXEC_PENDING" theme="warning" variant="light"> 待履行</t-tag>
-          <t-tag v-if="row.status === CONTRACT_STATUS.EXECUTING" theme="success" variant="light"> 履行中</t-tag>
-          <t-tag v-if="row.status === CONTRACT_STATUS.FINISH" theme="success" variant="light"> 已完成</t-tag>
+          <t-tag v-if="row.status === 0" theme="success" variant="light">发布成功</t-tag>
+          <t-tag v-if="row.status === 1" theme="warning" variant="light">待审核</t-tag>
         </template>
-        <template #contractType="{ row }">
-          <p v-if="row.contractType === CONTRACT_TYPES.MAIN">审核失败</p>
-          <p v-if="row.contractType === CONTRACT_TYPES.SUB">待审核</p>
-          <p v-if="row.contractType === CONTRACT_TYPES.SUPPLEMENT">待履行</p>
+        <template #type="{ row }">
+          <p v-if="row.type === 0">公开</p>
+          <p v-if="row.type === 1">私有</p>
         </template>
         <template #tags="{ row }">
-          <div class="space-x-2" v-if="row.tags.length">
-            <t-tag v-for="i in row.tags" :style="{ background: i.bgColor, color: i.textColor }">{{ i.name }}</t-tag>
-          </div>
-          <div v-else>-</div>
+          tag
+          <!--          <div class="space-x-2" v-if="row.tags.length">-->
+          <!--            <t-tag v-for="i in row.tags" :style="{ background: i.bgColor, color: i.textColor }">{{ i.name }}</t-tag>-->
+          <!--          </div>-->
+          <!--          <div v-else>-</div>-->
         </template>
         <template #op="slotProps">
           <a class="t-button-link" @click="onEditQuestionnaire()">编辑问卷</a>
-          <a class="t-button-link" @click="handleClickDelete(slotProps)">删除</a>
+          <t-popconfirm theme="danger" content="确认删除吗" @confirm="onDelete(slotProps)">
+            <a class="t-button-link">删除</a>
+          </t-popconfirm>
         </template>
       </t-table>
-      <t-dialog
-        v-model:visible="confirmVisible"
-        header="确认删除当前所选合同？"
-        :body="confirmBody"
-        :on-cancel="onCancel"
-        @confirm="onConfirmDelete"
-      />
     </div>
   </t-card>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { MessagePlugin, PrimaryTableCol, TableRowData, Row, Button, Card } from 'tdesign-vue-next';
-import { getQuestionnaireApi } from '@/api/list';
-import { useSettingStore } from '@/store';
+import { ref, onMounted } from 'vue';
+import { MessagePlugin, PrimaryTableCellParams, PrimaryTableCol } from 'tdesign-vue-next';
 import { useRouter } from 'vue-router';
 import { PageOptionType } from '@fucking-exam/shared';
-
-import { CONTRACT_STATUS, CONTRACT_TYPES } from '@/constants';
+import { deleteQuestionnaireApi, getQuestionnaireListApi } from '@/api';
 
 const router = useRouter();
-const store = useSettingStore();
 
-const COLUMNS: PrimaryTableCol<TableRowData>[] = [
-  {
-    title: 'id',
-    colKey: 'id',
-    width: 140,
-  },
-  {
-    title: '问卷名',
-    ellipsis: true,
-    align: 'left',
-    colKey: 'name',
-    minWidth: 200,
-  },
-  { title: '问卷状态', colKey: 'status', width: 200 },
-  {
-    title: '问卷类型',
-    width: 200,
-    colKey: 'type',
-  },
-  {
-    title: '标签',
-    width: 200,
-    ellipsis: true,
-    colKey: 'tags',
-  },
-  {
-    title: '创建者',
-    colKey: 'user.name',
-  },
-  {
-    align: 'left',
-    fixed: 'right',
-    width: 200,
-    colKey: 'op',
-    title: '操作',
-  },
+const COLUMNS: PrimaryTableCol<any>[] = [
+  { title: 'id', colKey: 'id', width: 80 },
+  { title: '问卷名', ellipsis: true, align: 'left', colKey: 'paperName', minWidth: 200 },
+  { title: '问卷状态', colKey: 'status', width: 100 },
+  { title: '问卷类型', width: 100, colKey: 'type' },
+  { title: '标签', width: 100, ellipsis: true, colKey: 'tags' },
+  { title: '创建者', colKey: 'user.nickname', width: 200 },
+  { align: 'left', fixed: 'right', width: 200, colKey: 'op', title: '操作' },
 ];
 
 const rowKey = 'index';
@@ -110,7 +70,6 @@ const pagination = ref({
   total: 100,
   defaultCurrent: 1,
 });
-const confirmVisible = ref(false);
 
 const data = ref([]);
 
@@ -126,52 +85,29 @@ const onEditQuestionnaire = () => {
 const fetchData = async () => {
   dataLoading.value = true;
   try {
-    const { list } = await getQuestionnaireApi();
-    data.value = list;
-    pagination.value = {
-      ...pagination.value,
-      total: list.length,
-    };
+    const res = await getQuestionnaireListApi();
+    if (res.code === 200) {
+      data.value = res.data.list;
+      pagination.value = {
+        ...pagination.value,
+        total: res.data.total,
+      };
+    }
   } catch (e) {
-    console.log(e);
+    console.log(e, 'layouwen error');
   } finally {
     dataLoading.value = false;
   }
-};
-
-const deleteIdx = ref(-1);
-const confirmBody = computed(() => {
-  if (deleteIdx.value > -1) {
-    const { name } = data.value[deleteIdx.value];
-    return `删除后，${name}的所有合同信息将被清空，且无法恢复`;
-  }
-  return '';
-});
-
-const resetIdx = () => {
-  deleteIdx.value = -1;
-};
-
-const onConfirmDelete = () => {
-  // 真实业务请发起请求
-  data.value.splice(deleteIdx.value, 1);
-  pagination.value.total = data.value.length;
-  confirmVisible.value = false;
-  MessagePlugin.success('删除成功');
-  resetIdx();
-};
-
-const onCancel = () => {
-  resetIdx();
 };
 
 onMounted(() => {
   fetchData();
 });
 
-const handleClickDelete = ({ row }) => {
-  deleteIdx.value = row.rowIndex;
-  confirmVisible.value = true;
+const onDelete = async ({ row }: PrimaryTableCellParams<any>) => {
+  await deleteQuestionnaireApi(row.id);
+  await fetchData();
+  MessagePlugin.success('删除成功');
 };
 </script>
 
