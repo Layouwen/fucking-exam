@@ -23,8 +23,8 @@ export const useUserStore = defineStore('user', {
         email: userInfo.email,
         password: userInfo.password,
       });
-      if (res.data.token) {
-        this.token = res.data.token;
+      if (res.token) {
+        this.token = res.token;
       }
     },
     async getUserInfo() {

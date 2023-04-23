@@ -9,11 +9,12 @@ const DEFAULT_EXCLUDE = ["user.password", "user.email"];
 
 class QuestionnaireService {
   async findAll(where = {}, excludeFields: string[] = DEFAULT_EXCLUDE) {
+    const _where = {
+      deletedAt: null,
+      ...where,
+    };
     let data = await prisma.questionnaire.findMany({
-      where: {
-        deletedAt: null,
-        ...where,
-      },
+      where: _where,
       include: {
         questions: {
           orderBy: {
@@ -30,7 +31,7 @@ class QuestionnaireService {
 
     return {
       list: data,
-      total: await prisma.questionnaire.count(),
+      total: await prisma.questionnaire.count({ where: _where }),
     };
   }
 

@@ -94,9 +94,6 @@
 </template>
 
 <script lang="ts" setup>
-import { QuestionOptionItem } from '@/components';
-import InputEditModal from '@/pages/questionnaire/components/InputEditModal.vue';
-import { showSubjectAndAnswer } from '@/utils';
 import {
   OPTIONS_LETTER,
   QuestionTextInputValueTemplate,
@@ -113,12 +110,19 @@ import {
 import { DialogPlugin, MessagePlugin } from 'tdesign-vue-next';
 import { v4 as uuidV4 } from 'uuid';
 import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import InputEditModal from '@/pages/questionnaire/components/InputEditModal.vue';
+import { QuestionOptionItem } from '@/components';
+import { postQuestionnaireApi } from '@/api';
+import { showSubjectAndAnswer } from '@/utils';
 
 type QuestionnaireData = {
   paperName: string;
   questions: Question[];
   settings: QuestionnaireSettings;
 };
+
+const router = useRouter();
 
 const pageOptionType = ref<PageOptionType>();
 const questionnaireData = ref<QuestionnaireData>();
@@ -141,11 +145,18 @@ onMounted(() => {
 });
 
 const onSave = () => {
-  console.log(questionnaireData.value, 'save value');
   console.log(JSON.stringify(questionnaireData.value), 'save value');
+  // TODO
+  MessagePlugin.warning('暂未实现保存');
 };
 
-const onPost = () => {};
+const onPost = async () => {
+  const res = await postQuestionnaireApi(questionnaireData.value);
+  if (res.code === 200) {
+    MessagePlugin.success('发布成功');
+    router.push('/questionnaire/list');
+  }
+};
 
 const onFinishTextEdit = () => {
   if (questionnaireData.value) {

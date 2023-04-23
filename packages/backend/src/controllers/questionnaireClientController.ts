@@ -5,16 +5,13 @@ import {
 } from "../services";
 import { IRequest } from "../types";
 import { CreateQuestionnaireResponseDto } from "@fucking-exam/shared/dist/cjs";
+import { ResponseSuccess } from "../utils";
 
 class QuestionnaireClientController {
   async getQuestionnaireList(req: IRequest, res: Response) {
     const data = await questionnaireService.findAll();
 
-    res.json({
-      data,
-      msg: "success",
-      code: 200,
-    });
+    res.json(new ResponseSuccess({ data }));
   }
 
   async getQuestionnaireById(req: IRequest<{ id: string }>, res: Response) {
@@ -24,11 +21,7 @@ class QuestionnaireClientController {
 
     const data = await questionnaireService.findOne({ id: +id });
 
-    res.json({
-      data,
-      msg: "success",
-      code: 200,
-    });
+    res.json(new ResponseSuccess({ data }));
   }
 
   async submitQuestionnaireById(
@@ -42,13 +35,7 @@ class QuestionnaireClientController {
       questionnaireId: +params.id,
     });
 
-    res.json({
-      data: {
-        id: data.id,
-      },
-      msg: "success",
-      code: 200,
-    });
+    res.json(new ResponseSuccess({ data: { id: data.id } }));
   }
 
   async getQuestionnaireResponseById(
@@ -59,11 +46,7 @@ class QuestionnaireClientController {
 
     const data = await questionnaireResponsesService.findOne(+id);
 
-    res.json({
-      data,
-      msg: "success",
-      code: 200,
-    });
+    res.json(new ResponseSuccess({ data }));
   }
 }
 
