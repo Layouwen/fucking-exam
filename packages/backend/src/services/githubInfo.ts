@@ -1,7 +1,5 @@
-import { PrismaClient } from "@prisma/client";
-import { userService } from "../api";
-
-const prisma = new PrismaClient();
+import { prisma } from "../utils";
+import { userService } from "./";
 
 class GithubInfoService {
   async create({ jsonData }: { jsonData: any }) {

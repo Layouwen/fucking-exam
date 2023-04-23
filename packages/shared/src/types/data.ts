@@ -1,4 +1,3 @@
-import { questionType } from "./business";
 import { QuestionModel, QuestionnaireModel } from "./module";
 import { OmitDBFiled } from "./utils";
 

@@ -51,6 +51,7 @@ import { deleteQuestionnaireApi, getQuestionnaireListApi } from '@/api';
 
 const router = useRouter();
 
+// TODO: any script
 const COLUMNS: PrimaryTableCol<any>[] = [
   { title: 'id', colKey: 'id', width: 80 },
   { title: '问卷名', ellipsis: true, align: 'left', colKey: 'paperName', minWidth: 200 },
@@ -111,4 +112,5 @@ const onDelete = async ({ row }: PrimaryTableCellParams<any>) => {
 };
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+</style>

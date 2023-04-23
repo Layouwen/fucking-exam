@@ -1,7 +1,5 @@
-import { PrismaClient } from "@prisma/client";
 import { CreateQuestionDto } from "@fucking-exam/shared/dist/cjs";
-
-const prisma = new PrismaClient();
+import { prisma } from "../utils";
 
 class QuestionnaireService {
   async findAll() {
