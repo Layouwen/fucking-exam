@@ -7,8 +7,10 @@ import { prisma } from "../utils";
 const DEFAULT_EXCLUDE = ["user.password"];
 
 class QuestionnaireResponsesService {
-  async create(userId: number, data: CreateQuestionnaireResponseDto) {
-    return prisma.questionnaireResponses.create({ data: { ...data, userId } });
+  async create(data: CreateQuestionnaireResponseDto) {
+    return prisma.questionnaireResponses.create({
+      data: data as CreateQuestionnaireResponseDto & { questions: any[] },
+    });
   }
 
   async findOne(id: number, excludeFields: string[] = DEFAULT_EXCLUDE) {

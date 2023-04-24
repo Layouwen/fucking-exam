@@ -4,7 +4,11 @@ import {
   questionnaireService,
 } from "../services";
 import { IRequest } from "../types";
-import { CreateQuestionnaireResponseDto } from "@fucking-exam/shared/dist/cjs";
+import {
+  QuestionnaireClientSubmitRequestParams,
+  QuestionClientQuestionnaireResponseParams,
+  QuestionnaireClientSubmitRequestBody,
+} from "@fucking-exam/shared/dist/cjs";
 import { ResponseSuccess } from "../utils";
 
 class QuestionnaireClientController {
@@ -25,21 +29,25 @@ class QuestionnaireClientController {
   }
 
   async submitQuestionnaireById(
-    req: IRequest<{ id: string }, CreateQuestionnaireResponseDto>,
+    req: IRequest<
+      QuestionnaireClientSubmitRequestParams,
+      QuestionnaireClientSubmitRequestBody
+    >,
     res: Response
   ) {
     const { user, params, body } = req;
 
-    const data = await questionnaireResponsesService.create(+user.id, {
+    const data = await questionnaireResponsesService.create({
       ...body,
       questionnaireId: +params.id,
+      userId: +user.id,
     });
 
     res.json(new ResponseSuccess({ data: { id: data.id } }));
   }
 
   async getQuestionnaireResponseById(
-    req: IRequest<{ id: string }>,
+    req: IRequest<QuestionClientQuestionnaireResponseParams>,
     res: Response
   ) {
     const { id } = req.params;

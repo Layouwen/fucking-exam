@@ -110,6 +110,7 @@
 </template>
 
 <script lang="ts">
+// eslint-disable-next-line import/no-duplicates
 import { defineComponent } from 'vue';
 
 export default defineComponent({
@@ -118,15 +119,19 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
+// eslint-disable-next-line import/no-duplicates
+import { defineProps, PropType, ref } from 'vue';
 import { MessagePlugin } from 'tdesign-vue-next';
 import {
   QUESTION_OPTION_ITEM_BUTTONS,
   QUESTION_OPTION_ITEM_BUTTONS_EMIT_NAMES,
   QuestionnaireSettings,
+  Question,
+  moveDownByArr,
+  moveUpByArr,
+  isFirstByArr,
+  isLastByArr,
 } from '@fucking-exam/shared';
-import { Question } from '@fucking-exam/shared';
-import { moveDownByArr, moveUpByArr, isFirstByArr, isLastByArr } from '@fucking-exam/shared';
-import { defineProps, PropType, ref } from 'vue';
 import { v4 as uuidV4 } from 'uuid';
 
 const emits = defineEmits([
@@ -192,7 +197,8 @@ const onAddNextOption = (optionIndex: number) => {
 
 const onDeleteOption = (option) => {
   if (props.questionData.options.length === 1) {
-    return MessagePlugin.warning('至少保留一个选项');
+    MessagePlugin.warning('至少保留一个选项');
+    return;
   }
 
   props.questionData.answers = props.questionData.answers.filter((i) => i !== option.value);

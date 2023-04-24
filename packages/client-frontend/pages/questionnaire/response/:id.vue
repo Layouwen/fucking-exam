@@ -18,18 +18,21 @@ const route = useRoute();
 const router = useRouter();
 
 const data = ref<Record<string, any>>();
-const answers = ref<Record<string, string[] | string>>();
+const answers = ref<Record<string, string[]>>();
 
 onMounted(async () => {
   const { id } = route.params as { id: string };
-  const {
-    data: { questions, questionnaire, answers: _answers },
-  } = await getQuestionnaireResponseApi(id);
-  answers.value = _answers as Record<string, string | string[]>;
-  data.value = {
-    paperName: questionnaire.paperName,
-    questions,
-    settings: questionnaire.settings,
-  };
+  const res = await getQuestionnaireResponseApi(id);
+  if (res.code === 200) {
+    const {
+      data: { questions, questionnaire, answers: _answers },
+    } = res;
+    answers.value = _answers;
+    data.value = {
+      paperName: questionnaire.paperName,
+      questions,
+      settings: questionnaire.settings,
+    };
+  }
 });
 </script>

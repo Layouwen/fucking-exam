@@ -2,8 +2,7 @@
   "name": "@fucking-exam/shared",
   "version": "0.0.1",
   "description": "",
-  "module": "dist/es/index.js",
-  "types": "dist/types/index.d.ts",
+  "main": "src/index.ts",
   "scripts": {
     "build": "rollup -c",
     "test": "jest",

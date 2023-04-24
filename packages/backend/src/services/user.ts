@@ -1,21 +1,30 @@
-import { omit, omitByArray, User } from "@fucking-exam/shared/dist/cjs";
+import {
+  omit,
+  omitByArray,
+  UserWhere,
+  UserModel,
+  CreateUserDto,
+} from "@fucking-exam/shared/dist/cjs";
+import { CurdIntl } from "../types";
 import { prisma } from "../utils";
 
-const DEFAULT_EXCLUDE = ["password"];
+const DEFAULT_EXCLUDE = ["password", "email"];
 
-class UserService {
-  async findAll(excludeFields: string[] = DEFAULT_EXCLUDE) {
-    let users = await prisma.user.findMany();
-
-    if (excludeFields?.length && users?.length) {
-      users = omitByArray(users, excludeFields);
+class UserService implements CurdIntl {
+  async create(data: CreateUserDto) {
+    let user = await prisma.user.create({ data });
+    if (user) {
+      user = omit(user, DEFAULT_EXCLUDE);
     }
-
-    return users;
+    return user;
   }
 
-  async findOneById(id: number, excludeField: string[] = DEFAULT_EXCLUDE) {
-    let user = await prisma.user.findUnique({ where: { id } });
+  update(where: UserWhere, data: Partial<UserModel>) {
+    return prisma.user.updateMany({ where, data });
+  }
+
+  async findOne(where: UserWhere, excludeField: string[] = DEFAULT_EXCLUDE) {
+    let user = await prisma.user.findFirst({ where });
 
     if (excludeField?.length && user) {
       user = omit(user, excludeField);
@@ -24,21 +33,17 @@ class UserService {
     return user;
   }
 
-  async findOneByEmail(
-    email: string,
+  async findAll(
+    where: UserWhere = {},
     excludeFields: string[] = DEFAULT_EXCLUDE
   ) {
-    let user = await prisma.user.findUnique({ where: { email } });
+    let users = await prisma.user.findMany({ where });
 
-    if (excludeFields?.length && user) {
-      user = omit(user, excludeFields);
+    if (excludeFields?.length && users?.length) {
+      users = omitByArray(users, excludeFields);
     }
 
-    return user;
-  }
-
-  create(data: User) {
-    return prisma.user.create({ data });
+    return users;
   }
 }
 

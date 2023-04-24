@@ -1,7 +1,4 @@
-import { Question } from "../data";
-import { User } from "../module";
-
-export interface CreateUserDto extends User {}
+import { Question, User } from "../module";
 
 export interface RegisterDto extends User {
   code: string;
@@ -17,4 +14,5 @@ export interface CreateQuestionDto extends Question {}
 
 export type JsonData = Record<string, any>;
 
-export * from "./questionnaireResponses";
+export * from "./user";
+export * from "./questionnaireResponse";

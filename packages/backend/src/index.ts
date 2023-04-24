@@ -9,7 +9,17 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:3001", "http://localhost", "http://easyhappy.top:5001"],
+    origin: (requestOrigin, callback) => {
+      const WHITE_LIST = ["localhost", "easyhappy.top"];
+      if (
+        !requestOrigin ||
+        WHITE_LIST.some((url) => requestOrigin.includes(url))
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
   })
 );
 app.use(json());

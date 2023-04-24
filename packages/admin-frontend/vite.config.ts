@@ -10,7 +10,7 @@ const CWD = process.cwd();
 
 // https://vitejs.dev/config/
 export default ({ mode }: ConfigEnv): UserConfig => {
-  const { VITE_BASE_URL } = loadEnv(mode, CWD);
+  const { VITE_BASE_URL, VITE_PROXY_TYPE } = loadEnv(mode, CWD);
   return {
     base: VITE_BASE_URL,
     resolve: {
@@ -45,7 +45,7 @@ export default ({ mode }: ConfigEnv): UserConfig => {
       port: 3002,
       host: '0.0.0.0',
       proxy: {
-        '/api': 'http://easyhappy.top/',
+        '/api': VITE_PROXY_TYPE === 'local' ? 'http://localhost:3000' : 'http://easyhappy.top',
       },
     },
   };

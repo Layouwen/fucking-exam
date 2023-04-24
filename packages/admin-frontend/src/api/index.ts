@@ -1,3 +1,4 @@
+import { ResponseBaseData } from '@fucking-exam/shared';
 import { request } from '@/utils/request';
 
 const Api = {
@@ -8,7 +9,7 @@ const Api = {
 };
 
 export function loginApi(data: { email: string; password: string }) {
-  return request.post({
+  return request.post<ResponseBaseData<{ token }>>({
     url: Api.Login,
     data,
   });

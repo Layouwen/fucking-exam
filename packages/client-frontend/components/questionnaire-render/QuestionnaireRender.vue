@@ -32,10 +32,10 @@ const props = withDefaults(
     data: any;
     result?: Record<string, string[]>;
     type?: QuestionnaireRenderType;
-    answers?: Record<string, string[] | string>;
+    answers?: Record<string, string[]>;
   }>(),
   {
-    data: '',
+    data: "",
     type: QuestionnaireRenderType.QUESTIONNAIRE,
     result: {},
     answers: {},

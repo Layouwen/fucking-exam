@@ -35,6 +35,7 @@ const formValue = reactive({
   email: "",
   password: "",
 });
+
 const onSubmit = async () => {
   if (!formValue.email) {
     return message.warning("请输入邮箱");
@@ -42,16 +43,19 @@ const onSubmit = async () => {
   if (!formValue.password) {
     return message.warning("请输入密码");
   }
-  const res: any = await loginApi(formValue);
-  if (res.msg) {
-    message.info(res.msg);
-  }
-  if (res.token) {
-    message.success("登录成功");
-    localStorage.setItem("token", res.token);
+
+  const res = await loginApi(formValue);
+
+  if (res.code === 200) {
+    localStorage.setItem("token", res.data.token);
+
     setTimeout(() => {
       router.push("/");
     }, 1000);
+
+    message.success("登录成功");
+  } else {
+    message.error("登录失败");
   }
 };
 

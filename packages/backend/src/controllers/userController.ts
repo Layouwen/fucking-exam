@@ -1,34 +1,30 @@
 import { Request, Response } from "express";
 import { CreateUserDto } from "@fucking-exam/shared/dist/cjs";
 import { userService } from "../services";
-import { jwtUtil } from "../utils";
+import { IRequest } from "../types";
+import { ResponseSuccess } from "../utils";
 
 class UserController {
   async findAll(req: Request, res: Response) {
     const userList = await userService.findAll();
-    res.json(userList);
+
+    res.json(new ResponseSuccess({ data: userList }));
   }
 
-  async findOneById(req: Request, res: Response) {
+  async findOneById(req: IRequest<{ id: string }>, res: Response) {
     const { id } = req.params;
-    const user = await userService.findOneById(Number(id));
-    res.json(user);
+
+    const user = await userService.findOne({ id: Number(id) });
+
+    res.json(new ResponseSuccess({ data: user }));
   }
 
-  async createUser(req: Request, res: Response) {
-    const data = req.body as CreateUserDto;
-    try {
-      const result = await userService.create(data);
-      const { email, id } = result;
-      console.log(result, "user result");
-      const token = jwtUtil.createToken({ email, id });
-      res.json({
-        token,
-      });
-    } catch (e) {
-      console.log(e, "err");
-      res.json({ msg: "error" });
-    }
+  async createUser(req: IRequest<any, CreateUserDto>, res: Response) {
+    const data = req.body;
+
+    await userService.create(data);
+
+    res.json(new ResponseSuccess());
   }
 }
 

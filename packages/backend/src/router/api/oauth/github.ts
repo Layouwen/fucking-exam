@@ -1,19 +1,17 @@
+import { OauthGithubRequestBody } from "@fucking-exam/shared/dist/cjs";
 import { Router } from "express";
 import axios from "axios";
 import config from "../../../config";
 import { userService, githubInfoService } from "../../../services";
-import { jwtUtil } from "../../../utils";
+import { IRequest } from "../../../types";
+import { jwtUtil, ResponseError, ResponseSuccess } from "../../../utils";
 
 const github = Router();
 
-github.post("/", async (req, res) => {
-  const code = req.body.code;
-  if (!code) {
-    res.send({
-      msg: "code require",
-    });
-    return;
-  }
+github.post("/", async (req: IRequest<any, OauthGithubRequestBody>, res) => {
+  const { code } = req.body;
+
+  if (!code) return res.send(new ResponseError({ msg: "code require" }));
 
   try {
     const tokenResponse = await axios({
@@ -29,10 +27,9 @@ github.post("/", async (req, res) => {
     });
 
     if (tokenResponse.data.error) {
-      res.send({
-        msg: tokenResponse.data.error_description,
-      });
-      return;
+      return res.send(
+        new ResponseError({ msg: tokenResponse.data.error_description })
+      );
     }
 
     let accessToken = tokenResponse.data.access_token;
@@ -46,9 +43,10 @@ github.post("/", async (req, res) => {
       },
     });
 
-    // TODO: any
-    const { email, name } = result.data as any;
-    let user = await userService.findOneByEmail(email);
+    const { email, name } = result.data as { email: string; name: string };
+
+    let user = await userService.findOne({ email });
+
     if (!user) {
       user = await userService.create({
         email,
@@ -69,14 +67,10 @@ github.post("/", async (req, res) => {
       id: user.id,
     });
 
-    res.json({
-      token,
-    });
+    res.json(new ResponseSuccess({ data: { token } }));
   } catch (e) {
     console.log(e);
-    res.json({
-      message: "fail",
-    });
+    res.json(new ResponseError());
   }
 });
 

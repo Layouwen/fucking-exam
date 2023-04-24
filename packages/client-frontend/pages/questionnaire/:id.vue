@@ -11,8 +11,8 @@
     />
     <questionnaire-render :data="data" :result="answers" />
     <div class="px-6 pb-6">
-      <NButton block type="info" @click="onSubmit">提交试卷 </NButton>
-      <NButton class="mt-2" block @click="router.push('/')">返回 </NButton>
+      <NButton block type="info" @click="onSubmit">提交试卷</NButton>
+      <NButton class="mt-2" block @click="router.push('/')">返回</NButton>
     </div>
   </div>
   <div v-else class="flex flex-col min-h-[100vh] items-center">
@@ -43,7 +43,7 @@ const router = useRouter();
 
 const questionnaireId = ref<string>();
 const answers = ref<Record<string, string[]>>({});
-const order = ref<number[]>();
+const order = ref<string[] | number[]>();
 const data = ref<Questionnaire>();
 
 const percentage = computed(() => {
@@ -58,20 +58,24 @@ onMounted(async () => {
   if (id) {
     questionnaireId.value = id;
 
-    const { data: questionnaireData } = await getQuestionnaireApi(id);
+    const res = await getQuestionnaireApi(id);
 
-    if (questionnaireData.settings.randomType === "1") {
-      questionnaireData.questions = randomByArr(questionnaireData.questions);
-      questionnaireData.questions.forEach((question) => {
-        if (questionnaireData.settings.randomType === "1") {
-          question.options = randomByArr(question.options);
-        }
-      });
+    if (res.code === 200) {
+      const { data: questionnaireData } = res;
+
+      if (questionnaireData.settings.randomType === "1") {
+        questionnaireData.questions = randomByArr(questionnaireData.questions);
+        questionnaireData.questions.forEach((question) => {
+          if (questionnaireData.settings.randomType === "1") {
+            question.options = randomByArr(question.options);
+          }
+        });
+      }
+
+      order.value = questionnaireData.questions.map((question) => question.id);
+
+      data.value = questionnaireData;
     }
-
-    order.value = questionnaireData.questions.map((question) => question.id);
-
-    data.value = questionnaireData;
   }
 });
 

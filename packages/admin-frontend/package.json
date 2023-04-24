@@ -4,6 +4,7 @@
   "scripts": {
     "dev:mock": "vite --open --mode mock",
     "dev": "vite --open --mode development",
+    "dev:local:mock": "cross-env VITE_PROXY_TYPE=local vite --open --mode mock",
     "dev:linux": "vite --mode development",
     "build:test": "vite build --mode test",
     "build": "vue-tsc --noEmit && vite build --mode release",

@@ -63,15 +63,19 @@ const onPostCode = async () => {
     return;
   }
   const res = await sendEmailCodeApi(formValue.email);
-  console.log(res, "layouwen");
 
-  codeStatus.time = 5;
-  const timer = setInterval(() => {
-    codeStatus.time--;
-    if (codeStatus.time <= 0) {
-      clearInterval(timer);
-    }
-  }, 1000);
+  if (res.code === 200) {
+    codeStatus.time = 30;
+    const timer = setInterval(() => {
+      codeStatus.time--;
+      if (codeStatus.time <= 0) {
+        clearInterval(timer);
+      }
+    }, 1000);
+    message.success("发送成功");
+  } else {
+    message.error("发送失败");
+  }
 };
 
 const onSubmit = async () => {
@@ -84,13 +88,13 @@ const onSubmit = async () => {
   if (!formValue.password) {
     return message.warning("请输入密码");
   }
-  const res: any = await registerApi(formValue);
-  if (res.msg) {
-    message.info(res.msg);
-  }
-  if (res.token) {
+
+  const res = await registerApi(formValue);
+
+  if (res.code === 200) {
+    localStorage.setItem("token", res.data.token);
+
     message.success("注册成功");
-    localStorage.setItem("token", res.token);
     setTimeout(() => {
       router.push("/");
     }, 1000);

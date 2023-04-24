@@ -1,17 +1,30 @@
-import { QuestionType } from "../business";
-import { JsonData } from "../dto";
+// import {Question} from '@prisma/client'
+import { QUESTION_TYPE } from "../../constants";
+import { DbFiled } from "../utils";
 
-export type QuestionModel = {
-  id: number;
-  createdAt: Date;
-  updatedAt: Date;
+export type QuestionType = keyof typeof QUESTION_TYPE;
+
+export type QuestionRandomType = "0" | "1";
+
+export type QuestionSettings = {
+  randomType: QuestionRandomType;
+};
+
+export type QuestionOption = {
+  label: string;
+  value: string;
+};
+
+export interface Question {
   subject: string;
   order: number;
   type: QuestionType;
-  settings: JsonData;
-  options: JsonData;
-  answers: JsonData;
+  settings: QuestionSettings;
+  options: QuestionOption[];
+  answers: string[];
   analyze: string | null;
   questionnaireId: number;
   userId: number;
-};
+}
+
+export interface QuestionModel extends DbFiled, Question {}

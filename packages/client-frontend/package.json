@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev",
+    "dev": "cross-env PORT=3001 nuxt dev",
+    "dev:local": "cross-env PORT=3001 VITE_PROXY_TYPE=local nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
