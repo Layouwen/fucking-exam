@@ -13,11 +13,9 @@ class QuestionnaireService {
     createQuestionDto: CreateQuestionDto,
     questionnaireId: number
   ) {
-    const { id, ...data } = createQuestionDto;
-
     const res = await prisma.question.create({
       data: {
-        ...data,
+        ...createQuestionDto,
         questionnaireId,
         userId,
       },

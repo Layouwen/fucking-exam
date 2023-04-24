@@ -61,7 +61,8 @@ class QuestionnaireService {
     });
 
     for (const question of questions) {
-      await questionService.create(userId, question, res.id);
+      const { id, ..._question } = question
+      await questionService.create(userId, _question, res.id);
     }
     return res;
   }

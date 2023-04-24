@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { JsonWebTokenError } from "jsonwebtoken";
-import { jwtUtil } from "../utils";
+import { jwtUtil, ResponseError } from "../utils";
 
 function getBearerAndToken(authorization: string) {
   const [bearer, token] = authorization!.split(" ");
@@ -21,16 +21,22 @@ export default (req: Request, res: Response, next: NextFunction) => {
   const { authorization } = req.headers;
 
   if (!authorization) {
-    res.json({
-      msg: "No authorization header found",
-    });
+    res.json(
+      new ResponseError({
+        msg: "No authorization header found",
+        code: 499,
+      })
+    );
     return;
   }
 
   if (!hasBearerToken(req)) {
-    res.json({
-      msg: "No bearer token found",
-    });
+    res.json(
+      new ResponseError({
+        msg: "No bearer token found",
+        code: 499,
+      })
+    );
     return;
   }
 
@@ -44,19 +50,23 @@ export default (req: Request, res: Response, next: NextFunction) => {
   } catch (err: JsonWebTokenError) {
     switch (err.name) {
       case "TokenExpiredError":
-        res.json({
-          msg: "Token has expired",
-        });
+        res.json(
+          new ResponseError({
+            msg: "Token has expired",
+            code: 419,
+          })
+        );
         return;
       case "JsonWebTokenError":
-        res.json({
-          msg: "Token is not valid",
-        });
+        res.json(
+          new ResponseError({
+            msg: "Token is not valid",
+            code: 498,
+          })
+        );
         return;
       default:
-        res.json({
-          msg: "sorry, unknown error",
-        });
+        res.json(new ResponseError({ msg: "Unknown error" }));
     }
   }
 };

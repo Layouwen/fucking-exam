@@ -10,7 +10,7 @@ questionnaire.get(
 );
 questionnaire.post(
   "/submit/:id",
-  clientAuthenticate,
+  clientAuthenticate as any,
   questionnaireClientController.submitQuestionnaireById
 );
 questionnaire.get("/:id", questionnaireClientController.getQuestionnaireById);
