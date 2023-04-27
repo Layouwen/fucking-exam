@@ -96,7 +96,7 @@
 <script lang="ts" setup>
 import {
   OPTIONS_LETTER,
-  QuestionTextInputValueTemplate,
+  // QuestionTextInputValueTemplate,
   moveUpByArr,
   moveDownByArr,
   moveBottomByArr,
@@ -106,6 +106,7 @@ import {
   Question,
   QuestionnaireEditMode,
   QUESTION_TYPE,
+  QuestionTextInputValueTemplate2,
 } from '@fucking-exam/shared';
 import { DialogPlugin, MessagePlugin } from 'tdesign-vue-next';
 import { v4 as uuidV4 } from 'uuid';
@@ -127,7 +128,7 @@ const router = useRouter();
 const pageOptionType = ref<PageOptionType>();
 const questionnaireData = ref<QuestionnaireData>();
 const mode = ref<QuestionnaireEditMode>();
-const inputText = ref(QuestionTextInputValueTemplate);
+const inputText = ref(QuestionTextInputValueTemplate2);
 const curEditIdOrUUID = ref('');
 const paperNameDialogVisible = ref(false);
 const analyzeDialogVisible = ref(false);
@@ -220,12 +221,15 @@ const onParseText = () => {
         }
 
         question.options = lines.map((line) => {
-          const [value, ...textArr] = line.split(' ');
+          const regExp = /^([A-Z])[、.。．]?\s*/;
+          const match = line.match(regExp);
+          const value = match[1];
+          const [, ...textArr] = line.split(/^[A-Z][、.。．]?\s*/);
           const uuid = uuidV4();
           answerUUIDMap.set(value, uuid);
           return {
             value: uuid,
-            label: textArr.join(''),
+            label: textArr.join('').trim(),
           };
         });
 
