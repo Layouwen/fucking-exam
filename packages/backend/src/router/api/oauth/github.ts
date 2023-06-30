@@ -4,7 +4,12 @@ import axios from "axios";
 import config from "../../../config";
 import { userService, githubInfoService } from "../../../services";
 import { IRequest } from "../../../types";
-import { jwtUtil, ResponseError, ResponseSuccess } from "../../../utils";
+import {
+  getProxyUrl,
+  jwtUtil,
+  ResponseError,
+  ResponseSuccess,
+} from "../../../utils";
 
 const github = Router();
 
@@ -16,11 +21,11 @@ github.post("/", async (req: IRequest<any, OauthGithubRequestBody>, res) => {
   try {
     const tokenResponse = await axios({
       method: "post",
-      url:
-        "https://github.com/login/oauth/access_token?" +
-        `client_id=${config.oauth.github.clientID}&` +
-        `client_secret=${config.oauth.github.clientSecret}&` +
-        `code=${code}`,
+      url: await getProxyUrl(
+        "github",
+        "https://github.com",
+        `/login/oauth/access_token?client_id=${config.oauth.github.clientID}&client_secret=${config.oauth.github.clientSecret}&code=${code}`
+      ),
       headers: {
         accept: "application/json",
       },
@@ -36,7 +41,7 @@ github.post("/", async (req: IRequest<any, OauthGithubRequestBody>, res) => {
 
     const result = await axios({
       method: "get",
-      url: `https://api.github.com/user`,
+      url: await getProxyUrl("apigithub", "https://api.github.com", "/user"),
       headers: {
         accept: "application/json",
         Authorization: `token ${accessToken}`,

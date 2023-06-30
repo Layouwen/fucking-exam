@@ -20,4 +20,7 @@ export default {
   session: {
     secret: process.env.SESSION_SECRET || "Avan",
   },
+  proxy: {
+    url: process.env.PROXY_URL || "",
+  },
 };
