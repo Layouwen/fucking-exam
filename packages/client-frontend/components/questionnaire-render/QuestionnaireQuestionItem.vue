@@ -3,7 +3,7 @@
     <div class="text-[17px] font-bold mb-2">
       {{ displayOrder }}{{ question.subject }}
     </div>
-    <div class="text-[16px]">
+    <div class="text-[16px] space-y-2">
       <NCheckboxGroup
         class="flex flex-col border-solid border-[1px] border-[#e3e3e3]"
         v-if="question.type === 'multipleChoice'"
@@ -14,8 +14,16 @@
           :class="[
             borderClass(index, question.options.length),
             {
-              error: errorClass(question.id, option.value, question.answers),
-              right: rightClass(question.id, option.value, question.answers),
+              error: isErrorClass(
+                option.value,
+                answers[question.id],
+                question.answers
+              ),
+              right: isRightClass(
+                option.value,
+                answers[question.id],
+                question.answers
+              ),
             },
           ]"
           v-for="(option, index) in question.options"
@@ -34,8 +42,16 @@
           :class="[
             borderClass(index, question.options.length),
             {
-              error: errorClass(question.id, option.value, question.answers),
-              right: rightClass(question.id, option.value, question.answers),
+              error: isErrorClass(
+                option.value,
+                answers[question.id],
+                question.answers
+              ),
+              right: isRightClass(
+                option.value,
+                answers[question.id],
+                question.answers
+              ),
             },
           ]"
           v-for="(option, index) in question.options"
@@ -47,6 +63,25 @@
         </NRadio>
       </n-radio-group>
       <div v-else>not support</div>
+      <div
+        class="space-y-2"
+        v-if="type === QuestionnaireRenderType.QUESTIONNAIRE_RESPONSE"
+      >
+        <div v-if="isRight" class="text-[green] text-[15px] bg-[#f7f7f7]">
+          回答正确
+        </div>
+        <div v-else class="text-[red] text-[15px] bg-[#f7f7f7]">回答错误</div>
+        <div class="text-[14px] bg-[#f7f7f7]">
+          <template v-if="!isRight">
+            <div class="text-[green]">正确答案:</div>
+            <div v-for="text in rightAnswers" key="text">{{ text }}</div>
+          </template>
+          <template v-if="question.analyze">
+            <div class="text-[#595959]">答案解析:</div>
+            <div class="text-[#8c8c8c]">{{ question.analyze }}</div>
+          </template>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -88,28 +123,36 @@ const borderClass = (index: number, length: number) => {
   return `${borderBottom} border-t-0 border-l-0 border-r-0 border-solid p-3 border-[#e3e3e3]`;
 };
 
-const rightClass = (id: number, value: string, answer: string) => {
-  if(props.type === QuestionnaireRenderType.QUESTIONNAIRE) return false;
-  return answer.includes(value);
+const isRight = computed(() => {
+  if (props.type !== QuestionnaireRenderType.QUESTIONNAIRE_RESPONSE)
+    return false;
+  const {
+    answers: myAnswers,
+    question: { id, answers },
+  } = props;
+  const arr = myAnswers![id];
+  return answers.every((item: string) => arr.includes(item));
+});
+
+const isRightClass = (value: any, myAnswers: any, answers: any) => {
+  const curAnswersArr = Array.isArray(myAnswers) ? myAnswers : [myAnswers];
+  return curAnswersArr.includes(value) && answers.includes(value);
 };
 
-const errorClass = (id: number, value: string, answer: string) => {
-  if(props.type === QuestionnaireRenderType.QUESTIONNAIRE) return false;
-
-  const answers = props.answers![id];
-  if (typeof answers === "string") {
-    if (answers !== answer[0] && answers === value) {
-      return true;
-    }
-  } else if (Array.isArray(answers)) {
-    // answers [2,3,4]
-    // answer [1,2,3]
-    if (!answer.includes(value) && answers.includes(value)) {
-      return true;
-    }
-  }
-  return false;
+const isErrorClass = (value: any, myAnswers: any, answers: any) => {
+  const curAnswersArr = Array.isArray(myAnswers) ? myAnswers : [myAnswers];
+  return curAnswersArr.includes(value) && !answers.includes(value);
 };
+
+const rightAnswers = computed(() => {
+  if (props.type !== QuestionnaireRenderType.QUESTIONNAIRE_RESPONSE) return [];
+  const {
+    question: { answers, options },
+  } = props;
+  return answers.map(
+    (v: string) => options.find((item: any) => item.value === v).label
+  );
+});
 </script>
 
 <style scoped lang="less">
