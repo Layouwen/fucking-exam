@@ -44,6 +44,12 @@ const onSubmit = async () => {
     return message.warning("请输入密码");
   }
 
+  Object.keys(formValue).forEach(
+    (key) =>
+      (formValue[key as keyof typeof formValue] =
+        formValue[key as keyof typeof formValue].trim())
+  );
+
   const res = await loginApi(formValue);
 
   if (res.code === 200) {
