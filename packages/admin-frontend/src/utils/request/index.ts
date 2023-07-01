@@ -1,7 +1,6 @@
 // axios配置  可自行根据项目进行更改，只需更改该文件即可，其他文件可以不动
 import isString from 'lodash/isString';
 import merge from 'lodash/merge';
-import { getUserStore } from '@/store';
 import type { AxiosTransform, CreateAxiosOptions } from './AxiosTransform';
 import { VAxios } from './Axios';
 import proxy from '@/config/proxy';
@@ -111,13 +110,17 @@ const transform: AxiosTransform = {
 
   // 请求拦截器处理
   requestInterceptors: (config, options) => {
+    let token = '';
+    const user = localStorage.getItem('user');
+    if (user) {
+      token = JSON.parse(user).token;
+    }
     // 请求之前处理config
-    const userStore = getUserStore();
-    if (userStore.token && (config as Recordable)?.requestOptions?.withToken !== false) {
+    if (token && (config as Recordable)?.requestOptions?.withToken !== false) {
       // jwt token
       (config as Recordable).headers.Authorization = options.authenticationScheme
-        ? `${options.authenticationScheme} ${userStore.token}`
-        : userStore.token;
+        ? `${options.authenticationScheme} ${token}`
+        : token;
     }
     return config;
   },

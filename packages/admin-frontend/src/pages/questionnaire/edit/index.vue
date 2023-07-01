@@ -223,6 +223,7 @@ const onParseText = () => {
         question.options = lines.map((line) => {
           const regExp = /^([A-Z])[、.。．]?\s*/;
           const match = line.match(regExp);
+          // window.line = line
           const value = match[1];
           const [, ...textArr] = line.split(/^[A-Z][、.。．]?\s*/);
           const uuid = uuidV4();
@@ -252,6 +253,7 @@ const onParseText = () => {
 
     questionnaireData.value = _questionnaireData;
   } catch (e) {
+    // console.log('解析失败', window.line, e);
     MessagePlugin.warning('解析失败，请先输入内容');
   }
 };
