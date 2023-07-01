@@ -67,11 +67,24 @@
         class="space-y-2"
         v-if="type === QuestionnaireRenderType.QUESTIONNAIRE_RESPONSE"
       >
-        <div v-if="isRight" class="text-[green] text-[15px] bg-[#f7f7f7]">
-          回答正确
+        <div
+          v-if="isRight"
+          class="text-[green] text-[15px] bg-[#f7f7f7] p-2 rounded-md flex items-center space-x-2"
+        >
+          <Icon name="check-circle-filled" />
+          <span>回答正确</span>
         </div>
-        <div v-else class="text-[red] text-[15px] bg-[#f7f7f7]">回答错误</div>
-        <div class="text-[14px] bg-[#f7f7f7]">
+        <div
+          v-else
+          class="text-[red] text-[15px] bg-[#f7f7f7] p-2 rounded-[2px] flex items-center space-x-2"
+        >
+          <Icon name="close-circle-filled" />
+          <span>回答错误</span>
+        </div>
+        <div
+          v-if="!isRight || question.analyze"
+          class="text-[14px] bg-[#f7f7f7] p-2 rounded-[2px]"
+        >
           <template v-if="!isRight">
             <div class="text-[green]">正确答案:</div>
             <div v-for="text in rightAnswers" key="text">{{ text }}</div>
@@ -98,6 +111,7 @@ export default defineComponent({
 import { QuestionnaireRenderType } from "./type";
 import { defineProps, computed } from "vue";
 import { NRadio, NCheckbox, NCheckboxGroup, NRadioGroup } from "naive-ui";
+import { Icon } from "tdesign-vue-next";
 
 const props = withDefaults(
   defineProps<{
@@ -134,9 +148,13 @@ const isRight = computed(() => {
   return answers.every((item: string) => arr.includes(item));
 });
 
-const isRightClass = (value: any, myAnswers: any, answers: any) => {
+const isSelect = (value: any, myAnswers: any) => {
   const curAnswersArr = Array.isArray(myAnswers) ? myAnswers : [myAnswers];
-  return curAnswersArr.includes(value) && answers.includes(value);
+  return curAnswersArr.includes(value);
+};
+
+const isRightClass = (value: any, myAnswers: any, answers: any) => {
+  return isSelect(value, myAnswers) && answers.includes(value);
 };
 
 const isErrorClass = (value: any, myAnswers: any, answers: any) => {
@@ -156,11 +174,22 @@ const rightAnswers = computed(() => {
 </script>
 
 <style scoped lang="less">
+@right-color: #00a870;
+@error-color: #ff4d4f;
+
 .right {
   :deep {
     .n-checkbox__label,
     .n-radio__label {
-      color: #00a870;
+      color: @right-color;
+    }
+
+    .n-radio__dot--checked {
+      box-shadow: inset 0 0 0 1px @right-color;
+
+      &::before {
+        background: @right-color;
+      }
     }
   }
 }
@@ -169,7 +198,15 @@ const rightAnswers = computed(() => {
   :deep {
     .n-checkbox__label,
     .n-radio__label {
-      color: #ff4d4f;
+      color: @error-color;
+    }
+
+    .n-radio__dot--checked {
+      box-shadow: inset 0 0 0 1px @error-color;
+
+      &::before {
+        background: @error-color;
+      }
     }
   }
 }

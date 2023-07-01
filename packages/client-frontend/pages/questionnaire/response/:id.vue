@@ -3,6 +3,7 @@
     :type="QuestionnaireRenderType.QUESTIONNAIRE_RESPONSE"
     :data="data"
     :answers="answers"
+    :result="answers"
   />
   <n-button block type="primary" @click="router.push('/')">返回</n-button>
 </template>
