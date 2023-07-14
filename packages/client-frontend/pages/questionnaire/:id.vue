@@ -30,60 +30,58 @@
 </template>
 
 <script lang="ts" setup>
-import { Questionnaire, randomByArr } from "@fucking-exam/shared";
-import { NButton, NProgress, useMessage, NSkeleton } from "naive-ui";
-import { onMounted, computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { getQuestionnaireApi, postQuestionnaireSubmitApi } from "~/api";
-import { QuestionnaireRender } from "~/components";
+import { Questionnaire, randomByArr } from '@fucking-exam/shared'
+import { NButton, NProgress, useMessage, NSkeleton } from 'naive-ui'
+import { onMounted, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { getQuestionnaireApi, postQuestionnaireSubmitApi } from '~/api'
+import { QuestionnaireRender } from '~/components'
 
-const message = useMessage();
-const route = useRoute();
-const router = useRouter();
+const message = useMessage()
+const route = useRoute()
+const router = useRouter()
 
-const questionnaireId = ref<string>();
-const answers = ref<Record<string, string[]>>({});
-const order = ref<string[] | number[]>();
-const data = ref<Questionnaire>();
+const questionnaireId = ref<string>()
+const answers = ref<Record<string, string[]>>({})
+const order = ref<string[] | number[]>()
+const data = ref<Questionnaire>()
 
 const percentage = computed(() => {
-  if (!data.value) return 0;
-  return Math.floor(
-    (Object.keys(answers.value).length / data.value.questions.length) * 100
-  );
-});
+  if (!data.value) return 0
+  return Math.floor((Object.keys(answers.value).length / data.value.questions.length) * 100)
+})
 
 onMounted(async () => {
-  const { id } = route.params as { id: string };
+  const { id } = route.params as { id: string }
   if (id) {
-    questionnaireId.value = id;
+    questionnaireId.value = id
 
-    const res = await getQuestionnaireApi(id);
+    const res = await getQuestionnaireApi(id)
 
     if (res.code === 200) {
-      const { data: questionnaireData } = res;
+      const { data: questionnaireData } = res
 
-      if (questionnaireData.settings.randomType === "1") {
-        questionnaireData.questions = randomByArr(questionnaireData.questions);
-        questionnaireData.questions.forEach((question) => {
-          if (questionnaireData.settings.randomType === "1") {
-            question.options = randomByArr(question.options);
+      if (questionnaireData.settings.randomType === '1') {
+        questionnaireData.questions = randomByArr(questionnaireData.questions)
+        questionnaireData.questions.forEach(question => {
+          if (questionnaireData.settings.randomType === '1') {
+            question.options = randomByArr(question.options)
           }
-        });
+        })
       }
 
-      order.value = questionnaireData.questions.map((question) => question.id);
+      order.value = questionnaireData.questions.map(question => question.id)
 
-      data.value = questionnaireData;
+      data.value = questionnaireData
     }
   }
-});
+})
 
 const onSubmit = async () => {
-  if (!questionnaireId.value || !order.value || !data.value) return;
+  if (!questionnaireId.value || !order.value || !data.value) return
 
   if (Object.keys(answers.value).length !== data.value.questions.length) {
-    return message.warning("请完成所有题目");
+    return message.warning('请完成所有题目')
   }
 
   try {
@@ -92,10 +90,10 @@ const onSubmit = async () => {
       answers: answers.value,
       questions: data.value.questions,
       questionnaireVersion: data.value.version,
-    });
-    await router.push(`/questionnaire/response/${res.data.id}`);
+    })
+    if (res.code === 200) router.push(`/questionnaire/response/${res.data.id}`)
   } catch (e) {
-    console.log(e);
+    console.log(e)
   }
-};
+}
 </script>
