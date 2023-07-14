@@ -1,5 +1,5 @@
 import { ResponseBaseData } from '@fucking-exam/shared';
-import { request } from '@/utils/request';
+import { vaxios } from '../utils';
 
 const Api = {
   Login: '/auth/login',
@@ -9,27 +9,17 @@ const Api = {
 };
 
 export function loginApi(data: { email: string; password: string }) {
-  return request.post<ResponseBaseData<{ token }>>({
-    url: Api.Login,
-    data,
-  });
+  return vaxios.post<ResponseBaseData<{ token }>>(Api.Login, data);
 }
 
 export function getQuestionnaireListApi() {
-  return request.get({
-    url: Api.GetQuestionnaireList,
-  });
+  return vaxios.get(Api.GetQuestionnaireList);
 }
 
 export function deleteQuestionnaireApi(id: number) {
-  return request.delete({
-    url: `${Api.DeleteQuestionnaire}/${id}`,
-  });
+  return vaxios.delete(`${Api.DeleteQuestionnaire}/${id}`);
 }
 
 export function postQuestionnaireApi(jsonData: any) {
-  return request.post({
-    url: Api.PostQuestionnaire,
-    data: { jsonData },
-  });
+  return vaxios.post(Api.PostQuestionnaire, { jsonData });
 }

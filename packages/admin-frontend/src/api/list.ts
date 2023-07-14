@@ -1,5 +1,5 @@
-import { request } from '@/utils/request';
 import type { CardListResult, ListResult } from '@/api/model/listModel';
+import { vaxios } from '@/utils';
 
 const Api = {
   BaseList: '/get-list',
@@ -7,13 +7,9 @@ const Api = {
 };
 
 export function getQuestionnaireApi() {
-  return request.get<ListResult>({
-    url: Api.BaseList,
-  });
+  return vaxios.get<ListResult>(Api.BaseList);
 }
 
 export function getCardList() {
-  return request.get<CardListResult>({
-    url: Api.CardList,
-  });
+  return vaxios.get<CardListResult>(Api.CardList);
 }

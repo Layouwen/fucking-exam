@@ -1,5 +1,5 @@
-import { request } from '@/utils/request';
 import type { ProjectListResult, PurchaseListResult } from '@/api/model/detailModel';
+import { vaxios } from '@/utils';
 
 const Api = {
   PurchaseList: '/get-purchase-list',
@@ -7,13 +7,9 @@ const Api = {
 };
 
 export function getPurchaseList() {
-  return request.get<PurchaseListResult>({
-    url: Api.PurchaseList,
-  });
+  return vaxios.get<PurchaseListResult>(Api.PurchaseList);
 }
 
 export function getProjectList() {
-  return request.get<ProjectListResult>({
-    url: Api.ProjectList,
-  });
+  return vaxios.get<ProjectListResult>(Api.ProjectList);
 }
