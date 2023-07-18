@@ -18,13 +18,13 @@
 
 <script lang="ts" setup>
 import { NCard } from 'naive-ui'
-import { getQuestionnaireListApi } from '~/api'
-import { onMounted, ref } from 'vue'
+import { getQuestionnaireMineApi } from '~/api'
 import dayjs from 'dayjs'
-const questionnaireList = ref<any>([])
+
+const questionnaireList = ref<any[]>([])
 
 onMounted(async () => {
-  const listRes = await getQuestionnaireListApi()
+  const listRes = await getQuestionnaireMineApi()
   questionnaireList.value = listRes.data.list
 })
 

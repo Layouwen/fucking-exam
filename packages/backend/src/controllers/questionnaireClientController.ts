@@ -16,6 +16,16 @@ class QuestionnaireClientController {
     res.json(new ResponseSuccess({ data }))
   }
 
+  async getQuestionnaireMineList(req: IRequest, res: Response) {
+    const user = req.user!
+
+    const data = await questionnaireService.findAll({
+      userId: user.id,
+    })
+
+    res.json(new ResponseSuccess({ data }))
+  }
+
   async getQuestionnaireById(req: IRequest<{ id: string }>, res: Response) {
     const {
       params: { id },

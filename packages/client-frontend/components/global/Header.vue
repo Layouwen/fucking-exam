@@ -5,7 +5,7 @@
     </div>
     <span class="flex-grow text-center">问卷列表</span>
     <div class="w-[70px] text-center">
-      <span v-if="isLogin()">我的</span>
+      <span v-if="isLogin()" @click="onGoMine">我的</span>
       <span v-else @click="onOpenOptionModal">登录</span>
     </div>
   </div>
@@ -37,6 +37,10 @@ const onSelect = (item: { name: string }) => {
 
 const onGoHome = () => {
   navigateTo('/')
+}
+
+const onGoMine = () => {
+  navigateTo('/questionnaire/mine')
 }
 
 const showModal = ref(false)
