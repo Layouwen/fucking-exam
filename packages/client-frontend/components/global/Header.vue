@@ -16,7 +16,10 @@
 import { isLogin } from '@fucking-exam/shared'
 import config from '~/config'
 
-const isHome = computed(() => window.location.pathname === '/')
+const isHome = computed(() => {
+  if (process.client) return window.location.pathname === '/'
+  return false
+})
 
 const actions = [{ name: '邮箱登录' }, { name: 'Github登录' }, { name: '注册' }, { name: '取消' }]
 

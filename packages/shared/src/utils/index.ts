@@ -56,6 +56,7 @@ export function isMobile() {
 }
 
 export function isLogin() {
+  if (typeof window === "undefined") return false;
   return !!localStorage.getItem("token");
 }
 
