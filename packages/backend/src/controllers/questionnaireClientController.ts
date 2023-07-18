@@ -1,61 +1,65 @@
-import { Response } from "express";
-import {
-  questionnaireResponsesService,
-  questionnaireService,
-} from "../services";
-import { IRequest } from "../types";
+import { Response } from 'express'
+import { questionnaireResponsesService, questionnaireService } from '../services'
+import { IRequest } from '../types'
 import {
   QuestionnaireClientSubmitRequestParams,
   QuestionClientQuestionnaireResponseParams,
   QuestionnaireClientSubmitRequestBody,
-} from "@fucking-exam/shared/dist/cjs";
-import { ResponseSuccess } from "../utils";
+  CreateQuestionnaireResponseDto,
+} from '@fucking-exam/shared/dist/cjs'
+import { ResponseSuccess } from '../utils'
 
 class QuestionnaireClientController {
   async getQuestionnaireList(req: IRequest, res: Response) {
-    const data = await questionnaireService.findAll();
+    const data = await questionnaireService.findAll()
 
-    res.json(new ResponseSuccess({ data }));
+    res.json(new ResponseSuccess({ data }))
   }
 
   async getQuestionnaireById(req: IRequest<{ id: string }>, res: Response) {
     const {
       params: { id },
-    } = req;
+    } = req
 
-    const data = await questionnaireService.findOne({ id: +id });
+    const data = await questionnaireService.findOne({ id: +id })
 
-    res.json(new ResponseSuccess({ data }));
+    res.json(new ResponseSuccess({ data }))
   }
 
   async submitQuestionnaireById(
-    req: IRequest<
-      QuestionnaireClientSubmitRequestParams,
-      QuestionnaireClientSubmitRequestBody
-    >,
+    req: IRequest<QuestionnaireClientSubmitRequestParams, QuestionnaireClientSubmitRequestBody>,
     res: Response
   ) {
-    const { user, params, body } = req;
+    const {
+      user,
+      params,
+      body: { fingerprint, ...body },
+    } = req
 
-    const data = await questionnaireResponsesService.create({
+    const createDto = {
       ...body,
       questionnaireId: +params.id,
-      userId: +user.id,
-    });
+    } as CreateQuestionnaireResponseDto
 
-    res.json(new ResponseSuccess({ data: { id: data.id } }));
+    if (user) {
+      createDto.userId = +user.id
+    }
+    if (fingerprint) {
+      createDto.fingerprint = fingerprint
+    }
+
+    const data = await questionnaireResponsesService.create(createDto)
+
+    res.json(new ResponseSuccess({ data: { id: data.id } }))
   }
 
-  async getQuestionnaireResponseById(
-    req: IRequest<QuestionClientQuestionnaireResponseParams>,
-    res: Response
-  ) {
-    const { id } = req.params;
+  async getQuestionnaireResponseById(req: IRequest<QuestionClientQuestionnaireResponseParams>, res: Response) {
+    const { id } = req.params
 
-    const data = await questionnaireResponsesService.findOne(+id);
+    const data = await questionnaireResponsesService.findOne(+id)
 
-    res.json(new ResponseSuccess({ data }));
+    res.json(new ResponseSuccess({ data }))
   }
 }
 
-export default new QuestionnaireClientController();
+export default new QuestionnaireClientController()

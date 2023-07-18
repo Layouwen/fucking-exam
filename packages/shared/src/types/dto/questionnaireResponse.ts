@@ -1,4 +1,3 @@
-import { QuestionnaireResponses } from "../module";
+import { QuestionnaireResponses } from '../module'
 
-export interface CreateQuestionnaireResponseDto
-  extends QuestionnaireResponses {}
+export interface CreateQuestionnaireResponseDto extends QuestionnaireResponses {}

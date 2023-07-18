@@ -28,6 +28,7 @@ export interface QuestionnaireClientSubmitRequestBody {
   answers: Record<string, string[]>;
   questionnaireVersion: number;
   questions: Question[];
+  fingerprint?: string;
 }
 
 export interface QuestionnaireClientSubmitResponseData {

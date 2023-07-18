@@ -19,10 +19,11 @@ model QuestionnaireResponses {
   questions            Json
   questionnaire        Questionnaire? @relation(fields: [questionnaireId], references: [id])
   questionnaireId      Int
-  user                 User           @relation(fields: [userId], references: [id])
-  userId               Int
+  user                 User?          @relation(fields: [userId], references: [id])
+  userId               Int?
   order                Json
   answers              Json
+  fingerprint          String?
 }
 
 enum QuestionType {

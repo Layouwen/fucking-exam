@@ -11,7 +11,7 @@ class QuestionnaireAdminController {
   }
 
   async create(req: IRequest<any, CreateQuestionnaireDto>, res: Response) {
-    const user = req.user;
+    const user = req.user!;
     const { jsonData } = req.body;
     if (!jsonData)
       return res.json(new ResponseError({ msg: "json data is required" }));
@@ -28,7 +28,7 @@ class QuestionnaireAdminController {
     } = req;
 
     await questionnaireService.update(
-      { id: +id, userId: user.id },
+      { id: +id, userId: user!.id },
       { deletedAt: new Date() }
     );
 

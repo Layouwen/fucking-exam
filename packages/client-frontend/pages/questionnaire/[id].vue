@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Questionnaire, randomByArr } from '@fucking-exam/shared'
+import { Questionnaire, QuestionnaireClientSubmitRequestBody, isLogin, randomByArr } from '@fucking-exam/shared'
 import { NButton, NProgress, useMessage, NSkeleton } from 'naive-ui'
 import { onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -84,13 +84,20 @@ const onSubmit = async () => {
     return message.warning('请完成所有题目')
   }
 
+  const postData = {
+    order: order.value,
+    answers: answers.value,
+    questions: data.value.questions,
+    questionnaireVersion: data.value.version,
+  } as QuestionnaireClientSubmitRequestBody
+
+  if (!isLogin()) {
+    const fingerprint = await getFingerprint()
+    postData.fingerprint = fingerprint
+  }
+
   try {
-    const res = await postQuestionnaireSubmitApi(+questionnaireId.value, {
-      order: order.value,
-      answers: answers.value,
-      questions: data.value.questions,
-      questionnaireVersion: data.value.version,
-    })
+    const res = await postQuestionnaireSubmitApi(+questionnaireId.value, postData)
     if (res.code === 200) router.push(`/questionnaire/response/${res.data.id}`)
   } catch (e) {
     console.log(e)
