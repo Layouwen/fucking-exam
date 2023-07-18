@@ -11,7 +11,7 @@ import { ResponseSuccess } from '../utils'
 
 class QuestionnaireClientController {
   async getQuestionnaireList(req: IRequest, res: Response) {
-    const data = await questionnaireService.findAll()
+    const data = await questionnaireService.findAll({ type: 0 })
 
     res.json(new ResponseSuccess({ data }))
   }
