@@ -1,29 +1,35 @@
 <template>
-  <div class="px-10 pt-32">
-    <n-form ref="formRef" :model="formValue" label-width="60" labelPlacement="left">
-      <n-form-item label="邮箱:" path="email">
-        <n-input v-model:value="formValue.email" placeholder="请输入邮箱" />
-      </n-form-item>
-      <n-form-item label="密码:" path="password">
-        <n-input v-model:value="formValue.password" placeholder="输入密码" />
-      </n-form-item>
-      <n-form-item label="验证码:" path="phone">
-        <n-input v-model:value="formValue.code" placeholder="请输入验证码" />
-        <n-button class="ml-2" :disabled="codeDisabled" @click="onPostCode">{{ codeText }}</n-button>
-      </n-form-item>
-      <n-form-item>
-        <div class="space-y-2 w-full">
-          <n-button block type="primary" @click="onSubmit">注册</n-button>
-          <n-button block @click="onBack">返回</n-button>
-        </div>
-      </n-form-item>
-    </n-form>
-  </div>
+  <van-form class="mt-32 px-4 space-y-3" @submit="onSubmit">
+    <van-cell-group inset>
+      <van-field
+        v-model="formValue.email"
+        name="邮箱"
+        label="邮箱"
+        placeholder="请输入邮箱"
+        :rules="[{ required: true, message: '请输入邮箱' }]"
+      />
+      <van-field
+        v-model="formValue.password"
+        type="password"
+        name="密码"
+        label="密码"
+        placeholder="请输入密码"
+        :rules="[{ required: true, message: '请输入密码' }]"
+      />
+      <van-field v-model="formValue.code" center clearable label="验证码" placeholder="请输入验证码">
+        <template #button>
+          <van-button size="small" type="primary" :disabled="codeDisabled" @click="onPostCode">
+            {{ codeText }}
+          </van-button>
+        </template>
+      </van-field>
+    </van-cell-group>
+    <van-button round block type="primary" native-type="submit">注册</van-button>
+    <van-button round block @click="onBack">返回</van-button>
+  </van-form>
 </template>
 
 <script lang="ts" setup>
-// TODO 移除 naive-ui
-import { NForm, NFormItem, NInput, NButton } from 'naive-ui'
 import { showSuccessToast, showFailToast } from 'vant'
 import { reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
@@ -69,6 +75,7 @@ const onPostCode = async () => {
     }, 1000)
     showSuccessToast('发送成功')
   } else {
+    // TODO: 发送失败的提示
     showFailToast('发送失败')
   }
 }
