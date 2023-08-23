@@ -110,6 +110,7 @@ export default defineComponent({
 <script lang="ts" setup>
 import { QuestionnaireRenderType } from "./type";
 import { defineProps, computed } from "vue";
+// TODO 移除 naive-ui
 import { NRadio, NCheckbox, NCheckboxGroup, NRadioGroup } from "naive-ui";
 import { Icon } from "tdesign-vue-next";
 

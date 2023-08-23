@@ -7,6 +7,7 @@
 
 <script lang="ts" setup>
 import { isMobile } from '@fucking-exam/shared'
+// TODO 移除 naive-ui
 import { useMessage } from 'naive-ui'
 
 const message = useMessage()

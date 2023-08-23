@@ -31,6 +31,7 @@
 
 <script lang="ts" setup>
 import { Questionnaire, QuestionnaireClientSubmitRequestBody, isLogin, randomByArr } from '@fucking-exam/shared'
+// TODO 移除 naive-ui
 import { NButton, NProgress, useMessage, NSkeleton } from 'naive-ui'
 import { onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'

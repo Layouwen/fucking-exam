@@ -1,6 +1,7 @@
 <template></template>
 
 <script lang="ts" setup>
+// TODO 移除 naive-ui
 import { useMessage } from "naive-ui";
 import { showLoadingToast, closeToast } from "vant";
 import { postOauthGithubLoginApi } from "~/api";

@@ -17,6 +17,7 @@
 </template>
 
 <script lang="ts" setup>
+// TODO 移除 naive-ui
 import { NCard } from 'naive-ui'
 import { getQuestionnaireMineApi } from '~/api'
 import dayjs from 'dayjs'
