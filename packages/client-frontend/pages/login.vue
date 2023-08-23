@@ -1,11 +1,6 @@
 <template>
   <div class="px-10 pt-32">
-    <n-form
-      ref="formRef"
-      :model="formValue"
-      label-width="60"
-      labelPlacement="left"
-    >
+    <n-form ref="formRef" :model="formValue" label-width="60" labelPlacement="left">
       <n-form-item label="邮箱:" path="email">
         <n-input v-model:value="formValue.email" placeholder="请输入邮箱" />
       </n-form-item>
@@ -24,49 +19,49 @@
 
 <script lang="ts" setup>
 // TODO 移除 naive-ui
-import { NForm, NFormItem, NInput, NButton, useMessage } from "naive-ui";
-import { reactive } from "vue";
-import { useRouter } from "vue-router";
-import { loginApi } from "~/api";
+import { NForm, NFormItem, NInput, NButton } from 'naive-ui'
+import { showFailToast, showSuccessToast } from 'vant'
+import { reactive } from 'vue'
+import { useRouter } from 'vue-router'
+import { loginApi } from '~/api'
 
-const message = useMessage();
-const router = useRouter();
+const router = useRouter()
 
 const formValue = reactive({
-  email: "",
-  password: "",
-});
+  email: '',
+  password: '',
+})
 
 const onSubmit = async () => {
   if (!formValue.email) {
-    return message.warning("请输入邮箱");
+    showFailToast('请输入邮箱')
+    return
   }
   if (!formValue.password) {
-    return message.warning("请输入密码");
+    showFailToast('请输入密码')
+    return
   }
 
   Object.keys(formValue).forEach(
-    (key) =>
-      (formValue[key as keyof typeof formValue] =
-        formValue[key as keyof typeof formValue].trim())
-  );
+    key => (formValue[key as keyof typeof formValue] = formValue[key as keyof typeof formValue].trim())
+  )
 
-  const res = await loginApi(formValue);
+  const res = await loginApi(formValue)
 
   if (res.code === 200) {
-    localStorage.setItem("token", res.data.token);
+    localStorage.setItem('token', res.data.token)
 
     setTimeout(() => {
-      router.push("/");
-    }, 1000);
+      router.push('/')
+    }, 1000)
 
-    message.success("登录成功");
+    showSuccessToast('登录成功')
   } else {
-    message.error("登录失败");
+    showFailToast('登录失败')
   }
-};
+}
 
 const onBack = () => {
-  router.push("/");
-};
+  router.push('/')
+}
 </script>

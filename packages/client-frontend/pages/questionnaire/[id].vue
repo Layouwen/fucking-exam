@@ -32,13 +32,13 @@
 <script lang="ts" setup>
 import { Questionnaire, QuestionnaireClientSubmitRequestBody, isLogin, randomByArr } from '@fucking-exam/shared'
 // TODO 移除 naive-ui
-import { NButton, NProgress, useMessage, NSkeleton } from 'naive-ui'
+import { NButton, NProgress, NSkeleton } from 'naive-ui'
+import { showFailToast } from 'vant'
 import { onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getQuestionnaireApi, postQuestionnaireSubmitApi } from '~/api'
 import { QuestionnaireRender } from '~/components'
 
-const message = useMessage()
 const route = useRoute()
 const router = useRouter()
 
@@ -82,7 +82,8 @@ const onSubmit = async () => {
   if (!questionnaireId.value || !order.value || !data.value) return
 
   if (Object.keys(answers.value).length !== data.value.questions.length) {
-    return message.warning('请完成所有题目')
+    showFailToast('请完成所有题目')
+    return
   }
 
   const postData = {

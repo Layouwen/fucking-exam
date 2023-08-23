@@ -1,42 +1,39 @@
 <template></template>
 
 <script lang="ts" setup>
-// TODO 移除 naive-ui
-import { useMessage } from "naive-ui";
-import { showLoadingToast, closeToast } from "vant";
-import { postOauthGithubLoginApi } from "~/api";
+import { showLoadingToast, closeToast, showSuccessToast, showFailToast } from 'vant'
+import { postOauthGithubLoginApi } from '~/api'
 
-const route = useRoute();
-const router = useRouter();
-const message = useMessage();
+const route = useRoute()
+const router = useRouter()
 
 onMounted(async () => {
-  const { code } = route.query;
+  const { code } = route.query
 
   if (code) {
-    router.replace({ path: "/oauth/github" });
+    router.replace({ path: '/oauth/github' })
     showLoadingToast({
-      message: "github授权中...",
+      message: 'github授权中...',
       duration: 0,
       forbidClick: true,
-    });
+    })
 
-    const res = await postOauthGithubLoginApi(code as string);
+    const res = await postOauthGithubLoginApi(code as string)
 
     if (res.code === 200) {
-      localStorage.setItem("token", res.data.token);
-      message.success("登录成功");
+      localStorage.setItem('token', res.data.token)
+      showSuccessToast('登录成功')
     } else {
-      message.error("登录失败");
+      showFailToast('登录失败')
     }
 
-    closeToast();
+    closeToast()
 
     setTimeout(() => {
-      router.push("/");
-    }, 1000);
+      router.push('/')
+    }, 1000)
   } else {
-    router.push("/");
+    router.push('/')
   }
-});
+})
 </script>

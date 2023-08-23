@@ -1,11 +1,6 @@
 <template>
   <div class="px-10 pt-32">
-    <n-form
-      ref="formRef"
-      :model="formValue"
-      label-width="60"
-      labelPlacement="left"
-    >
+    <n-form ref="formRef" :model="formValue" label-width="60" labelPlacement="left">
       <n-form-item label="邮箱:" path="email">
         <n-input v-model:value="formValue.email" placeholder="请输入邮箱" />
       </n-form-item>
@@ -14,9 +9,7 @@
       </n-form-item>
       <n-form-item label="验证码:" path="phone">
         <n-input v-model:value="formValue.code" placeholder="请输入验证码" />
-        <n-button class="ml-2" :disabled="codeDisabled" @click="onPostCode"
-          >{{ codeText }}
-        </n-button>
+        <n-button class="ml-2" :disabled="codeDisabled" @click="onPostCode">{{ codeText }}</n-button>
       </n-form-item>
       <n-form-item>
         <div class="space-y-2 w-full">
@@ -30,79 +23,83 @@
 
 <script lang="ts" setup>
 // TODO 移除 naive-ui
-import { NForm, NFormItem, NInput, NButton, useMessage } from "naive-ui";
-import { reactive, computed } from "vue";
-import { useRouter } from "vue-router";
-import { registerApi, sendEmailCodeApi } from "~/api";
+import { NForm, NFormItem, NInput, NButton } from 'naive-ui'
+import { showSuccessToast, showFailToast } from 'vant'
+import { reactive, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { registerApi, sendEmailCodeApi } from '~/api'
 
-const message = useMessage();
-const router = useRouter();
+const router = useRouter()
 
 const formValue = reactive({
-  email: "",
-  password: "",
-  code: "",
-});
+  email: '',
+  password: '',
+  code: '',
+})
 const codeStatus = reactive({
   time: 0,
-});
+})
 
-const codeDisabled = computed(() => codeStatus.time > 0);
+const codeDisabled = computed(() => codeStatus.time > 0)
 
 const codeText = computed(() => {
   if (codeStatus.time > 0) {
-    return `${codeStatus.time}秒后重发`;
+    return `${codeStatus.time}秒后重发`
   }
-  return "发送验证码";
-});
+  return '发送验证码'
+})
 
 const onPostCode = async () => {
   if (!formValue.email) {
-    return message.warning("请输入邮箱");
+    showFailToast('请输入邮箱')
+    return
   }
   if (codeStatus.time > 0) {
-    return;
+    return
   }
-  const res = await sendEmailCodeApi(formValue.email);
+  const res = await sendEmailCodeApi(formValue.email)
 
   if (res.code === 200) {
-    codeStatus.time = 30;
+    codeStatus.time = 30
     const timer = setInterval(() => {
-      codeStatus.time--;
+      codeStatus.time--
       if (codeStatus.time <= 0) {
-        clearInterval(timer);
+        clearInterval(timer)
       }
-    }, 1000);
-    message.success("发送成功");
+    }, 1000)
+    showSuccessToast('发送成功')
   } else {
-    message.error("发送失败");
+    showFailToast('发送失败')
   }
-};
+}
 
 const onSubmit = async () => {
   if (!formValue.email) {
-    return message.warning("请输入邮箱");
+    showFailToast('请输入邮箱')
+    return
   }
   if (!formValue.code) {
-    return message.warning("请输入验证码");
+    showFailToast('请输入验证码')
+    return
   }
   if (!formValue.password) {
-    return message.warning("请输入密码");
+    showFailToast('请输入密码')
+    return
   }
 
-  const res = await registerApi(formValue);
+  const res = await registerApi(formValue)
 
   if (res.code === 200) {
-    localStorage.setItem("token", res.data.token);
+    localStorage.setItem('token', res.data.token)
 
-    message.success("注册成功");
+    showSuccessToast('注册成功')
     setTimeout(() => {
-      router.push("/");
-    }, 1000);
+      router.push('/')
+    }, 1000)
   }
-};
+}
 
 const onBack = () => {
-  router.push("/");
-};
+  router.push('/')
+}
 </script>

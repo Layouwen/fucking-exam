@@ -7,14 +7,11 @@
 
 <script lang="ts" setup>
 import { isMobile } from '@fucking-exam/shared'
-// TODO 移除 naive-ui
-import { useMessage } from 'naive-ui'
-
-const message = useMessage()
+import { showNotify } from 'vant'
 
 const onSupport = () => {
   if (isMobile()) {
-    message.info('打开QQ')
+    showNotify({ type: 'primary', message: '打开QQ' })
     window.location.href = 'mqq://im/chat?chat_type=wpa&uin=794234293&version=1&src_type=web'
   }
 }
