@@ -18,21 +18,12 @@
         :options="question.options"
         :disabled="QuestionnaireRenderType.QUESTIONNAIRE_RESPONSE === type"
       />
-      <n-radio-group
-        class="flex flex-col border-solid border-[1px] border-[#e3e3e3]"
+      <RadioGroup
         v-else-if="question.type === 'singleChoice'"
         v-model:value="result[question.id]"
+        :options="question.options"
         :disabled="QuestionnaireRenderType.QUESTIONNAIRE_RESPONSE === type"
-      >
-        <NRadio
-          v-for="(option, index) in question.options"
-          :key="option.label"
-          :value="option.value"
-          :name="question.subject"
-        >
-          {{ option.label }}
-        </NRadio>
-      </n-radio-group>
+      />
       <div v-else>not support</div>
       <div class="space-y-2" v-if="type === QuestionnaireRenderType.QUESTIONNAIRE_RESPONSE">
         <div v-if="isRight" class="text-[green] text-[15px] bg-[#f7f7f7] p-2 rounded-md flex items-center space-x-2">
@@ -69,10 +60,9 @@ export default defineComponent({
 <script lang="ts" setup>
 import { QuestionnaireRenderType } from './type'
 import { defineProps, computed } from 'vue'
-// TODO 移除 naive-ui
-import { NRadio, NRadioGroup } from 'naive-ui'
 import { Icon } from 'tdesign-vue-next'
-import CheckboxGroup from './CheckBoxGroup.vue'
+import CheckboxGroup from './CheckboxGroup.vue'
+import RadioGroup from './RadioGroup.vue'
 
 const props = withDefaults(
   defineProps<{
