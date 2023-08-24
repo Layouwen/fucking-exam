@@ -15,7 +15,6 @@
     "url": "https://github.com/Layouwen"
   },
   "devDependencies": {
-    "@css-render/vue3-ssr": "^0.15.12",
     "@nuxtjs/color-mode": "^3.2.0",
     "@nuxtjs/stylelint-module": "^5.0.1",
     "@nuxtjs/tailwindcss": "^6.6.5",
@@ -27,8 +26,7 @@
     "nuxt-lodash": "^2.4.1",
     "nuxt-vitest": "^0.6.9",
     "stylelint": "~13.13.1",
-    "stylelint-config-standard": "^32.0.0",
-    "vfonts": "^0.0.3"
+    "stylelint-config-standard": "^32.0.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.21.0",
@@ -36,7 +34,6 @@
     "@fucking-exam/shared": "workspace:^0.0.1",
     "@pinia/nuxt": "^0.4.7",
     "dayjs": "^1.10.6",
-    "naive-ui": "^2.34.4",
     "pinia": "^2.0.11",
     "tdesign-vue-next": "^0.26.2",
     "vant": "^4.2.0"

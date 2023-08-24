@@ -18,17 +18,10 @@ export default defineNuxtConfig({
       ['defineStore', 'definePiniaStore'], // import { defineStore as definePiniaStore } from 'pinia'
     ],
   },
-  // @ts-ignore
   build: {
-    transpile:
-      process.env.NODE_ENV === 'production'
-        ? ['naive-ui', 'vueuc', '@css-render/vue3-ssr', '@juggle/resize-observer', 'tdesign-vue-next']
-        : ['@juggle/resize-observer', 'tdesign-vue-next'],
+    transpile: ['tdesign-vue-next'],
   },
   vite: {
-    optimizeDeps: {
-      include: process.env.NODE_ENV === 'development' ? ['naive-ui', 'vueuc', 'date-fns-tz/esm/formatInTimeZone'] : [],
-    },
     server: {
       proxy: {
         '/api': {
