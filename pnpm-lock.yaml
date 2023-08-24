@@ -210,6 +210,7 @@ importers:
       nuxt-lodash: ^2.4.1
       nuxt-vitest: ^0.6.9
       pinia: ^2.0.11
+      radash: ^11.0.0
       stylelint: ~13.13.1
       stylelint-config-standard: ^32.0.0
       tdesign-vue-next: ^0.26.2
@@ -221,6 +222,7 @@ importers:
       '@pinia/nuxt': 0.4.7
       dayjs: 1.11.7
       pinia: 2.0.33
+      radash: 11.0.0
       tdesign-vue-next: 0.26.2
       vant: 4.2.0
     devDependencies:
@@ -10942,6 +10944,11 @@ packages:
     resolution: {integrity: sha512-WuyALRjWPDGtt/wzJiadO5AXY+8hZ80hVpe6MyivgraREW751X3SbhRvG3eLKOYN+8VEvqLcf3wdnt44Z4S4SA==}
     engines: {node: '>=10'}
     dev: true
+
+  /radash/11.0.0:
+    resolution: {integrity: sha512-CRWxTFTDff0IELGJ/zz58yY4BDgyI14qSM5OLNKbCItJrff7m7dXbVF0kWYVCXQtPb3SXIVhXvAImH6eT7VLSg==}
+    engines: {node: '>=14.18.0'}
+    dev: false
 
   /radix3/1.0.1:
     resolution: {integrity: sha512-y+AcwZ3HcUIGc9zGsNVf5+BY/LxL+z+4h4J3/pp8jxSmy1STaCocPS3qrj4tA5ehUSzqtqK+0Aygvz/r/8vy4g==}

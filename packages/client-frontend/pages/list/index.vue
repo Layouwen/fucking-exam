@@ -1,5 +1,6 @@
 <template>
-  <div class="flex flex-col">
+  <SearchHeader v-model="searchValue" />
+  <div class="min-h-[calc(100vh-50px-48px)] mt-[50px] flex flex-col">
     <div class="px-4 pt-4 flex-grow">
       <t-card
         class="mb-4"
@@ -14,17 +15,33 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
+// TODO remove nuxt-lodash
+import { debounce } from 'radash'
 import { getQuestionnaireListApi } from '~/api'
 import dayjs from 'dayjs'
+
 const questionnaireList = ref<any>([])
+const searchValue = ref('')
+
+watch(
+  () => searchValue.value,
+  debounce(
+    {
+      delay: 250,
+    },
+    () => {
+      console.log(searchValue.value, 'layouwen')
+    }
+  )
+)
+
+const onClickQuestionnaire = (id: number) => {
+  navigateTo(`/questionnaire/${id}`)
+}
 
 onMounted(async () => {
   const listRes = await getQuestionnaireListApi()
   questionnaireList.value = listRes.data.list
 })
-
-const onClickQuestionnaire = (id: number) => {
-  navigateTo(`/questionnaire/${id}`)
-}
 </script>

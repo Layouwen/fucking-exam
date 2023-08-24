@@ -35,6 +35,7 @@
     "@pinia/nuxt": "^0.4.7",
     "dayjs": "^1.10.6",
     "pinia": "^2.0.11",
+    "radash": "^11.0.0",
     "tdesign-vue-next": "^0.26.2",
     "vant": "^4.2.0"
   }
