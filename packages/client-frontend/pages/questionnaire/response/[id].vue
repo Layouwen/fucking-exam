@@ -1,12 +1,14 @@
 <template>
-  <questionnaire-render
-    :type="QuestionnaireRenderType.QUESTIONNAIRE_RESPONSE"
-    :data="data"
-    :answers="answers"
-    :result="answers"
-  />
-  <div class="px-6 pb-6">
-    <van-button size="small" type="primary" block @click="router.push('/')">返回</van-button>
+  <div class="bg-[#fff]">
+    <questionnaire-render
+      :type="QuestionnaireRenderType.QUESTIONNAIRE_RESPONSE"
+      :data="data"
+      :answers="answers"
+      :result="answers"
+    />
+    <div class="px-6 pb-6">
+      <van-button size="small" type="primary" block @click="router.push('/')">返回</van-button>
+    </div>
   </div>
 </template>
 

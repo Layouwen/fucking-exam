@@ -1,5 +1,5 @@
 <template>
-  <div v-if="data" class="pt-[16px]">
+  <div v-if="data" class="pt-[16px] bg-[#fff]">
     <t-progress
       class="custom-progress fixed top-0 left-0 w-full z-10"
       :percentage="percentage"
@@ -12,7 +12,7 @@
       <van-button size="small" block class="!mt-2" @click="router.push('/')">返回</van-button>
     </div>
   </div>
-  <div v-else class="flex flex-col min-h-[100vh] items-center">
+  <div v-else class="flex flex-col min-h-[100dvh] items-center bg-[#fff]">
     <t-skeleton
       class="!mt-[30px] w-full"
       :rowCol="[

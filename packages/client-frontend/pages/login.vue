@@ -68,9 +68,6 @@ const onBack = () => {
 }
 
 const onGoRegister = () => {
-  navigateTo({
-    replace: true,
-    path: '/register',
-  })
+  navigateTo('/register')
 }
 </script>
