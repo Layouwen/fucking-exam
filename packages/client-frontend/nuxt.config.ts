@@ -6,7 +6,6 @@ export default defineNuxtConfig({
     '@pinia-plugin-persistedstate/nuxt',
     '@nuxtjs/color-mode',
     'nuxt-icon',
-    'nuxt-lodash',
     'nuxt-vitest',
     '@vant/nuxt',
     'tdesign-vue-next/es/nuxt',

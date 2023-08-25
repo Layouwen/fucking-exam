@@ -17,17 +17,19 @@
         :rules="[{ required: true, message: '请输入密码' }]"
       />
     </van-cell-group>
-    <van-button round block type="primary" native-type="submit">提交</van-button>
+    <div class="flex">
+      <span class="ml-auto text-[12px] underline text-[#577df6]" @click="onGoRegister">没有账号? 点击注册</span>
+    </div>
+    <van-button round block type="primary" native-type="submit">登录</van-button>
     <van-button round block @click="onBack">返回</van-button>
   </van-form>
 </template>
 
 <script lang="ts" setup>
 import { showFailToast, showSuccessToast } from 'vant'
-import { reactive } from 'vue'
-import { useRouter } from 'vue-router'
-import { loginApi } from '~/api'
+import { useAuthStore } from '~/stores'
 
+const authStore = useAuthStore()
 const router = useRouter()
 
 const formValue = reactive({
@@ -49,13 +51,10 @@ const onSubmit = async () => {
     key => (formValue[key as keyof typeof formValue] = formValue[key as keyof typeof formValue].trim())
   )
 
-  const res = await loginApi(formValue)
-
+  const res = await authStore.login(formValue)
   if (res.code === 200) {
-    localStorage.setItem('token', res.data.token)
-
     setTimeout(() => {
-      router.push('/')
+      router.back()
     }, 1000)
 
     showSuccessToast('登录成功')
@@ -65,6 +64,13 @@ const onSubmit = async () => {
 }
 
 const onBack = () => {
-  router.push('/')
+  router.back()
+}
+
+const onGoRegister = () => {
+  navigateTo({
+    replace: true,
+    path: '/register',
+  })
 }
 </script>

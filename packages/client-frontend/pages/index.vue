@@ -12,6 +12,7 @@
       </t-card>
     </div>
   </div>
+  <Tabbar />
 </template>
 
 <script lang="ts" setup>

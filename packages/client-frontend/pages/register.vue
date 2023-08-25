@@ -31,10 +31,10 @@
 
 <script lang="ts" setup>
 import { showSuccessToast, showFailToast } from 'vant'
-import { reactive, computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { registerApi, sendEmailCodeApi } from '~/api'
+import { sendEmailCodeApi } from '~/api'
+import { useAuthStore } from '~/stores'
 
+const authStore = useAuthStore()
 const router = useRouter()
 
 const formValue = reactive({
@@ -75,7 +75,6 @@ const onPostCode = async () => {
     }, 1000)
     showSuccessToast('发送成功')
   } else {
-    // TODO: 发送失败的提示
     showFailToast('发送失败')
   }
 }
@@ -94,19 +93,18 @@ const onSubmit = async () => {
     return
   }
 
-  const res = await registerApi(formValue)
+  const res = await authStore.register(formValue)
 
   if (res.code === 200) {
-    localStorage.setItem('token', res.data.token)
-
     showSuccessToast('注册成功')
+
     setTimeout(() => {
-      router.push('/')
+      navigateTo('/mine')
     }, 1000)
   }
 }
 
 const onBack = () => {
-  router.push('/')
+  router.back()
 }
 </script>

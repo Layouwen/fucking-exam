@@ -2,6 +2,8 @@
   <NuxtPage />
 </template>
 
-<script lang="ts" setup>
-import '~/assets/styles/main.less'
-</script>
+<style lang="less">
+@import url('avan-styles/src/reset.less');
+
+@import url('~/assets/styles/index.less');
+</style>

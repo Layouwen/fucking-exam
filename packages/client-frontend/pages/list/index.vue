@@ -1,6 +1,7 @@
 <template>
-  <SearchHeader v-model="searchValue" />
-  <div class="min-h-[calc(100vh-50px-48px)] mt-[50px] flex flex-col">
+  <SearchHeader class="z-10" v-model="searchValue.keyword" />
+  <FilterMenu v-model:value="searchValue" />
+  <div class="min-h-[calc(100vh-54px-48px-48px)] mt-[98px] flex flex-col">
     <div class="px-4 pt-4 flex-grow">
       <t-card
         class="mb-4"
@@ -13,16 +14,21 @@
       </t-card>
     </div>
   </div>
+  <Tabbar />
 </template>
 
 <script setup lang="ts">
-// TODO remove nuxt-lodash
+import FilterMenu from './components/FilterMenu.vue'
 import { debounce } from 'radash'
 import { getQuestionnaireListApi } from '~/api'
 import dayjs from 'dayjs'
 
 const questionnaireList = ref<any>([])
-const searchValue = ref('')
+const searchValue = ref({
+  keyword: '',
+  value1: 0,
+  value2: 'a',
+})
 
 watch(
   () => searchValue.value,
@@ -33,7 +39,10 @@ watch(
     () => {
       console.log(searchValue.value, 'layouwen')
     }
-  )
+  ),
+  {
+    deep: true,
+  }
 )
 
 const onClickQuestionnaire = (id: number) => {
