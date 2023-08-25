@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-[var(--fucking-exam-bg)]">
+  <div class="min-h-[100dvh]">
     <slot />
   </div>
 </template>
