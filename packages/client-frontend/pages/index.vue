@@ -1,17 +1,19 @@
 <template>
-  <div class="flex flex-col">
-    <div class="px-4 pt-4 flex-grow">
-      <t-card
-        class="mb-4"
-        v-for="i in questionnaireList"
-        :key="i.id"
-        :title="i.paperName"
-        @click="onClickQuestionnaire(i.id)"
-      >
-        创建日期: {{ dayjs(i.createdAt).format('YYYY-MM-DD HH:mm:ss') }}
-      </t-card>
+  <Wrapper>
+    <div class="flex flex-col">
+      <div class="px-4 pt-4 flex-grow">
+        <t-card
+          class="mb-4"
+          v-for="i in questionnaireList"
+          :key="i.id"
+          :title="i.paperName"
+          @click="onClickQuestionnaire(i.id)"
+        >
+          创建日期: {{ dayjs(i.createdAt).format('YYYY-MM-DD HH:mm:ss') }}
+        </t-card>
+      </div>
     </div>
-  </div>
+  </Wrapper>
   <Tabbar />
 </template>
 

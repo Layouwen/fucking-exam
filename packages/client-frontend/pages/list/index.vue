@@ -1,19 +1,21 @@
 <template>
-  <SearchHeader class="z-10" v-model="searchValue.keyword" />
-  <FilterMenu v-model:value="searchValue" />
-  <div class="min-h-[calc(100vh-54px-48px-48px)] mt-[98px] flex flex-col">
-    <div class="px-4 pt-4 flex-grow">
-      <t-card
-        class="mb-4"
-        v-for="i in questionnaireList"
-        :key="i.id"
-        :title="i.paperName"
-        @click="onClickQuestionnaire(i.id)"
-      >
-        创建日期: {{ dayjs(i.createdAt).format('YYYY-MM-DD HH:mm:ss') }}
-      </t-card>
+  <Wrapper>
+    <SearchHeader class="z-10" v-model="searchValue.keyword" />
+    <FilterMenu v-model:value="searchValue" />
+    <div class="min-h-[calc(100vh-54px-48px-48px)] mt-[98px] flex flex-col">
+      <div class="px-4 pt-4 flex-grow">
+        <t-card
+          class="mb-4"
+          v-for="i in questionnaireList"
+          :key="i.id"
+          :title="i.paperName"
+          @click="onClickQuestionnaire(i.id)"
+        >
+          创建日期: {{ dayjs(i.createdAt).format('YYYY-MM-DD HH:mm:ss') }}
+        </t-card>
+      </div>
     </div>
-  </div>
+  </Wrapper>
   <Tabbar />
 </template>
 

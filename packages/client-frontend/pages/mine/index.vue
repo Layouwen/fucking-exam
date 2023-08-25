@@ -58,7 +58,7 @@ const isDisplayCellGroup = (isLogin?: boolean) => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-[var(--fucking-exam-bg)]">
+  <Wrapper>
     <div class="space-y-3 py-[var(--van-padding-md)]">
       <Card v-if="authStore.isLogin" class="cvant-mx flex flex-col items-center space-y-3" ghost>
         <!-- TODO: user.avatar -->
@@ -86,6 +86,6 @@ const isDisplayCellGroup = (isLogin?: boolean) => {
         </van-cell-group>
       </template>
     </div>
-    <Tabbar />
-  </div>
+  </Wrapper>
+  <Tabbar />
 </template>
