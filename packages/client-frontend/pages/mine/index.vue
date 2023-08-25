@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { isMobile } from '@fucking-exam/shared/src/utils'
 import { useAuthStore } from '~/stores'
 
 type CellGroup = {
@@ -21,6 +22,12 @@ const cellList = [
       },
       {
         title: '问题反馈',
+        onClick: () => {
+          if (isMobile()) {
+            showNotify({ type: 'primary', message: '打开QQ' })
+            window.location.href = 'mqq://im/chat?chat_type=wpa&uin=794234293&version=1&src_type=web'
+          }
+        },
       },
     ],
   },

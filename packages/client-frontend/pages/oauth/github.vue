@@ -1,7 +1,6 @@
 <template></template>
 
 <script lang="ts" setup>
-import { showLoadingToast, closeToast, showSuccessToast, showFailToast } from 'vant'
 import { postOauthGithubLoginApi } from '~/api'
 
 const route = useRoute()

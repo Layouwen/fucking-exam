@@ -7,7 +7,6 @@
 
 <script lang="ts" setup>
 import { isMobile } from '@fucking-exam/shared'
-import { showNotify } from 'vant'
 
 const onSupport = () => {
   if (isMobile()) {
