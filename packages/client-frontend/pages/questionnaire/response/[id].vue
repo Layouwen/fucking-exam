@@ -7,7 +7,7 @@
       :result="answers"
     />
     <div class="px-6 pb-6">
-      <van-button size="small" type="primary" block @click="router.push('/')">返回</van-button>
+      <van-button type="primary" block @click="router.push('/')">返回</van-button>
     </div>
   </div>
 </template>

@@ -8,8 +8,8 @@
     />
     <questionnaire-render :data="data" :result="answers" />
     <div class="px-6 pb-6">
-      <van-button size="small" type="primary" block @click="onSubmit">提交试卷</van-button>
-      <van-button size="small" block class="!mt-2" @click="router.push('/')">返回</van-button>
+      <van-button type="primary" block @click="onSubmit">提交试卷</van-button>
+      <van-button block class="!mt-2" @click="router.push('/')">返回</van-button>
     </div>
   </div>
   <div v-else class="flex flex-col min-h-[100dvh] items-center bg-[#fff]">
