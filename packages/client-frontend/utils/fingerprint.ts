@@ -1,8 +1,12 @@
-import FingerprintJS from '@fingerprintjs/fingerprintjs'
+import FingerprintJS, { Agent } from '@fingerprintjs/fingerprintjs'
 
-const fpPromise = FingerprintJS.load({
-  monitoring: false,
-})
+let fpPromise: Promise<Agent>
+
+if (!process.server) {
+  fpPromise = FingerprintJS.load({
+    monitoring: false,
+  })
+}
 
 export async function getFingerprint() {
   const fp = await fpPromise
