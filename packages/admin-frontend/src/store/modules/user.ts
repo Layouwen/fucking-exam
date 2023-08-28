@@ -18,14 +18,15 @@ export const useUserStore = defineStore('user', {
     },
   },
   actions: {
-    async login(userInfo: { email: string; password: string }) {
+    async login({ email, password }: { email: string; password: string }) {
       const res = await loginApi({
-        email: userInfo.email,
-        password: userInfo.password,
+        email,
+        password,
       });
       if (res.code === 200) {
         this.token = res.data.token;
       }
+      return res;
     },
     async getUserInfo() {
       const mockRemoteUserInfo = async (token: string) => {

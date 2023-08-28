@@ -3,6 +3,7 @@ import { vaxios } from '../utils';
 
 const Api = {
   Login: '/auth/login',
+  Register: '/auth/register',
   GetQuestionnaireList: '/admin/questionnaire',
   DeleteQuestionnaire: '/admin/questionnaire',
   PostQuestionnaire: '/admin/questionnaire',
@@ -10,6 +11,10 @@ const Api = {
 
 export function loginApi(data: { email: string; password: string }) {
   return vaxios.post<ResponseBaseData<{ token }>>(Api.Login, data);
+}
+
+export function registerApi(data: { type: 'email'; email: string; password: string; code: string }) {
+  return vaxios.post<ResponseBaseData<{ token }>>(Api.Register, data);
 }
 
 export function getQuestionnaireListApi() {
