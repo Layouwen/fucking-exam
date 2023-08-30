@@ -33,11 +33,6 @@ export const useChart = (domId: string): Ref<echarts.ECharts> => {
   return selfChart;
 };
 
-/**
- * counter utils
- * @param duration
- * @returns
- */
 export const useCounter = (duration = 60): [Ref<number>, () => void] => {
   let intervalTimer;
   onUnmounted(() => {
