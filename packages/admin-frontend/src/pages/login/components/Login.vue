@@ -43,23 +43,18 @@ import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { MessagePlugin } from 'tdesign-vue-next';
 import type { FormInstanceFunctions, FormRule } from 'tdesign-vue-next';
-import { useUserStore } from '@/store';
+import { useAuthStore } from '@/store';
 
-const userStore = useUserStore();
+const authStore = useAuthStore();
 
 const INITIAL_DATA = {
-  phone: '',
   email: '',
   password: '',
-  verifyCode: '',
-  checked: false,
 };
 
 const FORM_RULES: Record<string, FormRule[]> = {
-  phone: [{ required: true, message: '手机号必填', type: 'error' }],
   email: [{ required: true, message: '邮箱必填', type: 'error' }],
   password: [{ required: true, message: '密码必填', type: 'error' }],
-  verifyCode: [{ required: true, message: '验证码必填', type: 'error' }],
 };
 
 const type = ref('password');
@@ -72,16 +67,19 @@ const router = useRouter();
 const route = useRoute();
 
 const onSubmit = async ({ validateResult }) => {
-  if (validateResult === true) {
-    const res = await userStore.login(formData.value);
-    if (res.code === 200) {
-      MessagePlugin.success('登陆成功');
-      const redirect = route.query.redirect as string;
-      const redirectUrl = redirect ? decodeURIComponent(redirect) : '/dashboard';
-      setTimeout(() => {
-        router.push(redirectUrl);
-      }, 250);
-    }
+  if (validateResult !== true) return;
+
+  const res = await authStore.login(formData.value);
+
+  if (res.code === 200) {
+    MessagePlugin.success(res.msg);
+
+    const redirect = route.query.redirect as string;
+    const redirectUrl = redirect ? decodeURIComponent(redirect) : '/dashboard';
+
+    router.push(redirectUrl);
+  } else {
+    MessagePlugin.error(res.msg);
   }
 };
 </script>

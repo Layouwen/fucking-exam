@@ -2,7 +2,7 @@ import { MessagePlugin } from 'tdesign-vue-next';
 import NProgress from 'nprogress'; // progress bar
 import 'nprogress/nprogress.css'; // progress bar style
 
-import { getPermissionStore, getUserStore } from '@/store';
+import { getPermissionStore, getUserStore, useAuthStore } from '@/store';
 import router from '@/router';
 
 NProgress.configure({ showSpinner: false });
@@ -10,11 +10,12 @@ NProgress.configure({ showSpinner: false });
 router.beforeEach(async (to, from, next) => {
   NProgress.start();
 
+  const authStore = useAuthStore();
   const userStore = getUserStore();
   const permissionStore = getPermissionStore();
   const { whiteListRouters } = permissionStore;
 
-  const { token } = userStore;
+  const { token } = authStore;
   if (token) {
     if (to.path === '/login') {
       next();
@@ -57,6 +58,7 @@ router.beforeEach(async (to, from, next) => {
         query: { redirect: encodeURIComponent(to.fullPath) },
       });
     }
+    MessagePlugin.error('请先登录');
     NProgress.done();
   }
 });
