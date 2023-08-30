@@ -8,13 +8,13 @@
         <div class="search-input"></div>
       </t-row>
       <t-table
-        :data="data"
+        :data="listData?.list"
         :columns="COLUMNS"
         :row-key="rowKey"
         :vertical-align="verticalAlign"
         :hover="hover"
         :pagination="pagination"
-        :loading="dataLoading"
+        :loading="isLoading"
       >
         <template #status="{ row }">
           <t-tag v-if="row.status === 0" theme="success" variant="light">发布成功</t-tag>
@@ -43,13 +43,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import { MessagePlugin, PrimaryTableCellParams, PrimaryTableCol } from 'tdesign-vue-next';
 import { useRouter } from 'vue-router';
 import { PageOptionType } from '@fucking-exam/shared';
+import { useQuery } from '@tanstack/vue-query';
 import { deleteQuestionnaireApi, getQuestionnaireListApi } from '@/api';
 
 const router = useRouter();
+const {
+  isLoading,
+  data: listData,
+  refetch,
+} = useQuery<{ list: any[] }>({
+  queryKey: ['getQuestionnaireListApi'],
+  queryFn: async (...data) => {
+    console.log('data layouwen', data);
+    const res = await getQuestionnaireListApi();
+    return res.data;
+  },
+});
 
 // TODO: any script
 const COLUMNS: PrimaryTableCol<any>[] = [
@@ -72,10 +85,6 @@ const pagination = ref({
   defaultCurrent: 1,
 });
 
-const data = ref([]);
-
-const dataLoading = ref(false);
-
 const onCreateQuestionnaire = () => {
   router.push({ name: 'questionnaireEdit', state: { type: PageOptionType.CREATE } });
 };
@@ -83,34 +92,11 @@ const onEditQuestionnaire = () => {
   router.push({ name: 'questionnaireEdit', state: { type: PageOptionType.EDIT } });
 };
 
-const fetchData = async () => {
-  dataLoading.value = true;
-  try {
-    const res = await getQuestionnaireListApi();
-    if (res.code === 200) {
-      data.value = res.data.list;
-      pagination.value = {
-        ...pagination.value,
-        total: res.data.total,
-      };
-    }
-  } catch (e) {
-    console.log(e, 'layouwen error');
-  } finally {
-    dataLoading.value = false;
-  }
-};
-
-onMounted(() => {
-  fetchData();
-});
-
 const onDelete = async ({ row }: PrimaryTableCellParams<any>) => {
   await deleteQuestionnaireApi(row.id);
-  await fetchData();
+  await refetch();
   MessagePlugin.success('删除成功');
 };
 </script>
 
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>
