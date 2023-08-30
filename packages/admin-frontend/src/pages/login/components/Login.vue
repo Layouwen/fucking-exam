@@ -72,14 +72,10 @@ const onSubmit = async ({ validateResult }) => {
   const res = await authStore.login(formData.value);
 
   if (res.code === 200) {
-    MessagePlugin.success(res.msg);
-
     const redirect = route.query.redirect as string;
     const redirectUrl = redirect ? decodeURIComponent(redirect) : '/dashboard';
 
     router.push(redirectUrl);
-  } else {
-    MessagePlugin.error(res.msg);
   }
 };
 </script>

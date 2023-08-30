@@ -112,6 +112,7 @@ import { DialogPlugin, MessagePlugin } from 'tdesign-vue-next';
 import { v4 as uuidV4 } from 'uuid';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import InputEditModal from '@/pages/questionnaire/components/InputEditModal.vue';
 import { QuestionOptionItem } from '@/components';
 import { postQuestionnaireApi } from '@/api';
@@ -151,12 +152,17 @@ const onSave = () => {
   MessagePlugin.warning('暂未实现保存');
 };
 
-const onPost = async () => {
-  const res = await postQuestionnaireApi(questionnaireData.value);
-  if (res.code === 200) {
-    MessagePlugin.success('发布成功');
+const queryClient = useQueryClient();
+const { mutate: postQuestionnaire } = useMutation({
+  mutationFn: (data: QuestionnaireData) => postQuestionnaireApi(data),
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ['getQuestionnaireListApi'] });
     router.push('/questionnaire/list');
-  }
+  },
+});
+
+const onPost = () => {
+  postQuestionnaire(questionnaireData.value);
 };
 
 const onFinishTextEdit = () => {

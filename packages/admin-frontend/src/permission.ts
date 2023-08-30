@@ -58,7 +58,6 @@ router.beforeEach(async (to, from, next) => {
         query: { redirect: encodeURIComponent(to.fullPath) },
       });
     }
-    MessagePlugin.error('请先登录');
     NProgress.done();
   }
 });

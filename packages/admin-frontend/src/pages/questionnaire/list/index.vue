@@ -13,8 +13,12 @@
         :row-key="rowKey"
         :vertical-align="verticalAlign"
         :hover="hover"
-        :pagination="pagination"
+        :pagination="{
+          ...pagination,
+          total: listData?.total || 0,
+        }"
         :loading="isLoading"
+        @page-change="onPageChange"
       >
         <template #status="{ row }">
           <t-tag v-if="row.status === 0" theme="success" variant="light">发布成功</t-tag>
@@ -44,23 +48,28 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { MessagePlugin, PrimaryTableCellParams, PrimaryTableCol } from 'tdesign-vue-next';
+import { PrimaryTableCellParams, PrimaryTableCol } from 'tdesign-vue-next';
 import { useRouter } from 'vue-router';
 import { PageOptionType } from '@fucking-exam/shared';
-import { useQuery } from '@tanstack/vue-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query';
 import { deleteQuestionnaireApi, getQuestionnaireListApi } from '@/api';
 
 const router = useRouter();
-const {
-  isLoading,
-  data: listData,
-  refetch,
-} = useQuery<{ list: any[] }>({
+
+const queryClient = useQueryClient();
+
+const { isLoading, data: listData } = useQuery({
   queryKey: ['getQuestionnaireListApi'],
-  queryFn: async (...data) => {
-    console.log('data layouwen', data);
+  queryFn: async () => {
     const res = await getQuestionnaireListApi();
     return res.data;
+  },
+});
+
+const { mutate: onDeleteQuestion } = useMutation({
+  mutationFn: (id: number) => deleteQuestionnaireApi(id),
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ['getQuestionnaireListApi'] });
   },
 });
 
@@ -80,22 +89,24 @@ const verticalAlign = 'top' as const;
 const hover = true;
 
 const pagination = ref({
-  defaultPageSize: 20,
-  total: 100,
-  defaultCurrent: 1,
+  pageSize: 20,
+  current: 1,
 });
+
+const onPageChange = (data) => {
+  pagination.value = data;
+};
 
 const onCreateQuestionnaire = () => {
   router.push({ name: 'questionnaireEdit', state: { type: PageOptionType.CREATE } });
 };
+
 const onEditQuestionnaire = () => {
   router.push({ name: 'questionnaireEdit', state: { type: PageOptionType.EDIT } });
 };
 
 const onDelete = async ({ row }: PrimaryTableCellParams<any>) => {
-  await deleteQuestionnaireApi(row.id);
-  await refetch();
-  MessagePlugin.success('删除成功');
+  onDeleteQuestion(row.id);
 };
 </script>
 

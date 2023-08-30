@@ -49,7 +49,8 @@
 import { ref } from 'vue';
 import { MessagePlugin, FormRule } from 'tdesign-vue-next';
 import { useCounter } from '@/hooks';
-import { registerApi, emailSendApi } from '@/api';
+import { emailSendApi } from '@/api';
+import { useAuthStore } from '@/store';
 
 const INITIAL_DATA = {
   email: '',
@@ -65,6 +66,8 @@ const FORM_RULES: Record<string, FormRule[]> = {
   password: [{ required: true, message: '密码必填', type: 'error' }],
   code: [{ required: true, message: '验证码必填', type: 'error' }],
 };
+
+const authStore = useAuthStore();
 
 const form = ref();
 const formData = ref({ ...INITIAL_DATA });
@@ -87,22 +90,16 @@ const onSendEmailCode = async () => {
 
   if (res.code === 200) {
     handleCounter();
-    MessagePlugin.success(res.msg);
-  } else {
-    MessagePlugin.error(res.msg);
   }
 };
 
 const onSubmit = async ({ validateResult }) => {
   if (validateResult !== true) return;
 
-  const res = await registerApi(formData.value);
+  const res = await authStore.register(formData.value);
 
   if (res.code === 200) {
-    MessagePlugin.success(res.msg);
     emit('registerSuccess', formData.value);
-  } else {
-    MessagePlugin.error(res.msg);
   }
 };
 </script>

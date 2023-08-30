@@ -1,16 +1,20 @@
 import { defineStore } from 'pinia';
-import { loginApi } from '@/api';
+import { loginApi, registerApi } from '@/api';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: '',
   }),
   actions: {
-    async login(userInfo: { email: string; password: string }) {
-      const res = await loginApi({
-        email: userInfo.email,
-        password: userInfo.password,
-      });
+    async login(data: { email: string; password: string }) {
+      const res = await loginApi(data);
+      if (res.code === 200) {
+        this.token = res.data.token;
+      }
+      return res;
+    },
+    async register(data: { email: string; password: string; code: string }) {
+      const res = await registerApi(data);
       if (res.code === 200) {
         this.token = res.data.token;
       }

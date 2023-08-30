@@ -13,6 +13,7 @@ vaxios.interceptors.request.use((config) => {
 
   if (token) config.headers.Authorization = `Bearer ${token}`;
 
+
   return config;
 });
 
@@ -22,6 +23,10 @@ vaxios.interceptors.response.use((response) => {
 
   switch (data.code) {
     case 200:
+      // MessagePlugin.success(data.msg);
+      break;
+    case 400:
+      MessagePlugin.error(data.msg);
       break;
     case 419:
       authStore.logout();
