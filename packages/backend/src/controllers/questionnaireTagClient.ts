@@ -2,6 +2,7 @@ import { Response } from "express";
 import {
   questionnaireResponsesService,
   questionnaireService,
+  questionnaireTagService,
 } from "../services";
 import { IRequest } from "../types";
 import {
@@ -12,24 +13,9 @@ import {
 } from "@fucking-exam/shared/dist/cjs";
 import { ResponseSuccess } from "../utils";
 
-class QuestionnaireClientController {
-  async getQuestionnaireList(req: IRequest, res: Response) {
-    const { tags } = req.query || {};
-
-    const where = {
-      type: 0,
-    } as any;
-
-    if (tags && typeof tags === "string") {
-      where.tags = {
-        some: {
-          id: {
-            in: tags.split(",").map((i) => Number(i)),
-          },
-        },
-      };
-    }
-    const data = await questionnaireService.findAll(where);
+class QuestionnaireTgaClientController {
+  async getQuestionnaireTagList(req: IRequest, res: Response) {
+    const data = await questionnaireTagService.findAll();
 
     res.json(new ResponseSuccess({ data }));
   }
@@ -96,4 +82,5 @@ class QuestionnaireClientController {
   }
 }
 
-export default new QuestionnaireClientController();
+export const questionnaireTgaClientController =
+  new QuestionnaireTgaClientController();

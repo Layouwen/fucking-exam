@@ -10,54 +10,65 @@
       @update:model-value="onModelValueUpdate('value2', $event)"
       :options="option2"
     />
+    <van-dropdown-item
+      :model-value="value.tag"
+      @update:model-value="onModelValueUpdate('tag', $event)"
+      :options="tagOptions"
+    />
   </van-dropdown-menu>
 </template>
 
 <script setup lang="ts">
-import { PropType } from 'vue'
+import { PropType } from "vue";
 
 export type FilterValue = {
-  keyword: string
-  value1: number
-  value2: string
-}
+  keyword: string;
+  value1: number;
+  value2: string;
+  tag: number;
+};
 
 const option1 = [
-  { text: '公开问卷', value: 0 },
-  { text: '我的问卷', value: 1 },
-]
+  { text: "公开问卷", value: 0 },
+  { text: "我的问卷", value: 1 },
+];
 
 const option2 = [
-  { text: '创建时间降序', value: 'a' },
-  { text: '创建时间升序', value: 'b' },
-]
+  { text: "创建时间降序", value: "a" },
+  { text: "创建时间升序", value: "b" },
+];
 
 const props = defineProps({
   value: {
     type: Object as PropType<FilterValue>,
-    default: {
-      keyword: '',
+    default: () => ({
+      keyword: "",
       value1: 0,
-      value2: 'a',
-    },
+      value2: "a",
+      tag: -1,
+    }),
   },
-})
+  tagOptions: {
+    type: Array as PropType<{ text: string; value: number }[]>,
+    default: () => [],
+  },
+});
 
 const emit = defineEmits<{
   (
-    e: 'update:value',
+    e: "update:value",
     value: {
-      keyword: string
-      value1: number
-      value2: string
+      keyword: string;
+      value1: number;
+      value2: string;
     }
-  ): void
-}>()
+  ): void;
+}>();
 
-const onModelValueUpdate = (key, value) => {
-  emit('update:value', {
+const onModelValueUpdate = (key: string, value: string | number) => {
+  emit("update:value", {
     ...props.value,
     [key]: value,
-  })
-}
+  });
+};
 </script>
