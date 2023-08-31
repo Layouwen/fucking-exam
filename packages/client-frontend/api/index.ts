@@ -56,7 +56,6 @@ export function getQuestionnaireListApi(query?: { tags: number[] | string }) {
   if (query?.tags && typeof query.tags !== "string") {
     query.tags = query.tags.join(",");
   }
-  console.log(query!.tags, "tags query layouwen");
 
   return request<ResponseBaseData<QuestionnaireClientListResponseData>>(
     `/api/questionnaire`,
