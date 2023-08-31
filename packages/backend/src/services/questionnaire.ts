@@ -51,12 +51,13 @@ class QuestionnaireService {
 
   async create(userId: number, createQuestionnaireDto: CreateQuestionnaireDto) {
     const { jsonData } = createQuestionnaireDto;
-    const { paperName, questions, settings, tags } = jsonData;
+    const { paperName, questions, settings, tags, type } = jsonData;
 
     const createQuestionData = {
       paperName,
       settings,
       userId,
+      type,
     } as any;
 
     if (tags?.length) {

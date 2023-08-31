@@ -10,7 +10,7 @@
       <t-table
         :data="listData?.list"
         :columns="COLUMNS"
-        :row-key="rowKey"
+        row-key="id"
         :vertical-align="verticalAlign"
         :hover="hover"
         :pagination="{
@@ -30,9 +30,9 @@
         </template>
         <template #tags="{ row }">
           <div v-if="row.tags?.length" class="space-x-2">
-            <t-tag v-for="(i, index) in row.tags" :key="index" :style="{ background: i.bgColor, color: i.textColor }">{{
-              i.name
-            }}</t-tag>
+            <t-tag v-for="(i, index) in row.tags" :key="index" :style="{ background: i.bgColor, color: i.textColor }"
+              >{{ i.name }}
+            </t-tag>
           </div>
           <div v-else>-</div>
         </template>
@@ -77,15 +77,14 @@ const { mutate: onDeleteQuestion } = useMutation({
 // TODO: any script
 const COLUMNS: PrimaryTableCol<any>[] = [
   { title: 'id', colKey: 'id', width: 80 },
-  { title: '问卷名', ellipsis: true, align: 'left', colKey: 'paperName', minWidth: 200 },
-  { title: '问卷状态', colKey: 'status', width: 100 },
-  { title: '问卷类型', width: 100, colKey: 'type' },
-  { title: '标签', width: 100, ellipsis: true, colKey: 'tags' },
-  { title: '创建者', colKey: 'user.nickname', width: 200 },
+  { title: '问卷名', ellipsis: true, align: 'left', colKey: 'paperName', width: 400 },
+  { title: '问卷状态', colKey: 'status', width: 100, align: 'center' },
+  { title: '问卷类型', width: 90, colKey: 'type', align: 'center' },
+  { title: '标签', ellipsis: true, colKey: 'tags' },
+  { title: '创建者', colKey: 'user.nickname', width: 100, align: 'center' },
   { align: 'left', fixed: 'right', width: 200, colKey: 'op', title: '操作' },
 ];
 
-const rowKey = 'index';
 const verticalAlign = 'top' as const;
 const hover = true;
 

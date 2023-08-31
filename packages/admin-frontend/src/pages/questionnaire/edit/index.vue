@@ -34,12 +34,16 @@
         <div v-if="questionnaireData" class="px-8 pt-8 flex items-center justify-between">
           <t-space>
             <t-space align="center">
+              <span>是否公开</span>
+              <t-switch v-model:value="questionnaireData.type" :custom-value="[0, 1]" size="large" />
+            </t-space>
+            <t-space align="center">
               <span>显示序号：</span>
               <t-switch v-model:value="questionnaireData.settings.isDisplayOrder" size="large" />
             </t-space>
             <t-space align="center">
               <span>随机题目顺序：</span>
-              <t-switch :custom-value="['1', '0']" v-model:value="questionnaireData.settings.randomType" size="large" />
+              <t-switch v-model:value="questionnaireData.settings.randomType" :custom-value="['1', '0']" size="large" />
             </t-space>
             <t-space align="center">
               <span>标签：</span>
@@ -136,6 +140,7 @@ type QuestionnaireData = {
   paperName: string;
   questions: Question[];
   settings: QuestionnaireSettings;
+  type: 0 | 1;
 };
 
 const router = useRouter();
@@ -218,8 +223,9 @@ const onParseText = () => {
     questions: [],
     settings: {
       isDisplayOrder: false,
-      randomType: '0',
+      randomType: '1',
     },
+    type: 0,
   } as QuestionnaireData;
   const str = inputText.value;
 
