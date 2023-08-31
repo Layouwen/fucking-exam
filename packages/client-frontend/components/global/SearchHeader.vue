@@ -1,5 +1,5 @@
 <template>
-  <div class="border-0 border-b-[1px] border-[#efefef] border-solid fixed top-0 left-0 w-full">
+  <div class="border-0 border-b-[1px] border-[#efefef] border-solid fixed top-[48px] left-0 w-full">
     <van-search
       :model-value="value"
       placeholder="请输入搜索关键词"

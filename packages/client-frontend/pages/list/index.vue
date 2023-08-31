@@ -1,7 +1,7 @@
 <template>
   <Wrapper>
-    <SearchHeader class="z-10" v-model="searchValue.keyword" />
     <FilterMenu v-model:value="searchValue" :tag-options="tagOptions!" />
+    <SearchHeader class="z-10" v-model="searchValue.keyword" />
     <div class="pt-[calc(54px+48px)] pb-[calc(50px+30px)] flex flex-col">
       <div
         class="px-4 pt-3 flex-grow"

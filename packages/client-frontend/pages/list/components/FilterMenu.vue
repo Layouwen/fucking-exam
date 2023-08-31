@@ -1,5 +1,5 @@
 <template>
-  <van-dropdown-menu class="z-10 top-[54px] fixed left-0 w-full">
+  <van-dropdown-menu class="z-20 top-0 fixed left-0 w-full custom-wrapper">
     <van-dropdown-item
       :model-value="value.value1"
       @update:model-value="onModelValueUpdate('value1', $event)"
@@ -72,3 +72,9 @@ const onModelValueUpdate = (key: string, value: string | number) => {
   });
 };
 </script>
+
+<style lang="less" scoped>
+.custom-wrapper :deep(.van-dropdown-menu__bar) {
+  box-shadow: none;
+}
+</style>
