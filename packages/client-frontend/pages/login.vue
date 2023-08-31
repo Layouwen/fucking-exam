@@ -18,7 +18,7 @@
       />
     </van-cell-group>
     <div class="flex">
-      <span class="ml-auto text-[12px] underline text-[#577df6]" @click="onGoRegister">没有账号? 点击注册</span>
+      <span class="ml-auto text-[12px] underline text-[#577df6] cursor-pointer" @click="onGoRegister">没有账号? 点击注册</span>
     </div>
     <van-button round block type="primary" native-type="submit">登录</van-button>
     <van-button round block @click="onBack">返回</van-button>

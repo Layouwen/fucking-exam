@@ -54,16 +54,13 @@ model Question {
 }
 
 model QuestionnaireTag {
-  id              Int            @id @default(autoincrement())
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
-  name            String         @db.VarChar(255)
-  beColor         String         @db.VarChar(255)
-  textColor       String         @db.VarChar(255)
-  user            User           @relation(fields: [userId], references: [id])
-  userId          Int
-  questionnaire   Questionnaire? @relation(fields: [questionnaireId], references: [id])
-  questionnaireId Int?
+  id            Int             @id @default(autoincrement())
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  name          String          @db.VarChar(255)
+  bgColor       String?         @db.VarChar(255)
+  textColor     String?         @db.VarChar(255)
+  Questionnaire Questionnaire[]
 }
 
 model Questionnaire {
@@ -101,7 +98,6 @@ model User {
   password               String?                  @db.VarChar(255)
   sex                    Int                      @default(0)
   questionnaires         Questionnaire[]
-  questionnaireTags      QuestionnaireTag[]
   githubInfo             GithubInfo?
   questions              Question[]
   QuestionnaireResponses QuestionnaireResponses[]

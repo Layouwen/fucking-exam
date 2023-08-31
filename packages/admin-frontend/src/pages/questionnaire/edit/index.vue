@@ -41,6 +41,20 @@
               <span>随机题目顺序：</span>
               <t-switch :custom-value="['1', '0']" v-model:value="questionnaireData.settings.randomType" size="large" />
             </t-space>
+            <t-space align="center">
+              <span>标签：</span>
+              <t-tag v-for="tag in tags" :key="tag" theme="primary" variant="light">{{ tag }}</t-tag>
+              <t-tag v-if="!isInputTag" @click="onClickAddTag">添加标签</t-tag>
+              <t-input
+                v-else
+                ref="inputRef"
+                size="small"
+                style="width: 94px"
+                placeholder="请输入标签名"
+                @blur="onAddTagBlur"
+                @enter="onAddTag"
+              />
+            </t-space>
           </t-space>
           <t-space>
             <t-button @click="onSave">保存</t-button>
@@ -154,15 +168,40 @@ const onSave = () => {
 
 const queryClient = useQueryClient();
 const { mutate: postQuestionnaire } = useMutation({
-  mutationFn: (data: QuestionnaireData) => postQuestionnaireApi(data),
+  mutationFn: (data: any) => postQuestionnaireApi(data),
   onSuccess: () => {
     queryClient.invalidateQueries({ queryKey: ['getQuestionnaireListApi'] });
     router.push('/questionnaire/list');
   },
 });
 
+const inputRef = ref();
+const tags = ref<string[]>([]);
+const isInputTag = ref(false);
+
+const onClickAddTag = () => {
+  isInputTag.value = true;
+  setTimeout(() => {
+    inputRef.value.focus();
+  }, 0);
+};
+
+const onAddTagBlur = () => {
+  isInputTag.value = false;
+};
+
+const onAddTag = (text: string) => {
+  console.log('layouwen text', text);
+  if (!text || text.trim() === '') {
+    MessagePlugin.warning('标签不能为空');
+  } else {
+    tags.value.push(text);
+  }
+  isInputTag.value = false;
+};
+
 const onPost = () => {
-  postQuestionnaire(questionnaireData.value);
+  postQuestionnaire({ ...questionnaireData.value, tags: tags.value });
 };
 
 const onFinishTextEdit = () => {

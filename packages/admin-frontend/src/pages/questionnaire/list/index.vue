@@ -29,11 +29,12 @@
           <p v-if="row.type === 1">私有</p>
         </template>
         <template #tags="{ row }">
-          tag
-          <!--          <div class="space-x-2" v-if="row.tags.length">-->
-          <!--            <t-tag v-for="i in row.tags" :style="{ background: i.bgColor, color: i.textColor }">{{ i.name }}</t-tag>-->
-          <!--          </div>-->
-          <!--          <div v-else>-</div>-->
+          <div v-if="row.tags?.length" class="space-x-2">
+            <t-tag v-for="(i, index) in row.tags" :key="index" :style="{ background: i.bgColor, color: i.textColor }">{{
+              i.name
+            }}</t-tag>
+          </div>
+          <div v-else>-</div>
         </template>
         <template #op="slotProps">
           <a class="t-button-link" @click="onEditQuestionnaire()">编辑问卷</a>

@@ -1,18 +1,19 @@
-import { Question, User } from "../module";
+import { Question, User } from '../module'
 
 export interface RegisterDto extends User {
-  code: string;
-  type: "email" | "phone" | "username";
-  phone?: string;
+  code: string
+  type: 'email' | 'phone' | 'username'
+  phone?: string
 }
 
 export interface CreateQuestionnaireDto {
-  jsonData: JsonData;
+  jsonData: JsonData
 }
 
 export interface CreateQuestionDto extends Question {}
 
-export type JsonData = Record<string, any>;
+export type JsonData = Record<string, any>
 
-export * from "./user";
-export * from "./questionnaireResponse";
+export * from './user'
+export * from './questionnaireResponse'
+export * from './questionnaireTag'
