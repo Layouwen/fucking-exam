@@ -152,29 +152,29 @@ const onButton = (
         <span v-show="isChecked(option)">(正确答案)</span>
       </div>
       <div v-show="questionData.analyze" class="text-[#666]">答案解析：{{ questionData.analyze }}</div>
-      <div
-        v-show="isDisplayController && !isDisplayEdit"
-        class="flex items-center justify-between absolute bottom-2 left-0 right-0 px-8"
-      >
-        <t-space>
-          <t-link underline hover="color" @click.stop="$emit('addNextQuestion', index)">往后插入新题</t-link>
-        </t-space>
-        <div class="text-[12px]">
-          <t-button
-            v-for="button in QUESTION_OPTION_ITEM_BUTTONS"
-            :key="button.emitName"
-            :disabled="isDisabled(button.emitName)"
-            size="small"
-            @click.stop="onButton(button, index, questionData, questions)"
-            >{{ button.text }}
-          </t-button>
-        </div>
-      </div>
     </template>
     <template v-else-if="typeMode === TypeMode.B">
       <rich-edit :is-show-toolbar="false" :read-only="true" :model-value="richEditValue" />
     </template>
     <template v-else>未知类型</template>
+    <div
+      v-show="isDisplayController && !isDisplayEdit"
+      class="flex items-center justify-between absolute bottom-2 left-0 right-0 px-8"
+    >
+      <t-space>
+        <t-link underline hover="color" @click.stop="$emit('addNextQuestion', index)">往后插入新题</t-link>
+      </t-space>
+      <div class="text-[12px]">
+        <t-button
+          v-for="button in QUESTION_OPTION_ITEM_BUTTONS"
+          :key="button.emitName"
+          :disabled="isDisabled(button.emitName)"
+          size="small"
+          @click.stop="onButton(button, index, questionData, questions)"
+          >{{ button.text }}
+        </t-button>
+      </div>
+    </div>
   </div>
   <div
     v-show="isDisplayEdit"
@@ -197,11 +197,11 @@ const onButton = (
       />
     </t-space>
     <t-textarea v-model:value="questionData.subject" placeholder="请输入题目" />
-    <template v-if="typeMode === TypeMode.A">
-      <t-space>
-        <t-link underline @click.stop="$emit('editAnalyze', index)">编辑答案解析</t-link>
-      </t-space>
-      <div class="space-y-2">
+    <t-space>
+      <t-link underline @click.stop="$emit('editAnalyze', index)">编辑答案解析</t-link>
+    </t-space>
+    <div class="space-y-2">
+      <template v-if="typeMode === TypeMode.A">
         <div class="flex bg-[#f0f0ee] p-2">
           <span class="flex-grow">选项内容</span>
           <span class="w-[200px]">正确答案</span>
@@ -243,30 +243,30 @@ const onButton = (
             />
           </div>
         </div>
-        <div class="flex items-center space-x-2">
-          <t-link underline @click="onAddOption">添加选项</t-link>
-          <div>
-            <t-select
-              v-model:value="questionData.settings.randomType"
-              :options="[
-                {
-                  label: '选项不随机',
-                  value: '0',
-                },
-                {
-                  label: '选项随机',
-                  value: '1',
-                },
-              ]"
-            />
-          </div>
+      </template>
+      <div v-else-if="typeMode === TypeMode.B">
+        <rich-edit v-model="richEditValue" />
+      </div>
+      <template v-else>未知类型</template>
+      <div class="flex items-center space-x-2">
+        <t-link underline @click="onAddOption">添加选项</t-link>
+        <div>
+          <t-select
+            v-model:value="questionData.settings.randomType"
+            :options="[
+              {
+                label: '选项不随机',
+                value: '0',
+              },
+              {
+                label: '选项随机',
+                value: '1',
+              },
+            ]"
+          />
         </div>
       </div>
-    </template>
-    <div v-else-if="typeMode === TypeMode.B">
-      <rich-edit v-model="richEditValue" />
     </div>
-    <template>未知类型</template>
     <t-button class="mt-4" block size="large" @click="$emit('finish')">完成编辑</t-button>
   </div>
 </template>
