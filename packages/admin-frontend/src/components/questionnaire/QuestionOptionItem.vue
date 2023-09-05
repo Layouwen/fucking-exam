@@ -11,16 +11,13 @@ import {
   moveUpByArr,
   isFirstByArr,
   isLastByArr,
+  questionType,
 } from '@fucking-exam/shared';
 import { v4 as uuidV4 } from 'uuid';
 import RichEdit from './RichEdit.vue';
 
-enum TypeMode {
-  A,
-  B,
-}
-
-const typeMode = ref(TypeMode.A);
+const choiceMode = [questionType.SINGLE_CHOICE, questionType.multipleChoice];
+const richTextMode = [questionType.RICH_TEXT];
 
 const emits = defineEmits([
   ...QUESTION_OPTION_ITEM_BUTTONS_EMIT_NAMES,
@@ -140,7 +137,7 @@ const onButton = (
     @click="$emit('item', index, questionData, questions)"
   >
     <div class="font-bold">{{ displayOrder(index) }}{{ questionData.subject }}</div>
-    <template v-if="typeMode === TypeMode.A">
+    <template v-if="choiceMode.includes(questionData.type)">
       <div
         v-for="option in questionData.options"
         :key="option.value"
@@ -153,8 +150,8 @@ const onButton = (
       </div>
       <div v-show="questionData.analyze" class="text-[#666]">答案解析：{{ questionData.analyze }}</div>
     </template>
-    <template v-else-if="typeMode === TypeMode.B">
-      <rich-edit :is-show-toolbar="false" :read-only="true" :model-value="richEditValue" />
+    <template v-else-if="richTextMode.includes(questionData.type)">
+      <rich-edit :is-show-toolbar="false" :read-only="true" :model-value="questionData.richText" />
     </template>
     <template v-else>未知类型</template>
     <div
@@ -183,15 +180,15 @@ const onButton = (
     <t-space align="center">
       类型:
       <t-select
-        v-model="typeMode"
+        v-model="questionData.type"
         :options="[
           {
             label: '选择题',
-            value: TypeMode.A,
+            value: questionType.SINGLE_CHOICE,
           },
           {
             label: '富文本',
-            value: TypeMode.B,
+            value: questionType.RICH_TEXT,
           },
         ]"
       />
@@ -201,7 +198,7 @@ const onButton = (
       <t-link underline @click.stop="$emit('editAnalyze', index)">编辑答案解析</t-link>
     </t-space>
     <div class="space-y-2">
-      <template v-if="typeMode === TypeMode.A">
+      <template v-if="choiceMode.includes(questionData.type)">
         <div class="flex bg-[#f0f0ee] p-2">
           <span class="flex-grow">选项内容</span>
           <span class="w-[200px]">正确答案</span>
@@ -244,8 +241,8 @@ const onButton = (
           </div>
         </div>
       </template>
-      <div v-else-if="typeMode === TypeMode.B">
-        <rich-edit v-model="richEditValue" />
+      <div v-else-if="richTextMode.includes(questionData.type)">
+        <rich-edit v-model="questionData.richText" />
       </div>
       <template v-else>未知类型</template>
       <div class="flex items-center space-x-2">

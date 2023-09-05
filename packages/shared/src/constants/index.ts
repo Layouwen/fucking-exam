@@ -13,12 +13,13 @@ export const QUESTION_OPTION_ITEM_BUTTONS = [
 export const QUESTION_OPTION_ITEM_BUTTONS_EMIT_NAMES =
   QUESTION_OPTION_ITEM_BUTTONS.map((b) => b.emitName);
 
-export const QUESTION_TYPE = {
-  singleChoice: "singleChoice",
+export const questionType = {
+  SINGLE_CHOICE: "singleChoice",
   multipleChoice: "multipleChoice",
   fillBlank: "fillBlank",
   judgement: "judgement",
   shortAnswer: "shortAnswer",
   essay: "essay",
   fileUpload: "fileUpload",
+  RICH_TEXT: "richText",
 };

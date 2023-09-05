@@ -1,8 +1,8 @@
 // import {Question} from '@prisma/client'
-import { QUESTION_TYPE } from "../../constants";
+import { questionType } from "../../constants";
 import { DbFiled } from "../utils";
 
-export type QuestionType = keyof typeof QUESTION_TYPE;
+export type QuestionType = keyof typeof questionType;
 
 export type QuestionRandomType = "0" | "1";
 
@@ -25,6 +25,7 @@ export interface Question {
   analyze: string | null;
   questionnaireId: number;
   userId: number;
+  richText?: string;
 }
 
 export interface QuestionModel extends DbFiled, Question {}
