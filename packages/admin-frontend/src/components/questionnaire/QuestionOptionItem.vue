@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-// eslint-disable-next-line import/no-duplicates
 import { defineProps, PropType, ref } from 'vue';
 import { MessagePlugin } from 'tdesign-vue-next';
 import {
@@ -12,6 +11,7 @@ import {
   isFirstByArr,
   isLastByArr,
   questionType,
+  QuestionModel,
 } from '@fucking-exam/shared';
 import { v4 as uuidV4 } from 'uuid';
 import RichEdit from './RichEdit.vue';
@@ -29,11 +29,11 @@ const emits = defineEmits([
 
 const props = defineProps({
   questionData: {
-    type: Object as PropType<Question>,
+    type: Object as PropType<Question | QuestionModel>,
     required: true,
   },
   questions: {
-    type: Object as PropType<Question[]>,
+    type: Object as PropType<(Question | QuestionModel)[]>,
     required: true,
   },
   index: {
@@ -49,8 +49,6 @@ const props = defineProps({
     required: true,
   },
 });
-
-const richEditValue = ref('');
 
 const displayOrder = (index: number) => {
   return props.settings.isDisplayOrder ? `${index + 1}、 ` : '';
@@ -267,15 +265,6 @@ const onButton = (
     <t-button class="mt-4" block size="large" @click="$emit('finish')">完成编辑</t-button>
   </div>
 </template>
-
-<script lang="ts">
-// eslint-disable-next-line import/no-duplicates
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-  name: 'QuestionOptionItem',
-});
-</script>
 
 <style lang="less" scoped>
 .right-highlight {

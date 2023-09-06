@@ -22,4 +22,4 @@ export const questionType = {
   essay: "essay",
   fileUpload: "fileUpload",
   RICH_TEXT: "richText",
-};
+} as const;

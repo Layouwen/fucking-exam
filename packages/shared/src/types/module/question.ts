@@ -2,7 +2,7 @@
 import { questionType } from "../../constants";
 import { DbFiled } from "../utils";
 
-export type QuestionType = keyof typeof questionType;
+export type QuestionType = (typeof questionType)[keyof typeof questionType];
 
 export type QuestionRandomType = "0" | "1";
 
@@ -16,6 +16,7 @@ export type QuestionOption = {
 };
 
 export interface Question {
+  id?: string;
   subject: string;
   order: number;
   type: QuestionType;
@@ -23,9 +24,9 @@ export interface Question {
   options: QuestionOption[];
   answers: string[];
   analyze: string | null;
-  questionnaireId: number;
-  userId: number;
+  questionnaireId?: number;
+  userId?: number;
   richText?: string;
 }
 
-export interface QuestionModel extends DbFiled, Question {}
+export interface QuestionModel extends DbFiled, Omit<Question, "id"> {}

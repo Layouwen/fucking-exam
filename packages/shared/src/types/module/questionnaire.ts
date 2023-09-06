@@ -17,7 +17,9 @@ export interface Questionnaire {
   userId: number;
 }
 
-export interface QuestionnaireModel extends Questionnaire, DbFiled {
+export interface QuestionnaireModel
+  extends Omit<Questionnaire, "questions">,
+    DbFiled {
   questions: QuestionModel[];
 }
 

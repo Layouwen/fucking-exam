@@ -1,4 +1,4 @@
-export function moveUpByArr(arr: any[], index: number) {
+export function moveUpByArr<T>(arr: T[], index: number) {
   if (index === 0) return arr;
   const result = [...arr];
   result.splice(index - 1, 0, result.splice(index, 1)[0]);
