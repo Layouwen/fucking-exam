@@ -9,6 +9,7 @@ import { v4 as uuidV4 } from 'uuid';
 import { EditModeSelect, TextParse, QuestionListEdit } from '@/pages/questionnaire/components';
 import { postQuestionnaireApi } from '@/api';
 import { QuestionnaireData } from '@/pages/questionnaire/types';
+import { checkQuestionnaireData, formatQuestionnaireData } from '@/utils';
 
 const defaultAnswersUuid = uuidV4();
 
@@ -59,7 +60,7 @@ onMounted(() => {
 
 const queryClient = useQueryClient();
 const { mutate: postQuestionnaire } = useMutation({
-  mutationFn: (data: any) => postQuestionnaireApi(data),
+  mutationFn: (data: QuestionnaireData) => postQuestionnaireApi(data),
   onSuccess: () => {
     queryClient.invalidateQueries({ queryKey: ['getQuestionnaireListApi'] });
     router.push('/questionnaire/list');
@@ -67,7 +68,16 @@ const { mutate: postQuestionnaire } = useMutation({
 });
 
 const onPost = (questionnaireData: QuestionnaireData) => {
-  postQuestionnaire(questionnaireData);
+  const checkResult = checkQuestionnaireData(questionnaireData);
+
+  if (!checkResult.status) {
+    MessagePlugin.warning(checkResult.msg);
+    return;
+  }
+
+  // TODO: 后端数据格式未统一, 选择题和富文本的形式
+  console.log(formatQuestionnaireData(questionnaireData));
+  // postQuestionnaire(questionnaireData);
 };
 
 const onFinishTextEdit = () => {

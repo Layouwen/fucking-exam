@@ -68,7 +68,8 @@
     "class-methods-use-this": "off", // 因为AxiosCancel必须实例化而能静态化所以加的规则，如果有办法解决可以取消
 
     "no-underscore-dangle": "off", // 需要用下划线的命名
-    "prefer-destructuring": "off" // 我自己控制是否解构
+    "prefer-destructuring": "off", // 我自己控制是否解构
+    "no-labels": "off" // 允许使用 label break
   },
   "overrides": [
     {
