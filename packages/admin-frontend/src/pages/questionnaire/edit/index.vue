@@ -1,116 +1,3 @@
-<template>
-  <template v-if="PageOptionType.CREATE === pageOptionType && !mode">
-    <t-row>
-      <t-card class="cursor-pointer hover:opacity-70" @click="mode = QuestionnaireEditMode.TEXT">文本方式创建</t-card>
-      <t-card class="cursor-pointer hover:opacity-70" @click="mode = QuestionnaireEditMode.VISUALIZATION"
-        >操作界面创建
-      </t-card>
-    </t-row>
-  </template>
-  <template v-if="mode">
-    <template v-if="mode === QuestionnaireEditMode.TEXT">
-      <div>
-        <t-button theme="default" @click="inputText = ''">清空文本</t-button>
-        <t-button theme="default" @click="onParseText">解析</t-button>
-        <t-button @click="onFinishTextEdit">完成创建</t-button>
-      </div>
-      <div class="flex">
-        <div class="w-[50%]">
-          <t-textarea v-model:value="inputText" :autosize="autosize" placeholder="请输入你的问卷内容" />
-        </div>
-        <div class="w-[50%] flex-shrink">
-          <div>{{ questionnaireData?.paperName }}</div>
-          <div v-for="i in questionnaireData?.questions" :key="i.id">
-            <div>{{ showSubjectAndAnswer(i) }}</div>
-            <div v-for="(option, index) in i.options" :key="option.value">
-              {{ OPTIONS_LETTER[index] }} {{ option.label }}
-            </div>
-          </div>
-        </div>
-      </div>
-    </template>
-    <template v-if="mode === QuestionnaireEditMode.VISUALIZATION">
-      <div class="text-[17px] bg-[#fff]">
-        <div v-if="questionnaireData" class="px-8 pt-8 flex items-center justify-between">
-          <t-space>
-            <t-space align="center">
-              <span>是否公开</span>
-              <t-switch v-model:value="questionnaireData.type" :custom-value="[0, 1]" size="large" />
-            </t-space>
-            <t-space align="center">
-              <span>显示序号：</span>
-              <t-switch v-model:value="questionnaireData.settings.isDisplayOrder" size="large" />
-            </t-space>
-            <t-space align="center">
-              <span>随机题目顺序：</span>
-              <t-switch v-model:value="questionnaireData.settings.randomType" :custom-value="['1', '0']" size="large" />
-            </t-space>
-            <t-space align="center">
-              <span>标签：</span>
-              <t-tag v-for="tag in tags" :key="tag" theme="primary" variant="light">{{ tag }}</t-tag>
-              <t-tag v-if="!isInputTag" @click="onClickAddTag">添加标签</t-tag>
-              <t-input
-                v-else
-                ref="inputRef"
-                size="small"
-                style="width: 94px"
-                placeholder="请输入标签名"
-                @blur="onAddTagBlur"
-                @enter="onAddTag"
-              />
-            </t-space>
-          </t-space>
-          <t-space>
-            <t-button @click="onSave">保存</t-button>
-            <t-button @click="onPost">发布问卷</t-button>
-          </t-space>
-        </div>
-        <div
-          class="cursor-pointer bg-[#fff] hover:bg-[#fafafa] border-b-[1px] border-t-0 border-x-0 border-[#e0e0e0] border-solid p-8"
-          @click="paperNameDialogVisible = true"
-        >
-          {{ questionnaireData?.paperName }}
-        </div>
-        <input-edit-modal
-          header="问卷名称"
-          :input-value-default="questionnaireData?.paperName"
-          :visible="paperNameDialogVisible"
-          @confirm="(val: string)=>{questionnaireData.paperName = val}"
-          @close="paperNameDialogVisible = false"
-        />
-        <input-edit-modal
-          type="textarea"
-          header="题目解析"
-          :input-value-default="questionnaireData.questions?.[analyzeIndex]?.analyze || ''"
-          :visible="analyzeDialogVisible"
-          @confirm="(val: string)=>{questionnaireData.questions[analyzeIndex].analyze = val}"
-          @close="analyzeDialogVisible = false"
-        />
-        <question-option-item
-          v-for="(question, index) in questionnaireData?.questions"
-          :key="question.id"
-          :questions="questionnaireData?.questions"
-          :questionData="question"
-          :index="index"
-          :is-display-edit="curEditIdOrUUID === question.id"
-          :settings="questionnaireData.settings"
-          @item="onQuestionOptionItemEdit"
-          @edit-analyze="onEditAnalyze"
-          @add-next-question="onAddNextQuestion"
-          @edit="onQuestionOptionItemEdit"
-          @copy="onQuestionOptionItemCopy"
-          @delete="onQuestionOptionItemDelete"
-          @move-up="onQuestionOptionItemMoveUp"
-          @move-down="onQuestionOptionItemMoveDown"
-          @move-top="onQuestionOptionItemMoveTop"
-          @move-bottom="onQuestionOptionItemMoveButton"
-          @finish="curEditIdOrUUID = ''"
-        />
-      </div>
-    </template>
-  </template>
-</template>
-
 <script lang="ts" setup>
 import {
   OPTIONS_LETTER,
@@ -131,7 +18,7 @@ import { v4 as uuidV4 } from 'uuid';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMutation, useQueryClient } from '@tanstack/vue-query';
-import InputEditModal from '@/pages/questionnaire/components/InputEditModal.vue';
+import { InputEditModal, EditModeSelect } from '@/pages/questionnaire/components';
 import { QuestionOptionItem } from '@/components';
 import { postQuestionnaireApi } from '@/api';
 import { showSubjectAndAnswer } from '@/utils';
@@ -367,3 +254,111 @@ const onQuestionOptionItemMoveButton = (index: number) => {
   questionnaireData.value.questions = moveBottomByArr(questionnaireData.value.questions, index);
 };
 </script>
+
+<template>
+  <template v-if="PageOptionType.CREATE === pageOptionType && !mode">
+    <edit-mode-select v-model="mode" />
+  </template>
+  <template v-if="mode">
+    <template v-if="mode === QuestionnaireEditMode.TEXT">
+      <div>
+        <t-button theme="default" @click="inputText = ''">清空文本</t-button>
+        <t-button theme="default" @click="onParseText">解析</t-button>
+        <t-button @click="onFinishTextEdit">完成创建</t-button>
+      </div>
+      <div class="flex">
+        <div class="w-[50%]">
+          <t-textarea v-model:value="inputText" :autosize="autosize" placeholder="请输入你的问卷内容" />
+        </div>
+        <div class="w-[50%] flex-shrink">
+          <div>{{ questionnaireData?.paperName }}</div>
+          <div v-for="i in questionnaireData?.questions" :key="i.id">
+            <div>{{ showSubjectAndAnswer(i) }}</div>
+            <div v-for="(option, index) in i.options" :key="option.value">
+              {{ OPTIONS_LETTER[index] }} {{ option.label }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+    <template v-if="mode === QuestionnaireEditMode.VISUALIZATION">
+      <div class="text-[17px] bg-[#fff]">
+        <div v-if="questionnaireData" class="px-8 pt-8 flex items-center justify-between">
+          <t-space>
+            <t-space align="center">
+              <span>是否公开</span>
+              <t-switch v-model:value="questionnaireData.type" :custom-value="[0, 1]" size="large" />
+            </t-space>
+            <t-space align="center">
+              <span>显示序号：</span>
+              <t-switch v-model:value="questionnaireData.settings.isDisplayOrder" size="large" />
+            </t-space>
+            <t-space align="center">
+              <span>随机题目顺序：</span>
+              <t-switch v-model:value="questionnaireData.settings.randomType" :custom-value="['1', '0']" size="large" />
+            </t-space>
+            <t-space align="center">
+              <span>标签：</span>
+              <t-tag v-for="tag in tags" :key="tag" theme="primary" variant="light">{{ tag }}</t-tag>
+              <t-tag v-if="!isInputTag" @click="onClickAddTag">添加标签</t-tag>
+              <t-input
+                v-else
+                ref="inputRef"
+                size="small"
+                style="width: 94px"
+                placeholder="请输入标签名"
+                @blur="onAddTagBlur"
+                @enter="onAddTag"
+              />
+            </t-space>
+          </t-space>
+          <t-space>
+            <t-button @click="onSave">保存</t-button>
+            <t-button @click="onPost">发布问卷</t-button>
+          </t-space>
+        </div>
+        <div
+          class="cursor-pointer bg-[#fff] hover:bg-[#fafafa] border-b-[1px] border-t-0 border-x-0 border-[#e0e0e0] border-solid p-8"
+          @click="paperNameDialogVisible = true"
+        >
+          {{ questionnaireData?.paperName }}
+        </div>
+        <input-edit-modal
+          header="问卷名称"
+          :input-value-default="questionnaireData?.paperName"
+          :visible="paperNameDialogVisible"
+          @confirm="(val: string)=>{questionnaireData.paperName = val}"
+          @close="paperNameDialogVisible = false"
+        />
+        <input-edit-modal
+          type="textarea"
+          header="题目解析"
+          :input-value-default="questionnaireData.questions?.[analyzeIndex]?.analyze || ''"
+          :visible="analyzeDialogVisible"
+          @confirm="(val: string)=>{questionnaireData.questions[analyzeIndex].analyze = val}"
+          @close="analyzeDialogVisible = false"
+        />
+        <question-option-item
+          v-for="(question, index) in questionnaireData?.questions"
+          :key="question.id"
+          :questions="questionnaireData?.questions"
+          :questionData="question"
+          :index="index"
+          :is-display-edit="curEditIdOrUUID === question.id"
+          :settings="questionnaireData.settings"
+          @item="onQuestionOptionItemEdit"
+          @edit-analyze="onEditAnalyze"
+          @add-next-question="onAddNextQuestion"
+          @edit="onQuestionOptionItemEdit"
+          @copy="onQuestionOptionItemCopy"
+          @delete="onQuestionOptionItemDelete"
+          @move-up="onQuestionOptionItemMoveUp"
+          @move-down="onQuestionOptionItemMoveDown"
+          @move-top="onQuestionOptionItemMoveTop"
+          @move-bottom="onQuestionOptionItemMoveButton"
+          @finish="curEditIdOrUUID = ''"
+        />
+      </div>
+    </template>
+  </template>
+</template>
