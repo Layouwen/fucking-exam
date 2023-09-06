@@ -1,21 +1,53 @@
 <script lang="ts" setup>
-import {
-  // QuestionTextInputValueTemplate,
-  PageOptionType,
-  QuestionnaireEditMode,
-} from '@fucking-exam/shared';
+import { PageOptionType, QuestionnaireEditMode, questionType } from '@fucking-exam/shared';
 import { MessagePlugin } from 'tdesign-vue-next';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMutation, useQueryClient } from '@tanstack/vue-query';
+
+import { v4 as uuidV4 } from 'uuid';
 import { EditModeSelect, TextParse, QuestionListEdit } from '@/pages/questionnaire/components';
 import { postQuestionnaireApi } from '@/api';
 import { QuestionnaireData } from '@/pages/questionnaire/types';
 
+const defaultAnswersUuid = uuidV4();
+
+const defaultQuestionnaireData = {
+  paperName: '卷子标题示例',
+  questions: [
+    {
+      id: uuidV4(),
+      type: questionType.SINGLE_CHOICE,
+      subject: 'Fucking Exam 好不好用?（）',
+      options: [
+        {
+          label: '那必须好用',
+          value: defaultAnswersUuid,
+        },
+        {
+          label: '一般般好用啦',
+          value: uuidV4(),
+        },
+      ],
+      order: 99999,
+      answers: [defaultAnswersUuid],
+      analyze: '',
+      settings: {
+        randomType: '0',
+      },
+    },
+  ],
+  settings: {
+    isDisplayOrder: false,
+    randomType: '1',
+  },
+  type: 0,
+} as QuestionnaireData;
+
 const router = useRouter();
 
 const pageOptionType = ref<PageOptionType>();
-const questionnaireData = ref<QuestionnaireData>();
+const questionnaireData = ref<QuestionnaireData>(defaultQuestionnaireData);
 const mode = ref<QuestionnaireEditMode>();
 
 onMounted(() => {

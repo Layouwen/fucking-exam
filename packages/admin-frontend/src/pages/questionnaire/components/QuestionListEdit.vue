@@ -90,11 +90,15 @@ const onAddNextQuestion = (index: number) => {
   _questions.splice(index + 1, 0, {
     id: uuidV4(),
     type: questionType.SINGLE_CHOICE,
-    subject: '新增题目（）',
+    subject: '我是新增的题目名称（）',
     options: [
       {
-        label: '新增选项',
+        label: '选项一',
         value: defaultAnswersUuid,
+      },
+      {
+        label: '选项二',
+        value: uuidV4(),
       },
     ],
     order: 99999,
