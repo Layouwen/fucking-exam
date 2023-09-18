@@ -33,6 +33,7 @@ const defaultQuestionnaireData = {
       order: 99999,
       answers: [defaultAnswersUuid],
       analyze: '',
+      richText: '',
       settings: {
         randomType: '0',
       },
@@ -75,9 +76,9 @@ const onPost = (questionnaireData: QuestionnaireData) => {
     return;
   }
 
-  // TODO: 后端数据格式未统一, 选择题和富文本的形式
-  console.log(formatQuestionnaireData(questionnaireData));
-  // postQuestionnaire(questionnaireData);
+  // 需要调整可选项
+  // formatQuestionnaireData(questionnaireData)
+  postQuestionnaire(questionnaireData);
 };
 
 const onFinishTextEdit = () => {

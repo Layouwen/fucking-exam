@@ -2,7 +2,7 @@
   <div class="text-[#262626] py-5">
     <div class="text-[17px] font-bold mb-2">{{ displayOrder }}{{ question.subject }}</div>
     <div class="text-[16px] space-y-2">
-      <!-- 
+      <!--
         TODO: 正确和错误的高亮
           :class="[
             borderClass(index, question.options.length),
@@ -24,6 +24,7 @@
         :options="question.options"
         :disabled="QuestionnaireRenderType.QUESTIONNAIRE_RESPONSE === type"
       />
+      <rich-text v-else-if="question.type === 'richText'" :is-show-toolbar="false" :read-only="true" :model-value="question.richText"/>
       <div v-else>not support</div>
       <div class="space-y-2" v-if="type === QuestionnaireRenderType.QUESTIONNAIRE_RESPONSE">
         <div v-if="isRight" class="text-[green] text-[15px] bg-[#f7f7f7] p-2 rounded-md flex items-center space-x-2">
@@ -63,6 +64,7 @@ import { defineProps, computed } from 'vue'
 import { Icon } from 'tdesign-vue-next'
 import CheckboxGroup from './CheckboxGroup.vue'
 import RadioGroup from './RadioGroup.vue'
+import { RichText } from '@fucking-exam/ui'
 
 const props = withDefaults(
   defineProps<{

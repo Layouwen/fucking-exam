@@ -34,6 +34,7 @@ enum QuestionType {
   shortAnswer
   essay
   fileUpload
+  richText
 }
 
 model Question {
@@ -46,6 +47,7 @@ model Question {
   settings        Json
   options         Json
   answers         Json
+  richText        String?        @default("") @db.Text()
   analyze         String?        @default("") @db.Text()
   questionnaire   Questionnaire? @relation(fields: [questionnaireId], references: [id])
   questionnaireId Int

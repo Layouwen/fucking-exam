@@ -102,6 +102,7 @@ const onAddNextQuestion = (index: number) => {
       },
     ],
     order: 99999,
+    richText: '',
     answers: [defaultAnswersUuid],
     analyze: '',
     settings: {

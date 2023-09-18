@@ -1,25 +1,3 @@
-<template>
-  <div class="px-6">
-    <questionnaire-paper-name :paper-name="data.paperName" />
-    <Editor
-      v-model="valueHtmlShow"
-      :defaultConfig="editorConfigShow"
-      :mode="'default'"
-      @onCreated="handleCreatedShow"
-    />
-    <questionnaire-question-item
-      v-for="(question, index) in data.questions"
-      :index="+index"
-      :key="question.subject"
-      :data="data"
-      :question="question"
-      :result="result"
-      :type="type"
-      :answers="answers"
-    />
-  </div>
-</template>
-
 <script lang="ts">
 import { defineComponent } from "vue";
 
@@ -83,3 +61,25 @@ const handleCreatedShow = (editor: any) => {
   editorRefShow.value = editor; // 记录 editor 实例，重要！
 };
 </script>
+
+<template>
+  <div class="px-6">
+    <questionnaire-paper-name :paper-name="data.paperName" />
+    <Editor
+        v-model="valueHtmlShow"
+        :defaultConfig="editorConfigShow"
+        :mode="'default'"
+        @onCreated="handleCreatedShow"
+    />
+    <questionnaire-question-item
+        v-for="(question, index) in data.questions"
+        :index="+index"
+        :key="question.subject"
+        :data="data"
+        :question="question"
+        :result="result"
+        :type="type"
+        :answers="answers"
+    />
+  </div>
+</template>
