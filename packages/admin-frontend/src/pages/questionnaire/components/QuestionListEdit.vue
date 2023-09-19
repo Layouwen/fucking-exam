@@ -224,6 +224,13 @@ const onQuestionOptionItemMoveButton = (index: number) => {
       @confirm="onUpdateQuestionAnalyze"
       @close="analyzeDialogVisible = false"
     />
+    <div
+      v-if="!questionnaireData?.questions?.length"
+      class="cursor-pointer relative bg-[#fff] hover:bg-[#fafafa] border-b-[1px] border-t-0 border-x-0 border-[#e0e0e0] border-solid pt-8 px-8 pb-10 space-y-3"
+      @click="onAddNextQuestion"
+    >
+      插入新题
+    </div>
     <question-option-item
       v-for="(question, index) in questionnaireData?.questions"
       :key="question.id"
