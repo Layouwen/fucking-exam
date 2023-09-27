@@ -42,7 +42,7 @@
           </template>
           <div v-if="question.analyze" class="space-y-2">
             <div class="text-[#595959]">答案解析:</div>
-            <div class="text-[#8c8c8c]">{{ question.analyze }}</div>
+            <div class="text-[#8c8c8c] leading-normal">{{ question.analyze }}</div>
           </div>
         </div>
       </div>
