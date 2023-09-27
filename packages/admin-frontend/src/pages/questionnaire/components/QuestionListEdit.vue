@@ -11,6 +11,7 @@ import {
   QuestionModel,
   questionType,
 } from '@fucking-exam/shared';
+import _ from 'lodash';
 
 import { InputEditModal } from '@/pages/questionnaire/components';
 import { QuestionOptionItem } from '@/components';
@@ -114,9 +115,22 @@ const onAddNextQuestion = (index: number) => {
 };
 
 const onQuestionOptionItemCopy = (index: number, questionData: Question) => {
-  const _questions = [...props.questionnaireData.questions];
-  _questions.splice(index, 0, questionData);
-  emit('update:questions', _questions);
+  const questions = [...props.questionnaireData.questions];
+  const _questionData = _.cloneDeep(questionData);
+
+  _questionData.id = uuidV4();
+
+  const originAnswersIndex = _questionData.answers.map((answer) =>
+    questionData.options.findIndex((option) => option.value === answer),
+  );
+  const newOptionsValue = _questionData.options.map((option) => ({ ...option, value: uuidV4() }));
+  const newAnswers = originAnswersIndex.map((index) => newOptionsValue[index].value);
+
+  _questionData.answers = newAnswers;
+  _questionData.options = newOptionsValue;
+
+  questions.splice(index, 0, _questionData);
+  emit('update:questions', questions);
 };
 const onQuestionOptionItemDelete = (index: number) => {
   const confirm = DialogPlugin.confirm({
