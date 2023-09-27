@@ -27,23 +27,23 @@
       <rich-text v-else-if="question.type === 'richText'" :is-show-toolbar="false" :read-only="true" :model-value="question.richText"/>
       <div v-else>not support</div>
       <div class="space-y-2" v-if="type === QuestionnaireRenderType.QUESTIONNAIRE_RESPONSE">
-        <div v-if="isRight" class="text-[green] text-[15px] bg-[#f7f7f7] p-2 rounded-md flex items-center space-x-2">
+        <div v-if="isRight" class="text-[green] text-[15px] bg-[#f7f7f7] p-3 rounded-md flex items-center space-x-2">
           <Icon name="check-circle-filled" />
           <span>回答正确</span>
         </div>
-        <div v-else class="text-[red] text-[15px] bg-[#f7f7f7] p-2 rounded-[2px] flex items-center space-x-2">
+        <div v-else class="text-[red] text-[15px] bg-[#f7f7f7] p-3 rounded-[2px] flex items-center space-x-2">
           <Icon name="close-circle-filled" />
           <span>回答错误</span>
         </div>
-        <div v-if="!isRight || question.analyze" class="text-[14px] bg-[#f7f7f7] p-2 rounded-[2px]">
+        <div v-if="!isRight || question.analyze" class="text-[14px] bg-[#f7f7f7] p-3 rounded-[2px] space-y-3">
           <template v-if="!isRight">
             <div class="text-[green]">正确答案:</div>
             <div v-for="text in rightAnswers" key="text">{{ text }}</div>
           </template>
-          <template v-if="question.analyze">
+          <div v-if="question.analyze" class="space-y-2">
             <div class="text-[#595959]">答案解析:</div>
             <div class="text-[#8c8c8c]">{{ question.analyze }}</div>
-          </template>
+          </div>
         </div>
       </div>
     </div>
