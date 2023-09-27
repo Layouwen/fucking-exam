@@ -2,9 +2,9 @@
 import {
   QuestionnairePaperName,
   QuestionnaireQuestionItem,
-  QuestionnaireRenderType,
   ResultDisplay,
 } from "../index";
+import { QuestionnaireRenderType } from "./type";
 import "@wangeditor/editor/dist/css/style.css";
 
 export type AnswersType = Record<string, string[]>;
