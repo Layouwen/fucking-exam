@@ -3,6 +3,7 @@ import {
   QuestionnairePaperName,
   QuestionnaireQuestionItem,
   ResultDisplay,
+  QuestionsFilterTabs,
 } from "../index";
 import { QuestionnaireRenderType } from "./type";
 import "@wangeditor/editor/dist/css/style.css";
@@ -31,6 +32,8 @@ const props = withDefaults(
     answers: {},
   }
 );
+
+const isOnlyErrorQuestions = ref(false);
 </script>
 
 <template>
@@ -41,6 +44,7 @@ const props = withDefaults(
       :data="data"
       :answers="answers"
     />
+    <questions-filter-tabs v-model:is-only-error-questions="isOnlyErrorQuestions" />
     <questionnaire-question-item
       v-for="(question, index) in data.questions"
       :index="+index"
