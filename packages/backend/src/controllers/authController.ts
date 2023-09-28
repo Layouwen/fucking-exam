@@ -122,7 +122,7 @@ class AuthController {
         to: email,
         subject: "Fucking Exam Code",
         html: fs
-          .readFileSync(path.resolve(__dirname, "../email.html"))
+          .readFileSync(path.resolve(__dirname, "../../public/email.html"))
           .toString()
           .replace("${code}", code),
       });
