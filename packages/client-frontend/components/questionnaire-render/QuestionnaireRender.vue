@@ -41,7 +41,7 @@ const calcOnlyErrorQuestions = (questions: Question[]) => {
   if (!questions?.length) return [];
   if (isOnlyErrorQuestions.value) {
     return questions.filter((question) =>
-      isRightByQuestion(question, props.answers)
+      !isRightByQuestion(question, props.answers)
     );
   }
   return questions;
