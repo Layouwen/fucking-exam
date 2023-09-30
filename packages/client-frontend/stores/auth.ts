@@ -6,6 +6,20 @@ type AuthStoreState = {
   user?: AuthLoginResponseData['user']
 }
 
+const customLocalStorage = {
+  getItem: (key: string): string | null => {
+    if (process.client) {
+      return localStorage.getItem(key)
+    }
+    return null
+  },
+  setItem: (key: string, value: string) => {
+    if (process.client) {
+      localStorage.setItem(key, value)
+    }
+  }
+}
+
 export const useAuthStore = defineStore('auth', {
   state: () =>
     ({
@@ -40,4 +54,7 @@ export const useAuthStore = defineStore('auth', {
       this.token = ''
     },
   },
+  persist: {
+    storage: customLocalStorage,
+  }
 })
