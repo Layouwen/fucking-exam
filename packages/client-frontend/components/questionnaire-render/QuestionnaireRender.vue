@@ -33,6 +33,7 @@ const props = withDefaults(
   }
 );
 
+const isShowQuestionAnswer = ref(false);
 const isOnlyErrorQuestions = ref(false);
 </script>
 
@@ -44,16 +45,21 @@ const isOnlyErrorQuestions = ref(false);
       :data="data"
       :answers="answers"
     />
-    <questions-filter-tabs v-model:is-only-error-questions="isOnlyErrorQuestions" />
-    <questionnaire-question-item
-      v-for="(question, index) in data.questions"
-      :index="+index"
-      :key="question.subject"
-      :data="data"
-      :question="question"
-      :result="result"
-      :type="type"
-      :answers="answers"
+    <questions-filter-tabs
+      v-model:is-show="isShowQuestionAnswer"
+      v-model:is-only-error-questions="isOnlyErrorQuestions"
     />
+    <template v-if="isShowQuestionAnswer">
+      <questionnaire-question-item
+        v-for="(question, index) in data.questions"
+        :index="+index"
+        :key="question.subject"
+        :data="data"
+        :question="question"
+        :result="result"
+        :type="type"
+        :answers="answers"
+      />
+    </template>
   </div>
 </template>
