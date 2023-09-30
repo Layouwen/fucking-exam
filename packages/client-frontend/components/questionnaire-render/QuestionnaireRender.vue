@@ -7,6 +7,7 @@ import {
 } from "../index";
 import { QuestionnaireRenderType } from "./type";
 import "@wangeditor/editor/dist/css/style.css";
+import { isRightByQuestion, Question } from "@fucking-exam/shared";
 
 export type AnswersType = Record<string, string[]>;
 
@@ -35,6 +36,16 @@ const props = withDefaults(
 
 const isShowQuestionAnswer = ref(false);
 const isOnlyErrorQuestions = ref(false);
+
+const calcOnlyErrorQuestions = (questions: Question[]) => {
+  if (!questions?.length) return [];
+  if (isOnlyErrorQuestions.value) {
+    return questions.filter((question) =>
+      isRightByQuestion(question, props.answers)
+    );
+  }
+  return questions;
+};
 </script>
 
 <template>
@@ -50,9 +61,14 @@ const isOnlyErrorQuestions = ref(false);
       v-model:is-show="isShowQuestionAnswer"
       v-model:is-only-error-questions="isOnlyErrorQuestions"
     />
-    <template v-if="isShowQuestionAnswer || type !== QuestionnaireRenderType.QUESTIONNAIRE_RESPONSE">
+    <template
+      v-if="
+        isShowQuestionAnswer ||
+        type !== QuestionnaireRenderType.QUESTIONNAIRE_RESPONSE
+      "
+    >
       <questionnaire-question-item
-        v-for="(question, index) in data.questions"
+        v-for="(question, index) in calcOnlyErrorQuestions(data.questions)"
         :index="+index"
         :key="question.subject"
         :data="data"
