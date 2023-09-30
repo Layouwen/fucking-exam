@@ -46,10 +46,11 @@ const isOnlyErrorQuestions = ref(false);
       :answers="answers"
     />
     <questions-filter-tabs
+      v-if="type === QuestionnaireRenderType.QUESTIONNAIRE_RESPONSE"
       v-model:is-show="isShowQuestionAnswer"
       v-model:is-only-error-questions="isOnlyErrorQuestions"
     />
-    <template v-if="isShowQuestionAnswer">
+    <template v-if="isShowQuestionAnswer || type !== QuestionnaireRenderType.QUESTIONNAIRE_RESPONSE">
       <questionnaire-question-item
         v-for="(question, index) in data.questions"
         :index="+index"
