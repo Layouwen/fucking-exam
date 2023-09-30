@@ -1,3 +1,5 @@
+import { Question } from "../types";
+
 export function moveUpByArr<T>(arr: T[], index: number) {
   if (index === 0) return arr;
   const result = [...arr];
@@ -58,6 +60,17 @@ export function isMobile() {
 export function isLogin() {
   if (typeof window === "undefined") return false;
   return !!localStorage.getItem("token");
+}
+
+export function isRightByQuestion(question: Question, answers: any) {
+  const userAnswer = answers[String(question.id)] as string | string[];
+  const rightAnswer = question.answers as string[];
+
+  if (Array.isArray(userAnswer)) {
+    return userAnswer.every((item) => rightAnswer.includes(item));
+  } else {
+    return rightAnswer.includes(userAnswer);
+  }
 }
 
 export * from "./db";

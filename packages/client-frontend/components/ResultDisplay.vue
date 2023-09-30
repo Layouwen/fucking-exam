@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { defineProps, computed, PropType } from "vue";
 import { AnswersType } from "~/components/questionnaire-render/QuestionnaireRender.vue";
+import { isRightByQuestion } from "@fucking-exam/shared";
 
 type DataType = any;
 
@@ -21,20 +22,9 @@ const calcQuestionTotalNum = (data: DataType) => {
 
 type Question = any;
 
-const isRightByQuestion = (question: Question) => {
-  const userAnswer = props.answers[String(question.id)] as string | string[];
-  const rightAnswer = question.answers as string[];
-
-  if (Array.isArray(userAnswer)) {
-    return userAnswer.every((item) => rightAnswer.includes(item));
-  } else {
-    return rightAnswer.includes(userAnswer);
-  }
-};
-
 const calcCorrectNum = (data: DataType) => {
   return data.questions.reduce((pre: number, cur: any) => {
-    return isRightByQuestion(cur) ? pre + 1 : pre;
+    return isRightByQuestion(cur, props.answers) ? pre + 1 : pre;
   }, 0);
 };
 
