@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Question, QuestionType, questionType } from "@fucking-exam/shared";
 import { PropType } from "vue";
-import { DividerContentPosition } from "vant";
+import { QuestionnaireRenderType } from "~/components/questionnaire-render";
 
 const props = defineProps({
   questions: {
@@ -19,6 +19,10 @@ const props = defineProps({
   questionItemListRef: {
     type: Array as PropType<any>,
     default: () => [],
+  },
+  type: {
+    type: Number as PropType<QuestionnaireRenderType>,
+    required: true,
   },
 });
 
@@ -90,12 +94,20 @@ onUnmounted(() => {
   window.removeEventListener("scroll", onScroll);
 });
 
-const isShowNext = ref(true);
+const isShowNext = ref(false);
 const updateIsShowNext = () => {
+  if (props.type === QuestionnaireRenderType.QUESTIONNAIRE_RESPONSE) {
+    isShowNext.value = false;
+    return;
+  }
   isShowNext.value = props.questions
     .filter((question) => isCanAnswerQuestion(question.type))
     .some((question) => !isAnswerQuestion(question, props.result));
 };
+
+onMounted(() => {
+  updateIsShowNext();
+});
 </script>
 
 <template>

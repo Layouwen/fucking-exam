@@ -79,6 +79,6 @@ const calcOnlyErrorQuestions = (questions: Question[]) => {
         :answers="answers"
       />
     </template>
-    <questionnaire-controller :questions="data.questions" :answers="answers" :result="result" />
+    <questionnaire-controller :type="type" :questions="data.questions" :answers="answers" :result="result" />
   </div>
 </template>
