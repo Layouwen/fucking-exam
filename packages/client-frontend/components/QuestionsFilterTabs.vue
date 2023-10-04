@@ -29,7 +29,7 @@ const onChange = (e: any) => {
 
 <template>
   <div class="text-[#252526]">
-    <div v-if="!isShow" class="flex justify-center items-centet">
+    <div v-if="!isShow" class="flex justify-center items-center">
       <div
         @click="onToggleShow"
         class="p-2 m-3 border-[1px] border-solid border-[#e8e8e8]"

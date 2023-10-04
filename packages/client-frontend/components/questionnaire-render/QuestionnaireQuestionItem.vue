@@ -1,6 +1,8 @@
 <template>
-  <div class="text-[#262626] py-5">
-    <div class="text-[17px] font-bold mb-2">{{ displayOrder }}{{ question.subject }}</div>
+  <div class="text-[#262626] py-5" :data-value="`question-item-${question.id}`">
+    <div class="text-[17px] font-bold mb-2">
+      {{ displayOrder }}{{ question.subject }}
+    </div>
     <div class="text-[16px] space-y-2">
       <!--
         TODO: 正确和错误的高亮
@@ -24,25 +26,44 @@
         :options="question.options"
         :disabled="QuestionnaireRenderType.QUESTIONNAIRE_RESPONSE === type"
       />
-      <rich-text v-else-if="question.type === 'richText'" :is-show-toolbar="false" :read-only="true" :model-value="question.richText"/>
+      <rich-text
+        v-else-if="question.type === 'richText'"
+        :is-show-toolbar="false"
+        :read-only="true"
+        :model-value="question.richText"
+      />
       <div v-else>not support</div>
-      <div class="space-y-2" v-if="type === QuestionnaireRenderType.QUESTIONNAIRE_RESPONSE">
-        <div v-if="isRight" class="text-[green] text-[15px] bg-[#f7f7f7] p-3 rounded-md flex items-center space-x-2">
+      <div
+        class="space-y-2"
+        v-if="type === QuestionnaireRenderType.QUESTIONNAIRE_RESPONSE"
+      >
+        <div
+          v-if="isRight"
+          class="text-[green] text-[15px] bg-[#f7f7f7] p-3 rounded-md flex items-center space-x-2"
+        >
           <Icon name="check-circle-filled" />
           <span>回答正确</span>
         </div>
-        <div v-else class="text-[red] text-[15px] bg-[#f7f7f7] p-3 rounded-[2px] flex items-center space-x-2">
+        <div
+          v-else
+          class="text-[red] text-[15px] bg-[#f7f7f7] p-3 rounded-[2px] flex items-center space-x-2"
+        >
           <Icon name="close-circle-filled" />
           <span>回答错误</span>
         </div>
-        <div v-if="!isRight || question.analyze" class="text-[14px] bg-[#f7f7f7] p-3 rounded-[2px] space-y-3">
+        <div
+          v-if="!isRight || question.analyze"
+          class="text-[14px] bg-[#f7f7f7] p-3 rounded-[2px] space-y-3"
+        >
           <template v-if="!isRight">
             <div class="text-[green]">正确答案:</div>
             <div v-for="text in rightAnswers" key="text">{{ text }}</div>
           </template>
           <div v-if="question.analyze" class="space-y-2">
             <div class="text-[#595959]">答案解析:</div>
-            <div class="text-[#8c8c8c] leading-normal">{{ question.analyze }}</div>
+            <div class="text-[#8c8c8c] leading-normal">
+              {{ question.analyze }}
+            </div>
           </div>
         </div>
       </div>
@@ -51,76 +72,79 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: 'QuestionnaireQuestionItem',
-})
+  name: "QuestionnaireQuestionItem",
+});
 </script>
 
 <script lang="ts" setup>
-import { QuestionnaireRenderType } from './type'
-import { defineProps, computed } from 'vue'
-import { Icon } from 'tdesign-vue-next'
-import CheckboxGroup from './CheckboxGroup.vue'
-import RadioGroup from './RadioGroup.vue'
-import { RichText } from '@fucking-exam/ui'
+import { QuestionnaireRenderType } from "./type";
+import { defineProps, computed } from "vue";
+import { Icon } from "tdesign-vue-next";
+import CheckboxGroup from "./CheckboxGroup.vue";
+import RadioGroup from "./RadioGroup.vue";
+import { RichText } from "@fucking-exam/ui";
 
 const props = withDefaults(
   defineProps<{
-    data: any
-    question: any
-    result: any
-    type?: QuestionnaireRenderType
-    index: number
-    answers?: Record<string, string[]>
+    data: any;
+    question: any;
+    result: any;
+    type?: QuestionnaireRenderType;
+    index: number;
+    answers?: Record<string, string[]>;
   }>(),
   {
     type: QuestionnaireRenderType.QUESTIONNAIRE,
     answers: {},
   }
-)
+);
 
 const displayOrder = computed(() => {
-  return props.data.settings.isDisplayOrder ? `${props.index! + 1}、` : ''
-})
+  return props.data.settings.isDisplayOrder ? `${props.index! + 1}、` : "";
+});
 
 const borderClass = (index: number, length: number) => {
-  const borderBottom = index === length - 1 ? 'border-b-0 ' : 'border-b-[1px]'
-  return `${borderBottom} border-t-0 border-l-0 border-r-0 border-solid p-3 border-[#e3e3e3]`
-}
+  const borderBottom = index === length - 1 ? "border-b-0 " : "border-b-[1px]";
+  return `${borderBottom} border-t-0 border-l-0 border-r-0 border-solid p-3 border-[#e3e3e3]`;
+};
 
 const isRight = computed(() => {
-  if (props.type !== QuestionnaireRenderType.QUESTIONNAIRE_RESPONSE) return false
+  if (props.type !== QuestionnaireRenderType.QUESTIONNAIRE_RESPONSE)
+    return false;
   const {
     answers: myAnswers,
     question: { id, answers },
-  } = props
-  const arr = myAnswers![id]
-  return answers.every((item: string) => arr.includes(item))
-})
+  } = props;
+  const arr = myAnswers![id];
+  return answers.every((item: string) => arr.includes(item));
+});
 
 const isSelect = (value: any, myAnswers: any) => {
-  const curAnswersArr = Array.isArray(myAnswers) ? myAnswers : [myAnswers]
-  return curAnswersArr.includes(value)
-}
+  const curAnswersArr = Array.isArray(myAnswers) ? myAnswers : [myAnswers];
+  return curAnswersArr.includes(value);
+};
 
 const isRightClass = (value: any, myAnswers: any, answers: any) => {
-  return isSelect(value, myAnswers) && answers.includes(value)
-}
+  return isSelect(value, myAnswers) && answers.includes(value);
+};
 
 const isErrorClass = (value: any, myAnswers: any, answers: any) => {
-  const curAnswersArr = Array.isArray(myAnswers) ? myAnswers : [myAnswers]
-  return curAnswersArr.includes(value) && !answers.includes(value)
-}
+  const curAnswersArr = Array.isArray(myAnswers) ? myAnswers : [myAnswers];
+  return curAnswersArr.includes(value) && !answers.includes(value);
+};
 
 const rightAnswers = computed(() => {
-  if (props.type !== QuestionnaireRenderType.QUESTIONNAIRE_RESPONSE) return []
+  if (props.type !== QuestionnaireRenderType.QUESTIONNAIRE_RESPONSE) return [];
   const {
     question: { answers, options },
-  } = props
-  return answers.map((v: string) => options.find((item: any) => item.value === v).label)
-})
+  } = props;
+  return answers.map(
+    (v: string) => options.find((item: any) => item.value === v).label
+  );
+});
 </script>
 
 <style scoped lang="less">

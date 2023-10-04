@@ -104,5 +104,3 @@ import { defineComponent } from "vue";
 
 export default defineComponent({ name: "RichEdit" });
 </script>
-
-Towns like Blackpool and Brighton are popular for their beaches and amusement arcades（游 乐 场 ）. People go there to swim, sunbathe and eat fish and chips. The water can be quite cold, though, and that’s why quite a lot of people prefer to go abroad for their summer holiday instead. Popular destinations include Spain, Germany and France: all countries that promise a lot of sunshine.

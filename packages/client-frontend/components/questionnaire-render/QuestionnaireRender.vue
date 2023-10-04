@@ -4,6 +4,7 @@ import {
   QuestionnaireQuestionItem,
   ResultDisplay,
   QuestionsFilterTabs,
+  QuestionnaireController,
 } from "../index";
 import { QuestionnaireRenderType } from "./type";
 import "@wangeditor/editor/dist/css/style.css";
@@ -78,5 +79,6 @@ const calcOnlyErrorQuestions = (questions: Question[]) => {
         :answers="answers"
       />
     </template>
+    <questionnaire-controller :questions="data.questions" :answers="answers" :result="result" />
   </div>
 </template>
