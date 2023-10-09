@@ -67,6 +67,7 @@ export function isRightByQuestion(question: Question, answers: any) {
   const rightAnswer = question.answers as string[];
 
   if (Array.isArray(userAnswer)) {
+    if (userAnswer.length !== rightAnswer.length) return false;
     return userAnswer.every((item) => rightAnswer.includes(item));
   } else {
     return rightAnswer.includes(userAnswer);

@@ -76,6 +76,7 @@ import { Icon } from "tdesign-vue-next";
 import CheckboxGroup from "./CheckboxGroup.vue";
 import RadioGroup from "./RadioGroup.vue";
 import { RichText } from "@fucking-exam/ui";
+import { isRightByQuestion } from "@fucking-exam/shared";
 
 const props = withDefaults(
   defineProps<{
@@ -104,12 +105,8 @@ const borderClass = (index: number, length: number) => {
 const isRight = computed(() => {
   if (props.type !== QuestionnaireRenderType.QUESTIONNAIRE_RESPONSE)
     return false;
-  const {
-    answers: myAnswers,
-    question: { id, answers },
-  } = props;
-  const arr = myAnswers![id];
-  return answers.every((item: string) => arr.includes(item));
+  const { question, result } = props;
+  return isRightByQuestion(question, result);
 });
 
 const rightAnswers = computed(() => {
