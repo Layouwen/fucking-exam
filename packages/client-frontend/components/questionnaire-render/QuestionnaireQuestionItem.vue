@@ -4,16 +4,6 @@
       {{ displayOrder }}{{ question.subject }}
     </div>
     <div class="text-[16px] space-y-2">
-      <!--
-        TODO: 正确和错误的高亮
-          :class="[
-            borderClass(index, question.options.length),
-            {
-              error: isErrorClass(option.value, answers[question.id], question.answers),
-              right: isRightClass(option.value, answers[question.id], question.answers),
-            },
-          ]"
-     -->
       <CheckboxGroup
         v-if="question.type === 'multipleChoice'"
         v-model:value="result[question.id]"
@@ -121,20 +111,6 @@ const isRight = computed(() => {
   const arr = myAnswers![id];
   return answers.every((item: string) => arr.includes(item));
 });
-
-const isSelect = (value: any, myAnswers: any) => {
-  const curAnswersArr = Array.isArray(myAnswers) ? myAnswers : [myAnswers];
-  return curAnswersArr.includes(value);
-};
-
-const isRightClass = (value: any, myAnswers: any, answers: any) => {
-  return isSelect(value, myAnswers) && answers.includes(value);
-};
-
-const isErrorClass = (value: any, myAnswers: any, answers: any) => {
-  const curAnswersArr = Array.isArray(myAnswers) ? myAnswers : [myAnswers];
-  return curAnswersArr.includes(value) && !answers.includes(value);
-};
 
 const rightAnswers = computed(() => {
   if (props.type !== QuestionnaireRenderType.QUESTIONNAIRE_RESPONSE) return [];
